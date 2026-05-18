@@ -32,6 +32,8 @@ import React from 'react';
 import Talks_LitsenMore from './pages/talks_LitsenMore/index.js';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 
 
@@ -59,6 +61,21 @@ function ScrollToHash() {
 
   return null;
 }
+
+  const location = useLocation();
+
+  useEffect(() => {
+    AOS.init({
+      duration: 1000,
+      once: false,
+      mirror: true,
+      anchorPlacement: "top-bottom",
+    });
+  }, []);
+
+  useEffect(() => {
+    AOS.refreshHard();
+  }, [location]);
 
   return (
     <div className="App"> 

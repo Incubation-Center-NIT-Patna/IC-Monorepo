@@ -2,27 +2,19 @@ import React from 'react'
 import { campus_image } from '../../constants/const';
 import "./style.css";
 
-import AOS from 'aos';
-import 'aos/dist/aos.css'
-
 const About = () => {
-
-  AOS.init({
-    duration: 1000
-  });
-
   return (
     <div>
-      <section class="about" id="about">
+      <section className="about" id="about">
 
-<div class="aboutdiv">
-  <div class="building-img" data-aos="zoom-in">
+<div className="aboutdiv">
+  <div className="building-img" data-aos="zoom-in">
     <img
       src={campus_image}
       alt="Incubation center NIT Patna"/>
   </div>
 
-  <div class="about-content " > 
+  <div className="about-content" > 
     <div className='heading'><h1 data-aos="fade-down" >About<span style={{color:"#0ef"}}> Us</span></h1></div>
     
     <h3  data-aos="fade-right" >What we do ?</h3>

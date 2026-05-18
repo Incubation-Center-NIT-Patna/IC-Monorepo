@@ -4,8 +4,6 @@ import './NoticeSection.css'; // Update this path if needed
 import "./style.css";
 import Typewriter from "typewriter-effect";
 import { useState, useEffect } from "react";
-import AOS from "aos";
-import "aos/dist/aos.css";
 
 // import { Button } from 'primereact/button';
 
@@ -26,10 +24,6 @@ const Home = () => {
       setData(JSON.parse(storedData));
     }
   }, []);
-
-  AOS.init({
-    duration: 1000,
-  });
 
   // hljs.initHighlightingOnLoad();
 
@@ -69,9 +63,9 @@ const Home = () => {
 
   return (
     <div>
-      <section class="home" id="home">
+      <section className="home" id="home">
         <div className="grid-1">
-          <div class="home-content" data-aos="fade-right">
+          <div className="home-content" data-aos="fade-right">
             {/* <Button label="Submit" /> */}
 
             <h3>Welcome to,</h3>
@@ -83,7 +77,7 @@ const Home = () => {
               <h3>of NIT Patna.</h3>
             </div>
             <div className="typewriter">
-              <p>
+              <div>
                 {" "}
                 <Typewriter
                   options={{
@@ -92,29 +86,29 @@ const Home = () => {
                     loop: true,
                   }}
                 />
-              </p>
+              </div>
             </div>
 
-            {/* <h3>we <span class="multiple-text">{text} <Cursor cursorStyle = "|" /></span></h3> */}
+            {/* <h3>we <span className="multiple-text">{text} <Cursor cursorStyle = "|" /></span></h3> */}
             <p>
               Empowering startups and entrepreneurs with mentorship, workspace,
               and funding to foster innovation and accelerate growth. Join us to
               turn your ideas into successful ventures.
             </p>
-            {/* <!-- <div class="social-media">
-              <a href=""><i class='bx bxl-facebook'></i></a>
-              <a href=""><i class='bx bxl-instagram-alt'></i></a>
-              <a href=""><i class='bx bxl-linkedin'></i></a>
-              <a href=""><i class='bx bxs-message-rounded-dots'></i></a>
+            {/* <!-- <div className="social-media">
+              <a href=""><i className='bx bxl-facebook'></i></a>
+              <a href=""><i className='bx bxl-instagram-alt'></i></a>
+              <a href=""><i className='bx bxl-linkedin'></i></a>
+              <a href=""><i className='bx bxs-message-rounded-dots'></i></a>
           </div> --> */}
-            <a href="#idea" class="btn">
+            <a href="#idea" className="btn">
               Incubate u'r Idea
             </a>
           </div>
         </div>
 
         <div className="grid-2">
-          <div class="notice" data-aos="fade-up" data-aos-duration="1500">
+          <div className="notice" data-aos="fade-up" data-aos-duration="1500">
             <div className="notice-container">
               <div className="notice-title lkclr">Notices</div>
               <div className="notice-list">

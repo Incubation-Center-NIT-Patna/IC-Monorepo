@@ -2,17 +2,20 @@
 
 #about {
     /* background: linear-gradient(45deg, transparent 49%, #27496D 49% 51%, transparent 51%) , linear-gradient(-45deg, transparent 49%, #27496D 49% 51%, transparent 51%); */
-        /* background-size: 3em 3em; */
-        /* background-color: var(--fouth-main-color); */
-        /* opacity: 1;   */
+    /* background-size: 3em 3em; */
+    /* background-color: var(--fouth-main-color); */
+    /* opacity: 1;   */
     
-        background-color: #0a0a0a;
-        opacity: 1;
-        background-image: radial-gradient( #0a0a0a 0%, #000 100%);
-        background-size: 16px 16px;
+    background-color: #000000;
+    opacity: 0.9;
+    background-image: radial-gradient(#142850 0.8px, #000000 0.8px);
+    background-size: 16px 16px;
     position: relative;  
     padding: 10rem 9% 4rem;
     height: auto;
+    width: 100%;
+    overflow-x: hidden;
+    box-sizing: border-box;
     /* margin-top: -30px; */
   }
   
@@ -20,6 +23,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 2rem;;
+    width: 100%;
+    max-width: 100%;
   }
   
   .building-img{   
@@ -31,7 +36,7 @@
   }
   
   .building-img img{
-    width: 360px; 
+    width: min(360px, 100%); 
     height:auto;
     box-shadow: 0 0 25px rgba(0, 238, 255, 0.3);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -43,39 +48,50 @@
     flex-direction: column;
     flex-wrap: nowrap; 
     gap: 2rem;
-    color:#aef;
+    color: #fff;
+    min-width: 0;
+    overflow-wrap: anywhere;
   }
   
   .about-content ul li{ 
     font-size:1.6rem ;
     row-gap: 1rem;
     list-style: initial;
-    color:#aef;
+    color: #fff;
   }
   .about-content h3{
-    color: #aef;
+    color: #fff;
+    font-size: 2.6rem;
+    font-weight: 600;
   }
   .about-content h1{
-    font-size: 5rem; 
+    font-size: 4rem; 
+    font-weight: 600;
     display: flex;
-    justify-content: flex-start;
-    color:#aaa;
+    gap: 4px;
+    justify-content: center;
+    text-align: center;
+    color: #fff;
   }
   
   .about-content p{ 
     font-size:1.6rem ;
-    color: #aaa;;
+    color: #fff;
+  }
+
+  .about-content ul li{
+    color: #0ef;
   }
   
   
   @media screen and (max-width:988px){
    .aboutdiv{
-    flex-direction: column;
+    grid-template-columns: 1fr;
    
    }
    .building-img{
   
-    width:80%;
+    width:100%;
    }
    .about-content{
     margin-top:30px;
@@ -85,11 +101,12 @@
     width:fit-content;
     margin: auto;
    }
-   .heading{
-    
-   }
   }
   @media screen and (max-width:558px){
+    #about {
+      padding: 8rem 18px 3rem;
+    }
+
     .building-img{
       display:none;
     }
@@ -98,20 +115,27 @@
        
     }
     .aboutdiv{ 
-    grid-template-columns: 1fr 0fr;
+    grid-template-columns: minmax(0, 1fr);
     }
 
     div.heading h1{
       font-size: 3rem;
-      width:fit-content;
-    
+      width: 100%;
      text-align: center;
     }
+    .about-content h3{
+      font-size: 1rem;
+    }
     .about-content p{
-      font-size: 5rem;
+      font-size: 1rem;
+      line-height: 1.7;
     }
     .about-content ul li{
       font-size: 1rem;
+      line-height: 1.6;
+    }
+    .about-content ul {
+      padding-left: 1.1rem;
     }
 
   }
