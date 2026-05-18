@@ -6,7 +6,7 @@ import Footer from '../footer';
 import './Gallery.css';
 
 const supabaseBaseUrl =
-  'https://xztqqftgeucxoxiugsqr.supabase.co/storage/v1/object/public/gallery-images/';
+  process.env.REACT_APP_SUPABASE_STORAGE;
 const role = localStorage.getItem('role');
 
 // List of allowed/expected image filenames

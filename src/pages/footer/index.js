@@ -1,4 +1,5 @@
 import React from 'react';
+import { facebook_url, instagram_url, linkedin_url } from '../../constants/const';
 import "./styles.css";
 import { useNavigate } from 'react-router-dom';
 import { FaFacebook } from "react-icons/fa";
@@ -53,10 +54,10 @@ const Footer = () => {
         <div className="footer-col">
           <h4>follow us</h4>
           <div className="social-links">
-            <a href="https://www.facebook.com/icnitp/"><i className="fab fa-facebook-f">< FaFacebook /></i></a>
+            <a href={facebook_url}><i className="fab fa-facebook-f">< FaFacebook /></i></a>
             <a href="#"><i className="fab fa-twitter">< FaTwitter /></i></a>
-            <a href="https://www.instagram.com/incubation_nitp/"><i className="fab fa-instagram">< FaInstagram/></i></a>
-            <a href="https://www.linkedin.com/company/incubation-centre-nit-patna/posts/?feedView=all"><i className="fab fa-linkedin-in">< RiLinkedinBoxFill/></i></a>
+            <a href={instagram_url}><i className="fab fa-instagram">< FaInstagram/></i></a>
+            <a href={linkedin_url}><i className="fab fa-linkedin-in">< RiLinkedinBoxFill/></i></a>
           </div>
         </div>
       </div>

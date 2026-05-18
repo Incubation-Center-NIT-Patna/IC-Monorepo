@@ -1,4 +1,5 @@
 import React from 'react';
+import { director_linkedin, nitp_main } from '../../constants/const';
 import "./style.css";
 
 const Director = () => {
@@ -24,7 +25,7 @@ const Director = () => {
 							{/* <li class="tag__item"><i class="fas fa-tag mr-2"></i>Podcast</li>
 					<li class="tag__item"><i class="fas fa-clock mr-2"></i>55 mins.</li> */}
 							<li class="tag__item play blue">
-								<a href="https://www.nitp.ac.in/Institute/Director"><i class="fas fa-play mr-2"></i>Know More</a>
+								<a href={`${nitp_main}/Institute/Director`}><i class="fas fa-play mr-2"></i>Know More</a>
 							</li>
 						</ul>
 					</div>
@@ -47,7 +48,7 @@ const Director = () => {
 							{/* <li class="tag__item"><i class="fas fa-tag mr-2"></i>Podcast</li>
 							<li class="tag__item"><i class="fas fa-clock mr-2"></i>55 mins.</li> */}
 							<li class="tag__item play red">
-								<a href="https://www.linkedin.com/in/sgbharat/?originalSubdomain=in"><i class="fas fa-play mr-2"></i>Know More</a>
+								<a href={director_linkedin}><i class="fas fa-play mr-2"></i>Know More</a>
 							</li>
 						</ul>
 					</div>

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { tinkering_lab, nitp_main } from '../../constants/const';
 import "./style.css";
 import { Link } from 'react-router-dom'; 
 import AOS from 'aos';
@@ -60,7 +61,7 @@ const Navbar = () => {
       {/* <!-- header  --> */}
 
       <header className="header" style={navbarStyle}>
-        <a href="https://www.nitp.ac.in/" className="logo1" style={logoStyle}><img src="  img/download-removebg-preview.png " alt="NITP_logo" /></a>
+        <a href={nitp_main} className="logo1" style={logoStyle}><img src="  img/download-removebg-preview.png " alt="NITP_logo" /></a>
         <nav className="navbar">
           <div className="link">
             <Link to="/#home">Home</Link>
@@ -92,7 +93,7 @@ const Navbar = () => {
               <Link to="/Admin">Admin</Link>
             </div>
           </div> 
-          <a href="https://tinkering-lab.onrender.com/" className='link' download="Tinkering Lab">Tinkering lab</a>
+          <a href={tinkering_lab} className='link' download="Tinkering Lab">Tinkering lab</a>
 
         </nav>
 
@@ -101,13 +102,13 @@ const Navbar = () => {
           isOpen && (
             <div className='mobileMenuContainer'>
               <div className="mobileMenu">
-                <a className='link' href="http://localhost:3000/">Home</a>
+                <a className='link' href={process.env.REACT_APP_BASE_URL}>Home</a>
                 <a href="#about">About</a>
                 <a href="#incubations">Incubations</a>
                 <a href="#events" className='link'>Events</a>
                 <a href="#gallery" className='link'>Gallery</a>
                 <a href="#team" className='link'>Team</a> 
-                <a href="https://tinkering-lab.onrender.com/" className='link' download="Tinkering Lab">Tinkering lab</a>
+                <a href={tinkering_lab} className='link' download="Tinkering Lab">Tinkering lab</a>
   {/*<a href="#footer" className='link'>Contact</a>*/}
               </div>
               <div onClick={() => setIsOpen(false)} className="crossBtn">

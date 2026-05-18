@@ -6,7 +6,7 @@ import Navbar from '../Navbar';
 import Footer from '../footer';
 import './Gallery.css';
 
-const supabaseBaseUrl = 'https://xztqqftgeucxoxiugsqr.supabase.co/storage/v1/object/public/gallery-images/';
+const supabaseBaseUrl = process.env.REACT_APP_SUPABASE_STORAGE;
 const role = localStorage.getItem('role');
 
 const allowedFiles = [

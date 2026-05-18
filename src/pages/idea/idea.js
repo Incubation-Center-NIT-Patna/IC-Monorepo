@@ -1,4 +1,5 @@
 import Swal from 'sweetalert2';
+import { web3forms_api } from '../../constants/const';
 
 const IdeaJs = async (e) => {
   e.preventDefault(); // Prevent the default form submission behavior
@@ -62,10 +63,10 @@ const IdeaJs = async (e) => {
     !message.classList.contains("error")
   ) {
     const formData = new FormData(form);
-    formData.append("access_key", "da9045aa-c37f-471c-a85d-a94d37e076aa");
+    formData.append("access_key", process.env.REACT_APP_WEB3FORMS_ACCESS_KEY);
     formData.append("from_name",fullName.value)
     try {
-      const response = await fetch("https://api.web3forms.com/submit", {
+      const response = await fetch(web3forms_api, {
         method: "POST",
         body: formData
       });
