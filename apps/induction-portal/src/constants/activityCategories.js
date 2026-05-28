@@ -2,7 +2,7 @@
 
 export const ACTIVITY_CATEGORIES = {
   'task-submitted': {
-    label: 'submitted Task',
+    label: 'submitted a task',
     imagePath: '/img/task-submitted.png', // Load from public/img folder
   },
   'query-made': {
@@ -10,7 +10,7 @@ export const ACTIVITY_CATEGORIES = {
     imagePath: '/img/query-made.png',
   },
   'evaluation-made': {
-    label: 'completed an Evaluation',
+    label: 'completed an evaluation',
     imagePath: '/img/evaluation-made.png',
   },
   'settings-updated': {
