@@ -16,11 +16,11 @@ export default function StatCard({title, value, icon: Icon, iconColor, badge, ba
         )}
       </div>
 
-      <p className="text-sm font-semibold tracking-wide text-gray-400">
+      <p className="text-xs sm:text-sm font-semibold tracking-wide text-gray-400">
         {title}
       </p>
 
-      <h2 className="mt-3 text-3xl font-bold text-white md:text-4xl">
+      <h2 className="mt-3 text-2xl sm:text-3xl font-bold text-white">
         {value}
       </h2>
     </CardWrapper>
