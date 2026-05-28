@@ -6,7 +6,7 @@ function UserHome() {
   return (<h1>User Dashboard</h1>);
 }
 
-export default function HomePage() {
+export default async function HomePage() {
 
 // Temporary static role & dashboard data.
 // After implementing authentication/login system,
