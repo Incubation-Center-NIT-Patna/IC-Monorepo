@@ -1,3 +1,4 @@
+"use client";
 
 export default function SectionTitle({ title, subtitle, actionText, action }) {
   return (

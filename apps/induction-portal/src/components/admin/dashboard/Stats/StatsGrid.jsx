@@ -1,6 +1,6 @@
 import StatCard from "./StatCard";
 
-export default function StatsGrid({ stats = statsData}) {
+export default function StatsGrid({ stats = []}) {
   return (
     <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
       {stats.map((item) => (
