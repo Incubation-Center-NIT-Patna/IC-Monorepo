@@ -1,6 +1,7 @@
+
 import AdminDashboard from "@/components/admin/dashboard/Dashboard";
 import { statsData } from "@/components/admin/dashboard/Stats/statsData";
-
+import RecentActivity from '../components/RecentActivity';
 //temporarily UserHome function
 function UserHome() {
   return (<h1>User Dashboard</h1>);
@@ -21,13 +22,20 @@ export default async function HomePage() {
     stats: statsData || [],
   };
 
-  return (
-    <>
-      {role==="admin" ? (
-        <AdminDashboard data={adminDashboardData} />
-      ) : (
-        <UserHome />
-      )}
-    </>
+return (
+    <main className="min-h-screen bg-[#05070c] flex flex-col items-center justify-start p-6 gap-6">
+      
+  
+      <div className="w-full">
+        {role === "admin" ? (
+          <AdminDashboard data={adminDashboardData} />
+        ) : (
+          <UserHome />
+        )}
+      </div>
+
+      <RecentActivity />
+
+    </main>
   );
 }
