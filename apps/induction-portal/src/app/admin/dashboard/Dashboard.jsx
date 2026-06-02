@@ -3,7 +3,7 @@ import AdminLayout from "../layout/AdminLayout";
 import WelcomeSection from "./Welcome/WelcomeSection";
 import StatsGrid from "./Stats/StatsGrid";
 import ProgressCard from "./Progress/ProgressCard";
-import RecentActivity from "@/components/admin/dashboard/RecentActivity/RecentActivity";
+import RecentActivity from "@/app/admin/dashboard/RecentActivity/RecentActivity";
 
 export default function AdminDashboard({ data }) {
 

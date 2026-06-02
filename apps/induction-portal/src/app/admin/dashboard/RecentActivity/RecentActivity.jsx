@@ -6,6 +6,8 @@ import { ACTIVITY_CATEGORIES, DEFAULT_CATEGORY_FALLBACK } from "@/constants/acti
 import { getRecentActivitiesPreview } from "@/services/activityService";
 import { formatTimeAgo } from "@/utils/timeUtils";
 
+
+
 export default function RecentActivity() {
   const [activities, setActivities] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -38,7 +40,7 @@ export default function RecentActivity() {
           Recent Activity
         </h3>
         <Link 
-          href="/activity-log" 
+          href="/admin/dashboard/RecentActivity/ActivityLog" 
           className="text-sm text-teal-400 hover:text-teal-300 transition-colors font-medium"
         >
           View All
