@@ -1,39 +1,10 @@
+import { redirect } from "next/navigation";
 
-import AdminDashboard from "@/app/admin/dashboard/Dashboard";
-import { statsData } from "@/app/admin/dashboard/Stats/statsData";
-//temporarily UserHome function
-function UserHome() {
-  return (<h1>User Dashboard</h1>);
-}
-
-export default async function HomePage() {
-
-// Temporary static role & dashboard data.
+// Temporary redirect to admin dashboard.
 // After implementing authentication/login system,
-// these values will come dynamically from
-// session, database, or API response.
+// this page should redirect users based on their role
+// (e.g., admin → /admin/dashboard, user → /user/dashboard).
 
-  const role = "admin";
-
-  const adminDashboardData = {
-    userType: "Admin",
-    progress: {title: "Overall Induction Progress", val:56 },
-    stats: statsData || [],
-  };
-
-return (
-    <main className="min-h-screen bg-[#05070c] flex flex-col items-center justify-start p-6 gap-6">
-      
-  
-      <div className="w-full">
-        {role === "admin" ? (
-          <AdminDashboard data={adminDashboardData} />
-        ) : (
-          <UserHome />
-        )}
-      </div>
-
-
-    </main>
-  );
+export default function HomePage() {
+  redirect("/admin/dashboard");
 }
