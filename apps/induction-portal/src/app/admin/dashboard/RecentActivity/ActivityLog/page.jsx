@@ -1,10 +1,12 @@
 'use client';
-import { formatTimeAgo } from '../../utils/timeUtils';
+
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ACTIVITY_CATEGORIES, DEFAULT_CATEGORY_FALLBACK } from '../../constants/activityCategories';
-import { getAllActivities } from '../../services/activityService';
+
+import { ACTIVITY_CATEGORIES, DEFAULT_CATEGORY_FALLBACK } from '@/constants/activityCategories';
+import { getAllActivities } from '@/services/activityService';
+import { formatTimeAgo } from '@/utils/timeUtils';
 
 export default function ActivityLogPage() {
   const [activities, setActivities] = useState([]);
@@ -30,7 +32,7 @@ export default function ActivityLogPage() {
 
   return (
     <main className="min-h-screen bg-[#05070c] text-white p-6 md:p-12">
-      <div className="max-w-4xl mx-auto min-h-[400px] flex flex-col">
+      <div className="max-w-4xl mx-auto min-h-100 flex flex-col">
         
         {/* BACK NAVIGATION */}
         <div className="mb-6">
@@ -47,19 +49,19 @@ export default function ActivityLogPage() {
         {/* STATE CONDITIONAL RENDERING */}
         {isLoading ? (
           /* 1. Loading State Spinner Canvas */
-          <div className="flex flex-col items-center justify-center py-20 gap-3 flex-grow">
+          <div className="flex flex-col items-center justify-center py-20 gap-3 grow">
             <div className="w-10 h-10 border-4 border-teal-500/20 border-t-teal-400 rounded-full animate-spin"></div>
             <p className="text-sm text-slate-400 animate-pulse">Loading comprehensive log history...</p>
           </div>
         ) : error ? (
           /* 2. Error Message State View */
-          <div className="text-center py-20 flex-grow flex flex-col items-center justify-center">
+          <div className="text-center py-20 grow flex flex-col items-center justify-center">
             <p className="text-sm text-rose-400 font-medium">{error}</p>
             <p className="text-xs text-slate-500 mt-1">Please verify your connection and try refreshing the workspace.</p>
           </div>
         ) : activities.length === 0 ? (
           /* 3. Empty State Array Fallback */
-          <div className="text-center py-20 text-sm text-slate-500 flex-grow flex items-center justify-center">
+          <div className="text-center py-20 text-sm text-slate-500 grow flex items-center justify-center">
             No historical logs recorded yet.
           </div>
         ) : (

@@ -1,6 +1,6 @@
 
-import AdminDashboard from "@/components/admin/dashboard/Dashboard";
-import { statsData } from "@/components/admin/dashboard/Stats/statsData";
+import AdminDashboard from "@/app/admin/dashboard/Dashboard";
+import { statsData } from "@/app/admin/dashboard/Stats/statsData";
 //temporarily UserHome function
 function UserHome() {
   return (<h1>User Dashboard</h1>);
