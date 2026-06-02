@@ -1,7 +1,6 @@
 
 import AdminDashboard from "@/components/admin/dashboard/Dashboard";
 import { statsData } from "@/components/admin/dashboard/Stats/statsData";
-import RecentActivity from '../components/RecentActivity';
 //temporarily UserHome function
 function UserHome() {
   return (<h1>User Dashboard</h1>);
@@ -34,7 +33,6 @@ return (
         )}
       </div>
 
-      <RecentActivity />
 
     </main>
   );

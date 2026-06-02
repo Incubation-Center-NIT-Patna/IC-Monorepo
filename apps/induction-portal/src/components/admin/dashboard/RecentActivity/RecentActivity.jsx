@@ -2,9 +2,9 @@
 import Image from 'next/image';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { ACTIVITY_CATEGORIES, DEFAULT_CATEGORY_FALLBACK } from '../constants/activityCategories';
-import { getRecentActivitiesPreview } from '../services/activityService';
-import { formatTimeAgo } from '../utils/timeUtils';
+import { ACTIVITY_CATEGORIES, DEFAULT_CATEGORY_FALLBACK } from "@/constants/activityCategories";
+import { getRecentActivitiesPreview } from "@/services/activityService";
+import { formatTimeAgo } from "@/utils/timeUtils";
 
 export default function RecentActivity() {
   const [activities, setActivities] = useState([]);
@@ -30,7 +30,7 @@ export default function RecentActivity() {
 
   return (
     /* OUTERMOST BOX - Bounded to ~900px and centered on desktop */
-    <div className="w-full lg:max-w-4xl mx-auto bg-[#090d16] text-white rounded-xl p-4 border border-slate-800/40 shadow-xl min-h-[180px] flex flex-col">
+    <>
       
       {/* RECENT ACTIVITY HEADER SECTION */}
       <div className="flex justify-between items-baseline mb-4 w-full">
@@ -101,6 +101,6 @@ export default function RecentActivity() {
           })}
         </div>
       )}
-    </div>
+    </>
   );
 }
