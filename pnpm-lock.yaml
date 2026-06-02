@@ -11,10 +11,6 @@ overrides:
 importers:
 
   .:
-    dependencies:
-      lucide-react:
-        specifier: ^1.16.0
-        version: 1.16.0(react@19.2.4)
     devDependencies:
       cross-env:
         specifier: ^10.1.0
