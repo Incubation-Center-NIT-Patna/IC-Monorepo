@@ -40,7 +40,7 @@ export default function RecentActivity() {
           Recent Activity
         </h3>
         <Link 
-          href="/admin/dashboard/RecentActivity/ActivityLog" 
+          href="/admin/activity-log" 
           className="text-sm text-teal-400 hover:text-teal-300 transition-colors font-medium"
         >
           View All
