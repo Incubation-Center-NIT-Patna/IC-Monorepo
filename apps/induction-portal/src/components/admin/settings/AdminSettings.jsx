@@ -6,7 +6,7 @@ import ScoringScale from '@/components/admin/settings/ScoringScale';
 
 export default function AdminSettings() {
   return (
-    <div className="w-full text-gray-100 py-4 selection:bg-[#10B981]/20 max-w-[1000px]">
+    <div className="w-full text-gray-100 py-4 selection:bg-[#10B981]/20 ">
      
       <div className="w-full">
         
