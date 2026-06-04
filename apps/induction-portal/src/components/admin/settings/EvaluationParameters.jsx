@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import EvaluationRow from '@/components/admin/settings/EvaluationRow'; 
-import { DEFAULT_EVALUATION_PARAMETERS } from '@/components/admin/settings/evaluationData';
+import EvaluationRow from '@/components/admin/settings/EvaluationRow.jsx'; 
+import { DEFAULT_EVALUATION_PARAMETERS } from '@/components/admin/settings/evaluationData.js';
 
 export default function EvaluationParameters() {
   const [parameters, setParameters] = useState(DEFAULT_EVALUATION_PARAMETERS);
