@@ -23,4 +23,3 @@ export function CustomSlider({ value, onChange, min = 0, max = 100 }) {
   );
 }
 
-

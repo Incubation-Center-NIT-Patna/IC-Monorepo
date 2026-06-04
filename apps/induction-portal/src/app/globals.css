@@ -1,127 +1,36 @@
 @import "tailwindcss";
-/* ----------- NAVBAR STYLING ------------------- */
-*{
-  margin: 0px;
-  padding: 0px;
+
+* {
   box-sizing: border-box;
 }
 
-html, body {
-  height: 100%;
+body {
+  background-color: #1d1d1f;
+  overflow-x: hidden;
 }
 
-.page-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+:root {
+  --footer-height: 65px;
 }
 
-.navbar--section{
-  width: 100%;
-  height: auto;
-  padding: 12px 0;
-  display: grid;
-  grid-template-columns: 0.1fr 1fr 0.1fr 0.1fr;
-  background-color: #111319;
-  align-items: center;
-  cursor: pointer;
-}
-
-.navbar--section .logo--block {
-  padding: 0px 10px 0px 20px;
-  /* border-radius: 50px; */
-}
-
-.logo--block img {
-  border: 1px solid #859490;
-  border-radius: 50%;
-}
-
-
-.main--content {
-  flex: 1;
-}
-
-.footerSelected {
-  color: #4FDBC8;
-  font-family: 'Inter', sans-serif;
-
-}
-
-.name--block {
-  text-align: center;
-  padding: 0px 20px;
-  justify-items: flex-start;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-
-.name--block h1 {
-  font-family: 'Inter', sans-serif;
-  font-weight: 700;
-  font-style: Bold;
-  font-size: 20px;
-  line-height: 28px;
-  letter-spacing: 0px;
-  vertical-align: middle;
-  color: #4FDBC8;
-}
-
-.notification {
-  padding: 0px 20px;
-  display: flex;
-  justify-content: center;
-  color: #4FDBC8;
-}
-
-.hamburger {
-  padding: 0px 20px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 5px;
-  cursor: pointer;
-}
-
-.hamburger span {
-  width: 30px;
-  height: 3px;
-  background: #4FDBC8;
-  border-radius: 2px;
+@media (min-width: 768px) {
+  :root {
+    --footer-height: 0px;
+  }
 }
 
 .footer--section {
+  position: fixed;
+  bottom: 0;
+  left: 0;
   width: 100%;
-  height: auto;
-  padding: 12px 0;
-  display: flex;
-  justify-content: space-around;
-  border: 1px solid #3C4947;
-  background-color: #111319;
-  font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  height: var(--footer-height);
 }
 
-.footer--section .footer--block {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
-  font-size: smaller;
-  font-family: Poppins, sans-serif;
+.navbar--section {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: var(--footer-height);
 }
-
-.footer--block h3 {
-  font-family: 'Inter', sans-serif;
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 14.4px;
-  letter-spacing: 0.6px;
-  vertical-align: middle;
-  color: #BBCAC6;
-}
-
-.footerSelected h3{
-  color: #4FDBC8;
-}
-

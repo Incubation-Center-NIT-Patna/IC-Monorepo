@@ -1,11 +1,11 @@
 export default function WelcomeSection({userType=""}) {
   return (
-    <div className="mb-6">
-      <p className="text-sm text-gray-400">
+    <div>
+      <p className="text-xs sm:text-sm text-gray-400">
         Welcome back,
       </p>
 
-      <h1 className="mt-1 text-xl sm:text-2xl md:text-3xl font-bold text-white">
+      <h1 className="mt-1 text-xl sm:text-2xl font-bold text-white tracking-tight leading-tight">
         {userType} Dashboard
       </h1>
     </div>

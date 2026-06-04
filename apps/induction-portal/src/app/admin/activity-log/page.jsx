@@ -31,36 +31,36 @@ export default function ActivityLogPage() {
   }, []);
 
   return (
-    <div className="max-w-4xl mx-auto min-h-100 flex flex-col">
+    <div className="space-y-6">
       
       {/* BACK NAVIGATION */}
-      <div className="mb-6">
+      <div>
         <Link href="/admin/dashboard" className="text-sm text-teal-400 hover:text-teal-300 transition-colors flex items-center gap-2">
           ← Back to Dashboard
         </Link>
       </div>
 
       {/* HEADER SECTION */}
-      <h1 className="text-2xl font-bold tracking-tight text-slate-100 mb-8 border-b border-slate-800 pb-4">
+      <h1 className="text-2xl font-bold tracking-tight text-slate-100 border-b border-slate-800 pb-4">
         All Activity Logs
       </h1>
 
       {/* STATE CONDITIONAL RENDERING */}
       {isLoading ? (
         /* 1. Loading State Spinner Canvas */
-        <div className="flex flex-col items-center justify-center py-20 gap-3 grow">
+        <div className="flex flex-col items-center justify-center py-20 gap-3">
           <div className="w-10 h-10 border-4 border-teal-500/20 border-t-teal-400 rounded-full animate-spin"></div>
           <p className="text-sm text-slate-400 animate-pulse">Loading comprehensive log history...</p>
         </div>
       ) : error ? (
         /* 2. Error Message State View */
-        <div className="text-center py-20 grow flex flex-col items-center justify-center">
+        <div className="text-center py-20 flex flex-col items-center justify-center">
           <p className="text-sm text-rose-400 font-medium">{error}</p>
           <p className="text-xs text-slate-500 mt-1">Please verify your connection and try refreshing the workspace.</p>
         </div>
       ) : activities.length === 0 ? (
         /* 3. Empty State Array Fallback */
-        <div className="text-center py-20 text-sm text-slate-500 grow flex items-center justify-center">
+        <div className="text-center py-20 text-sm text-slate-500 flex items-center justify-center">
           No historical logs recorded yet.
         </div>
       ) : (
