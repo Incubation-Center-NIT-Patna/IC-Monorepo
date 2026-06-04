@@ -3,7 +3,7 @@ import StatsGrid from "./_components/StatsGrid";
 import ProgressCard from "./_components/ProgressCard";
 import RecentActivity from "./_components/RecentActivity";
 import { statsData } from "./_components/statsData";
-import Link from "next/link";
+
 // Temporary static dashboard data.
 // After implementing authentication/login system,
 // these values will come dynamically from
