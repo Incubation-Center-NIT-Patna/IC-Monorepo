@@ -3,14 +3,53 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { NAV_ITEMS } from "@/constants/navItems";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const router = useRouter();
+
+  React.useEffect(() => {
+    const handleKeyDown = (event) => {
+      if (!event.ctrlKey || event.altKey || event.metaKey || event.shiftKey) {
+        return;
+      }
+
+      if (
+        event.target &&
+        event.target.closest &&
+        event.target.closest("input, textarea, select, [contenteditable='true']")
+      ) {
+        return;
+      }
+
+      if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") {
+        return;
+      }
+
+      const currentIndex = NAV_ITEMS.findIndex((item) => pathname?.includes(item.match));
+
+      if (currentIndex === -1) {
+        return;
+      }
+
+      const direction = event.key === "ArrowRight" ? 1 : -1;
+      const nextIndex = (currentIndex + direction + NAV_ITEMS.length) % NAV_ITEMS.length;
+
+      event.preventDefault();
+      router.push(NAV_ITEMS[nextIndex].href);
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [pathname, router]);
 
   return (
-    <nav className="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-[60px] bg-[#111319]">
+    <nav className="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-15 bg-[#111319]">
       {/* Left Section */}
       <div className="flex items-center gap-4">
         {/* Mobile Hamburger */}
