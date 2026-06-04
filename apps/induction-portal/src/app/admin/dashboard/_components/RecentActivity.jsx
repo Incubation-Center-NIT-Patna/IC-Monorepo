@@ -35,13 +35,13 @@ export default function RecentActivity() {
     <>
       
       {/* RECENT ACTIVITY HEADER SECTION */}
-      <div className="flex justify-between items-baseline mb-4 w-full">
-        <h3 className="text-xl font-semibold tracking-tight text-slate-100">
+      <div className="flex justify-between items-baseline mb-3 w-full">
+        <h3 className="text-[15px] font-semibold tracking-tight text-slate-100">
           Recent Activity
         </h3>
         <Link 
           href="/admin/activity-log" 
-          className="text-sm text-teal-400 hover:text-teal-300 transition-colors font-medium"
+          className="text-xs text-teal-400 hover:text-teal-300 transition-colors font-medium"
         >
           View All
         </Link>
@@ -67,34 +67,34 @@ export default function RecentActivity() {
         </div>
       ) : (
         /* 4. Active Data Feed State */
-        <div className="flex flex-col gap-4 w-full">
+        <div className="flex flex-col gap-3 w-full">
           {activities.map((item) => {
             const categoryConfig = ACTIVITY_CATEGORIES[item.category] || DEFAULT_CATEGORY_FALLBACK;
 
             return (
               <div 
                 key={item.id} 
-                className="flex items-center gap-4 bg-[#161f30]/90 hover:bg-[#1e293b] p-4 rounded-xl border border-slate-800/50 transition-all group w-full"
+                className="flex items-center gap-3 bg-[#161f30]/90 hover:bg-[#1e293b] p-3 rounded-xl border border-slate-800/50 transition-all group w-full"
               >
                 <div 
                   style={{backgroundColor: '#76D7C4'}} 
-                  className="w-11 h-11 rounded-full flex items-center justify-center shrink-0 border border-zinc-700/30 overflow-hidden shadow-sm"
+                  className="w-8 h-8 rounded-full flex items-center justify-center shrink-0 border border-zinc-700/30 overflow-hidden shadow-sm"
                 >
                   <Image 
                     src={categoryConfig.imagePath} 
                     alt={item.category}
-                    width={20}  
-                    height={20} 
+                    width={16}  
+                    height={16} 
                     className="object-contain opacity-95 group-hover:scale-105 transition-transform"
                     unoptimized 
                   />
                 </div>
                 
                 <div className="flex flex-col min-w-0 gap-0.5">
-                  <p className="text-sm text-white font-semibold tracking-wide leading-snug">
+                  <p className="text-xs text-white font-semibold tracking-wide leading-snug truncate">
                     {item.user} {categoryConfig.label}
                   </p>
-                  <span className="text-xs text-slate-400 font-normal">
+                  <span className="text-[10px] text-slate-400 font-normal">
                     {formatTimeAgo(item.timestamp)}
                   </span>
                 </div>

@@ -2,7 +2,7 @@ import StatCard from "./StatCard";
 
 export default function StatsGrid({ stats = []}) {
   return (
-    <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-5">
       {stats.map((item) => (
         <StatCard
           key={item.id}
