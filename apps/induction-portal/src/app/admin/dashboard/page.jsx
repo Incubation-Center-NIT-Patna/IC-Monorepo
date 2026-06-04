@@ -1,3 +1,4 @@
+import Link from "next/link";
 import WelcomeSection from "./_components/WelcomeSection";
 import StatsGrid from "./_components/StatsGrid";
 import ProgressCard from "./_components/ProgressCard";
