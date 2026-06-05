@@ -1,3 +1,5 @@
+"use client";
+
 import AdminSettings from "@/components/admin/settings/AdminSettings";
 
 export default function SettingsPage() {
