@@ -20,6 +20,8 @@ export const DEFAULT_INTERVIEW_ROUNDS = [
   {
     id: 3,
     title: "HR / Cultural Interview",
+    duration: 15,
+    interviewer: "PR Lead",
     active: false,
   },
 ];

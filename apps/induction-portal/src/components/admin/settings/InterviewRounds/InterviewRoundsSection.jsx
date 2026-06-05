@@ -5,7 +5,7 @@ import SectionTitle from "@/components/Common/SectionTitle";
 import { Users, Plus } from "lucide-react";
 import InterviewRoundsList from "./InterviewRoundsList";
 
-export default function InterviewRoundsSection({rounds = [], onAddRound, onDeleteRound }) {
+export default function InterviewRoundsSection({rounds = [], onAddRound, onDeleteRound, onReactivate }) {
   return (
     <CardWrapper className="bg-transparent border-none">
       <SectionTitle
@@ -15,7 +15,7 @@ export default function InterviewRoundsSection({rounds = [], onAddRound, onDelet
         actionIcon={<Plus size={16} />}
         actionText="Add Round"
       />
-      <InterviewRoundsList rounds={rounds} onDelete={onDeleteRound} />
+      <InterviewRoundsList rounds={rounds} onDelete={onDeleteRound} onReactivate={onReactivate}/>
     </CardWrapper>
   );
 }

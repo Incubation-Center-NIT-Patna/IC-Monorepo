@@ -24,7 +24,7 @@ export default function Toast({ toast, onClose, duration = 3000 }) {
 
     const timer = setTimeout(onClose, duration);
     return () => clearTimeout(timer);
-  }, [toast, duration, onClose]);
+  }, [toast?.key, duration, onClose]);
 
   if (!toast?.message) return null;
 

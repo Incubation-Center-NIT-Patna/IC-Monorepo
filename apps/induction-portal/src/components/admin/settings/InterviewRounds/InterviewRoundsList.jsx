@@ -2,7 +2,7 @@
 
 import InterviewRoundItem from "./InterviewRoundItem";
 
-export default function InterviewRoundsList({ rounds = [], onDelete }) {
+export default function InterviewRoundsList({ rounds = [], onDelete, onReactivate }) {
   return (
     <div className="mt-4 space-y-3">
       {rounds.map((round, index) => (
@@ -11,6 +11,7 @@ export default function InterviewRoundsList({ rounds = [], onDelete }) {
           round={round}
           index={index}
           onDelete={onDelete}
+          onReactivate={onReactivate}
         />
       ))}
     </div>

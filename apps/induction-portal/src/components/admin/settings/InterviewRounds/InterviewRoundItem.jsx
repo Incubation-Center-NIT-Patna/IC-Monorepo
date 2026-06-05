@@ -2,7 +2,7 @@
 
 import { Clock3, Trash2, User, Equal } from "lucide-react";
 
-export default function InterviewRoundItem({ round, index, onDelete }) {
+export default function InterviewRoundItem({ round, index, onDelete, onReactivate}) {
   if (!round) return null;
 
   return (
@@ -51,7 +51,7 @@ export default function InterviewRoundItem({ round, index, onDelete }) {
         ) : (
           <button
             type="button"
-            onClick={()=>{}}
+            onClick={()=>onReactivate(round.id)}
             className="rounded-lg cursor-pointer p-2 transition hover:text-green-400"
             aria-label="Delete round"
             title="Delete round"

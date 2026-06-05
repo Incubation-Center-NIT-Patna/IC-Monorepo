@@ -8,7 +8,7 @@ import InterviewRoundsSection from "./InterviewRounds/InterviewRoundsSection";
 import VisibilityPrivacySettings from "./VisibilityPrivacy/VisibilityPrivacySettings";
 import ConfigurationActions from "./ConfigurationActions";
 import AddInterviewRoundModal from "./InterviewRounds/AddInterviewRoundModal";
-import Toast from "@/components/common/Toast";
+import Toast from "@/components/Common/Toast";
 
 // Constants, Utils, Services
 import { DEFAULT_INTERVIEW_ROUNDS, DEFAULT_PRIVACY_SETTINGS } from "@/constants/settings.constants";
@@ -47,10 +47,28 @@ export default function Page() {
     setRounds((prev) =>
       prev.filter((round) => round.id !== roundId)
     );
-    showToast("Round removed. Save to keep this change.", "info");
+    showToast("Interview Round removed.", "info");
+  };
+
+  const handleReactivate = (roundId) => {
+    setRounds((prev) =>
+      prev.map((round) =>
+        round.id === roundId
+          ? {
+              ...round,
+              active: true,
+            }
+          : round
+      )
+    );
+    showToast("Interview Round reactivated.", "info");
   };
 
   const handleRoundFormChange = (field, value) => {
+    if(field==="duration"){
+      const validValue = value.replace(/[^0-9]/g, "") + (value.includes("Minutes") ? " Minutes" : "");
+      value = validValue;
+    }
     setAddRound((prev) => ({
       ...prev,
       [field]: value,
@@ -85,7 +103,7 @@ export default function Page() {
     setIsModalOpen(false);
     setAddRound(null);
 
-    showToast("Round added. Save to keep this change.", "success");
+    showToast("New Interview Round added.", "success");
   };
 
   const handleTogglePrivacy = (settingId) => {
@@ -99,8 +117,6 @@ export default function Page() {
           : setting
       )
     );
-    
-    showToast("Privacy setting updated.", "info" );
   };
 
   // Save & Reset Handlers
@@ -110,6 +126,9 @@ export default function Page() {
   };
 
   const handleReset = () => {
+    const confirmation = window.confirm("Are you sure you want to reset all settings to default? This action cannot be undone.");
+    if (!confirmation) return;
+
     setRounds(DEFAULT_INTERVIEW_ROUNDS);
     setSettings(DEFAULT_PRIVACY_SETTINGS);
     setAddRound(null);
@@ -139,6 +158,7 @@ export default function Page() {
             rounds={rounds}
             onAddRound={handleAddRound}
             onDeleteRound={handleDeleteRound}
+            onReactivate={handleReactivate}
           />
 
           <VisibilityPrivacySettings
