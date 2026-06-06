@@ -45,30 +45,25 @@ export default function Page() {
 
   const handleDeleteRound = (roundId) => {
     setRounds((prev) =>
-      prev.filter((round) => round.id !== roundId)
+      prev.map((round) =>
+        round.id === roundId ? { ...round, active: false } : round
+      )
     );
-    showToast("Interview Round removed.", "info");
+    showToast("Interview Round deactivated.", "info");
   };
 
   const handleReactivate = (roundId) => {
     setRounds((prev) =>
       prev.map((round) =>
-        round.id === roundId
-          ? {
-              ...round,
-              active: true,
-            }
-          : round
+        round.id === roundId ? { ...round, active: true } : round
       )
     );
     showToast("Interview Round reactivated.", "info");
   };
 
   const handleRoundFormChange = (field, value) => {
-    if(field==="duration"){
-      const validValue = value.replace(/[^0-9]/g, "") + (value.includes("Minutes") ? " Minutes" : "");
-      value = validValue;
-    }
+    if (field === "duration") value = value.replace(/\D/g, "");
+
     setAddRound((prev) => ({
       ...prev,
       [field]: value,
@@ -89,13 +84,14 @@ export default function Page() {
     if (!addRound?.interviewer?.trim())
       return showToast("Interviewer name is required.", "error");
 
-    if (!addRound?.duration || Number(addRound.duration) <= 0)
+    const duration = Number.parseInt(addRound?.duration ?? "", 10);
+    if (!Number.isFinite(duration) || duration <= 0)
       return showToast("Please enter a valid duration.", "error");
 
     const round = {
       ...addRound,
       title: addRound.title.trim(),
-      duration: Number(addRound.duration),
+      duration: duration,
       interviewer: addRound.interviewer.trim(),
     };
 

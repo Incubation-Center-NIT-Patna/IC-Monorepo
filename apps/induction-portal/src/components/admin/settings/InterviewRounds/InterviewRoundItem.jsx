@@ -51,10 +51,10 @@ export default function InterviewRoundItem({ round, index, onDelete, onReactivat
         ) : (
           <button
             type="button"
-            onClick={()=>onReactivate(round.id)}
+            onClick={() => onReactivate(round.id)}
             className="rounded-lg cursor-pointer p-2 transition hover:text-green-400"
             aria-label="Reactivate round"
-            title="Delete round"
+            title="Reactivate round"
           >
             <Equal size={18} />
           </button>

@@ -24,9 +24,12 @@ export default function AddInterviewRoundModal({ isOpen, round, onClose, onChang
             <span className="text-sm font-medium text-slate-300">Duration</span>
 
             <input
+              type="number"
+              min={1}
+              inputMode="numeric"
               value={round?.duration ?? ""}
               onChange={(e) => onChange("duration", e.target.value)}
-              placeholder="30 Minutes"
+              placeholder="30"
               className="w-full rounded-xl border border-white/10 bg-slate-900/60 px-4 py-3 text-white outline-none transition-all focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20"
             />
           </label>

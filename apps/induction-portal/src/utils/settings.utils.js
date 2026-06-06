@@ -1,5 +1,5 @@
 export const createEmptyRound = () => ({
-  id: Date.now(),
+  id: crypto.randomUUID(),
   title: "",
   duration: null,
   interviewer: "",

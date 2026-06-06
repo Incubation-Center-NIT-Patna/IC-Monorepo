@@ -24,7 +24,7 @@ export default function Toast({ toast, onClose, duration = 3000 }) {
 
     const timer = setTimeout(onClose, duration);
     return () => clearTimeout(timer);
-  }, [toast, duration, onClose]);
+  }, [toast?.message, duration, onClose]);
 
   if (!toast?.message) return null;
 
@@ -48,6 +48,8 @@ export default function Toast({ toast, onClose, duration = 3000 }) {
         </div>
 
         <button
+          type="button"
+          aria-label="Close notification"
           onClick={onClose}
           className="text-slate-400 transition-colors hover:text-white"
         >
