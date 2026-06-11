@@ -1,15 +1,146 @@
-'use client';
+"use client";
 
-import React from 'react';
-import EvaluationParameters from '@/components/admin/settings/EvaluationParameters';
-import ScoringScale from '@/components/admin/settings/ScoringScale';
+import React, { useEffect, useState } from "react";
 
-export default function AdminSettings() {
+import EvaluationParameters from "@/components/admin/settings/EvaluationParameters";
+import ScoringScale from "@/components/admin/settings/ScoringScale";
+import InterviewRoundsSection from "./InterviewRounds/InterviewRoundsSection";
+import VisibilityPrivacySettings from "./VisibilityPrivacy/VisibilityPrivacySettings";
+import ConfigurationActions from "./ConfigurationActions";
+import AddInterviewRoundModal from "./InterviewRounds/AddInterviewRoundModal";
+import Toast from "@/components/Common/Toast";
+
+// Constants, Utils, Services
+import { DEFAULT_INTERVIEW_ROUNDS, DEFAULT_PRIVACY_SETTINGS } from "@/constants/settings.constants";
+import { createEmptyRound } from "@/utils/settings.utils";
+import { loadSettings, saveSettings, resetSettings } from "@/services/settings.services";
+
+export default function Page() {
+  const [rounds, setRounds] = useState(DEFAULT_INTERVIEW_ROUNDS);
+  const [settings, setSettings] = useState(DEFAULT_PRIVACY_SETTINGS);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [addRound, setAddRound] = useState(null);
+  const [toast, setToast] = useState(null);
+
+  const showToast = (message, type = "info") => {setToast({ message, type })};
+
+  useEffect(() => {
+    const savedData = loadSettings();
+    if (!savedData) return;
+
+    if (Array.isArray(savedData.rounds)) {
+      setRounds(savedData.rounds);
+    }
+
+    if (Array.isArray(savedData.privacySettings)) {
+      setSettings(savedData.privacySettings);
+    }
+  }, []);
+
+  const handleAddRound = () => {
+    const round = createEmptyRound();
+    setAddRound(round);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteRound = (roundId) => {
+    setRounds((prev) =>
+      prev.map((round) =>
+        round.id === roundId ? { ...round, active: false } : round
+      )
+    );
+    showToast("Interview Round deactivated.", "info");
+  };
+
+  const handleReactivate = (roundId) => {
+    setRounds((prev) =>
+      prev.map((round) =>
+        round.id === roundId ? { ...round, active: true } : round
+      )
+    );
+    showToast("Interview Round reactivated.", "info");
+  };
+
+  const handleRoundFormChange = (field, value) => {
+    if (field === "duration") value = value.replace(/\D/g, "");
+
+    setAddRound((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setAddRound(null);
+  };
+
+  const handleSubmitRound = (event) => {
+    event.preventDefault();
+
+    if (!addRound?.title?.trim())
+      return showToast("Round title is required.", "error");
+    
+    if (!addRound?.interviewer?.trim())
+      return showToast("Interviewer name is required.", "error");
+
+    const duration = Number.parseInt(addRound?.duration ?? "", 10);
+    if (!Number.isFinite(duration) || duration <= 0)
+      return showToast("Please enter a valid duration.", "error");
+
+    const round = {
+      ...addRound,
+      title: addRound.title.trim(),
+      duration: duration,
+      interviewer: addRound.interviewer.trim(),
+    };
+
+    setRounds((prev) => [...prev, round]);
+    setIsModalOpen(false);
+    setAddRound(null);
+
+    showToast("New Interview Round added.", "success");
+  };
+
+  const handleTogglePrivacy = (settingId) => {
+    setSettings((prev) =>
+      prev.map((setting) =>
+        setting.id === settingId
+          ? {
+              ...setting,
+              enabled: !setting.enabled,
+            }
+          : setting
+      )
+    );
+  };
+
+  // Save & Reset Handlers
+  const handleSave = () => {
+    saveSettings({ rounds, privacySettings: settings });
+    showToast( "Configuration saved.", "success");
+  };
+
+  const handleReset = () => {
+    const confirmation = window.confirm("Are you sure you want to reset all settings to default? This action cannot be undone.");
+    if (!confirmation) return;
+
+    setRounds(DEFAULT_INTERVIEW_ROUNDS);
+    setSettings(DEFAULT_PRIVACY_SETTINGS);
+    setAddRound(null);
+    resetSettings();
+    showToast("Configuration reset to default.","success");
+  };
+
   return (
     <div className="w-full text-gray-100 selection:bg-[#10B981]/20">
+      <Toast toast={toast} onClose={() => setToast(null)} />
+
       <div className="space-y-6">
         <div>
-          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">Admin Settings</h1>
+          <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-white">
+            Admin Settings
+          </h1>
           <p className="mt-1 text-xs sm:text-sm text-gray-400">
             Configure the technical induction framework and evaluation logic.
           </p>
@@ -18,19 +149,33 @@ export default function AdminSettings() {
         <div className="w-full space-y-5">
           <EvaluationParameters />
           <ScoringScale />
+
+          <InterviewRoundsSection
+            rounds={rounds}
+            onAddRound={handleAddRound}
+            onDeleteRound={handleDeleteRound}
+            onReactivate={handleReactivate}
+          />
+
+          <VisibilityPrivacySettings
+            settings={settings}
+            onToggle={handleTogglePrivacy}
+          />
         </div>
 
-        <hr className="border-gray-800/60 w-full" />
-        
-        <div className="flex flex-col sm:flex-row gap-3 w-full">
-          <button className="w-full py-2.5 rounded-lg bg-[#10B981] hover:bg-[#059669] text-white text-sm font-semibold transition-colors">
-            Save Configuration
-          </button>
-          <button className="w-full py-2.5 rounded-lg bg-transparent border border-gray-600 hover:bg-gray-800 text-gray-300 text-sm font-medium transition-colors">
-            Reset to Default
-          </button>
-        </div>
+        <ConfigurationActions onSave={handleSave} onReset={handleReset} />
       </div>
+
+      {/*Add Round Modal*/}
+      {addRound && (
+        <AddInterviewRoundModal
+          isOpen={isModalOpen}
+          round={addRound}
+          onClose={handleCloseModal}
+          onChange={handleRoundFormChange}
+          onSubmit={handleSubmitRound}
+        />
+      )}
     </div>
   );
 }
