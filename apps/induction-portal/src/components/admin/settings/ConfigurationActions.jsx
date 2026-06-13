@@ -4,11 +4,11 @@ import { RotateCcw, Save } from "lucide-react";
 
 export default function ConfigurationActions({ onSave, onReset }) {
   return (
-    <div className="w-full max-w-2xl mx-auto mt-10 flex flex-col min-[768px]:flex-row gap-4 items-center min-[768px]:items-start">
+    <div className="w-full max-w-2xl mx-auto mt-10 flex flex-col text-sm min-[768px]:flex-row gap-4 items-center min-[768px]:items-start min-[768px]:justify-between">
       <button
         type="button"
         onClick={onSave}
-        className="w-full max-w-lg rounded-xl cursor-pointer bg-[#4FDBC8] py-3 font-semibold text-slate-950 transition hover:bg-[#4FDBC8]/80"
+        className="w-full max-w-lg  rounded-xl cursor-pointer bg-[#4FDBC8] py-3 font-semibold text-slate-950 transition hover:bg-[#4FDBC8]/80"
       >
         <span className="flex items-center justify-center gap-2">
           <Save size={18} />
