@@ -13,7 +13,7 @@ export default function InterviewRoundsSection({rounds = [], onAddRound, onDelet
         action={onAddRound}
         icon={<Users size={16} fill="none" className="stroke-[#4FDBC8]" />}
         actionIcon={<Plus size={16} />}
-        actionText="Add Round"
+        actionText="Add"
       />
       <InterviewRoundsList rounds={rounds} onDelete={onDeleteRound} onReactivate={onReactivate}/>
     </CardWrapper>

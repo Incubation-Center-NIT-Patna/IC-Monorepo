@@ -13,10 +13,10 @@ export default function InterviewRoundItem({ round, index, onDelete, onReactivat
         </div>
 
         <div>
-          <h3 className="font-medium">{round.title}</h3>
+          <h3 className="font-medium text-sm">{round.title}</h3>
 
           {round.active ? (
-            <div className="mt-1 flex flex-wrap items-center gap-3 text-sm text-[#BBCAC6]">
+            <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-[#BBCAC6]">
               <span className="flex items-center gap-1">
                 <Clock3 size={14} />
                 {round.duration} Minutes
