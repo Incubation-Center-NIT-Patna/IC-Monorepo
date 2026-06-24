@@ -7,7 +7,7 @@ export function CustomSlider({ value, onChange, min = 0, max = 100 }) {
       <div className="flex items-center gap-4 flex-1">
         <input
           type="range"
-          min={min}
+          min={min}v
           max={max}
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
@@ -15,7 +15,7 @@ export function CustomSlider({ value, onChange, min = 0, max = 100 }) {
         />
 
         
-       <span className="bg-[#10b981]  text-black text-xs font-mono font-bold px-2 py-1 rounded min-w-[50px] text-center">
+       <span className="bg-[#10b981]  text-teal-400 text-xs font-mono font-bold px-2 py-1 rounded min-w-[50px] text-center">
           {value}%
         </span>
       </div>
