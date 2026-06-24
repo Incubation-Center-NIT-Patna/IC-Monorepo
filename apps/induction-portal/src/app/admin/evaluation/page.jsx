@@ -1,12 +1,11 @@
+import EvaluationPage from "@/components/admin/Evaluation/EvaluationPage";
 import InterviewNotes from "@/components/admin/Evaluation/InterviewNotes"
 
-
-const EvaluationPage = () => {
+export default function Page() {
   return (
-    <div>
-    <InterviewNotes />
+    <div className="w-full">
+      <EvaluationPage />
+      <InterviewNotes />
     </div>
-  )
+  );
 }
-
-export default EvaluationPage
