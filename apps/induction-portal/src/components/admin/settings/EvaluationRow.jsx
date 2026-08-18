@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { CustomSlider } from '../../../../../../packages/ui/src/CustomSlider';
+import { CustomSlider } from '@repo/ui/CustomSlider';
 
 
 export default function EvaluationRow({ param, onUpdate, onDelete }) {
