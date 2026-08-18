@@ -1,13 +1,23 @@
 import React from 'react';
 
-export function CustomSlider({ value, onChange, min = 0, max = 100 }) {
+export function CustomSlider({ 
+  value, 
+  onChange, 
+  min = 0, 
+  max = 100 
+}: {
+  value: number;
+  onChange: (value: number) => void;
+  min?: number;
+  max?: number;
+}) {
   return (
     <>
      
       <div className="flex items-center gap-4 flex-1">
         <input
           type="range"
-          min={min}v
+          min={min}
           max={max}
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
@@ -22,4 +32,3 @@ export function CustomSlider({ value, onChange, min = 0, max = 100 }) {
     </>
   );
 }
-
