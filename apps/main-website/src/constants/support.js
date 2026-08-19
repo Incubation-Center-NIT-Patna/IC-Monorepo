@@ -1,0 +1,38 @@
+export const SUPPORT_SLIDES_DATA = [
+  {
+    id: 'mentorship',
+    name: 'Mentorship',
+    title: 'Guiding your vision to reality.',
+    desc: 'Provides expert advice and guidance to entrepreneurs, helping them refine their business models and strategies.',
+    btnText: 'Explore',
+    link: '/team/faculty',
+    img: 'https://kstatic.googleusercontent.com/files/9e0a5271a603f3c7c5022d2f2acc9605c9082f5cb8595ba13edbf307a869dfa5fb070f9e46719dea3f97fd12c50e07cfa154b6b61222a74af5d13ae779a770c8',
+  },
+  {
+    id: 'funding',
+    name: 'Funding',
+    title: 'Fueling your dreams with capital.',
+    desc: "Offers access to financial resources such as investments, grants, and venture capital to support the startup's growth.",
+    btnText: 'Find tools',
+    link: '#idea',
+    img: 'https://kstatic.googleusercontent.com/files/20f7204c32c94a37bd3dd5495862d00b72e2b7fb5f0093313c607ef04f9fb33d48bdcca6efd58e3de3ad4e3f542f2fde4c36328dffb5ffc457bc090eb451cfa8',
+  },
+  {
+    id: 'networking',
+    name: 'Networking',
+    title: 'Connecting you to endless possibilities.',
+    desc: 'Facilitates connections with industry professionals, potential clients, partners, and investors, expanding business opportunities.',
+    btnText: 'Learn',
+    link: '#talks',
+    img: 'https://kstatic.googleusercontent.com/files/cfcd5e259075efc8dd70bfc736c72c8a171ad394670f015ba24c19eaef85ab0dfa1bd34bbf8e55f130ec22adda82ff5a4200ac46e64f368fffc07eddc2d93cf4',
+  },
+  {
+    id: 'workspace',
+    name: 'Workspace',
+    title: 'Empowering growth with the perfect space.',
+    desc: 'Provides physical office space, equipment, and infrastructure at reduced costs, allowing startups to operate efficiently.',
+    btnText: 'Learn more',
+    link: 'https://tinkering-lab.onrender.com',
+    img: 'https://kstatic.googleusercontent.com/files/acd18ca25e2b117831e384bb00d5a16b7a560253f99c51fd4299074656d2317c27693ba5837b95151143a3cf3d940a7cddec4593b6942ae3f67954a97383f0e5',
+  },
+];
