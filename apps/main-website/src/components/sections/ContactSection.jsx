@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import GlassCard from '@/components/ui/GlassCard';
 import Button from '@/components/ui/Button';
 import { FAQ_DATA } from '@/constants/faqs';
+import { submitContactForm } from '@/actions/contact';
 
 export function FaqItem({ faq, isOpen, onToggle }) {
   return (
@@ -72,35 +73,68 @@ export default function ContactSection({ faqs = FAQ_DATA }) {
     }
   };
 
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = "Full Name can't be blank";
-    if (!formData.email.trim()) newErrors.email = "Email Address can't be blank";
-    if (!formData.phone.trim()) newErrors.phone = "Phone Number can't be blank";
-    if (!formData.subject.trim()) newErrors.subject = "Subject can't be blank";
-    if (!formData.message.trim()) newErrors.message = "Message can't be blank";
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitError('');
-    if (!validateForm()) return;
+    setErrors({});
 
     setSubmitting(true);
     try {
-      await new Promise((resolve) => setTimeout(resolve, 800));
-      setSubmitted(true);
-      setTimeout(() => {
-        setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
-        setSubmitted(false);
-      }, 4000);
+      const validationResult = await submitContactForm(formData);
+      
+      if (!validationResult.success) {
+        if (validationResult.errors) {
+          setErrors(validationResult.errors);
+        } else {
+          setSubmitError(validationResult.message || 'Validation failed. Please try again.');
+        }
+        setSubmitting(false);
+        return;
+      }
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: validationResult.accessKey,
+          ...formData,
+        }),
+        signal: controller.signal
+      });
+
+      clearTimeout(timeoutId);
+
+      const text = await response.text();
+      let result;
+      try {
+        result = JSON.parse(text);
+      } catch (parseError) {
+        console.error("Web3Forms Response:", text);
+        throw new Error("Received unexpected response from Web3Forms. Check console for details.");
+      }
+      
+      if (result.success) {
+        setSubmitted(true);
+        setTimeout(() => {
+          setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+          setSubmitted(false);
+        }, 4000);
+      } else {
+        setSubmitError(result.message || 'Something went wrong. Please try again.');
+      }
     } catch (err) {
-      setSubmitError(
-        err instanceof Error ? err.message : 'Something went wrong. Please try again.'
-      );
+      console.error("Submission Error:", err);
+      if (err.name === 'AbortError') {
+        setSubmitError("The request timed out. Please try again.");
+      } else {
+        setSubmitError(err instanceof Error ? err.message : 'Something went wrong. Please try again.');
+      }
     } finally {
       setSubmitting(false);
     }
