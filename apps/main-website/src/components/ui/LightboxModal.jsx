@@ -5,7 +5,7 @@ import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { CloseIcon, ArrowLeftIcon, ArrowRightIcon } from '@/components/icons';
 
-const emptySubscribe = () => () => {};
+const emptySubscribe = () => () => { };
 
 /** Lightbox Modal Component */
 export default function LightboxModal({
@@ -96,7 +96,6 @@ export default function LightboxModal({
             <button
               onClick={onClose}
               aria-label="Close lightbox"
-              suppressHydrationWarning
               className="absolute top-6 right-6 z-[1000000] w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 border border-white/20 text-white flex items-center justify-center transition-all cursor-pointer backdrop-blur-md"
             >
               <CloseIcon className="w-5 h-5" />
@@ -105,7 +104,6 @@ export default function LightboxModal({
             <button
               onClick={handlePrev}
               aria-label="Previous image"
-              suppressHydrationWarning
               className="absolute left-4 sm:left-8 z-[1000000] w-12 h-12 rounded-full bg-white/10 hover:bg-[#0ef]/20 border border-white/20 hover:border-[#0ef] text-white hover:text-[#0ef] flex items-center justify-center transition-all cursor-pointer backdrop-blur-md"
             >
               <ArrowLeftIcon className="w-5 h-5" />
@@ -117,16 +115,13 @@ export default function LightboxModal({
                   <div className="w-12 h-12 border-4 border-[#0ef]/20 border-t-[#0ef] rounded-full animate-spin" />
                 </div>
               )}
-
-              {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={currentImage.fullSrc || currentImage.src}
                 alt={currentImage.alt || 'Gallery photo'}
                 onLoad={() => setIsImageLoading(false)}
                 onError={() => setIsImageLoading(false)}
-                className={`max-w-[95vw] max-h-[80vh] object-contain rounded-xl shadow-2xl transition-opacity duration-300 ${
-                  isImageLoading ? 'opacity-0' : 'opacity-100'
-                }`}
+                className={`max-w-[95vw] max-h-[80vh] object-contain rounded-xl shadow-2xl transition-opacity duration-300 ${isImageLoading ? 'opacity-0' : 'opacity-100'
+                  }`}
               />
 
               <div className="mt-4 flex flex-col sm:flex-row items-center gap-2">
@@ -144,7 +139,6 @@ export default function LightboxModal({
             <button
               onClick={handleNext}
               aria-label="Next image"
-              suppressHydrationWarning
               className="absolute right-4 sm:right-8 z-[1000000] w-12 h-12 rounded-full bg-white/10 hover:bg-[#0ef]/20 border border-white/20 hover:border-[#0ef] text-white hover:text-[#0ef] flex items-center justify-center transition-all cursor-pointer backdrop-blur-md"
             >
               <ArrowRightIcon className="w-5 h-5" />

@@ -97,7 +97,6 @@ export default function StudentTeamPage() {
             <button
               key={opt.id}
               onClick={() => setSelectedFilter(opt.id)}
-              suppressHydrationWarning
               className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors cursor-pointer ${
                 isSelected
                   ? 'bg-[#00f7ff] text-[#020712] font-semibold'

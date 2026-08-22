@@ -30,7 +30,7 @@ export default function NoticeSection({ notices = [] }) {
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
               transition={{ delay: i * 0.08, duration: 0.4 }}
-              viewport={{ once: false, amount: 0.2 }}
+              viewport={{ once: true, amount: 0.1 }}
               className="mb-5 last:mb-0 max-w-full overflow-hidden"
             >
               <a

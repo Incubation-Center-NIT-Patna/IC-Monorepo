@@ -47,7 +47,6 @@ export default function Button({
           rel="noopener noreferrer"
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
-          suppressHydrationWarning
           className={combinedClasses}
           {...props}
         >
@@ -60,7 +59,6 @@ export default function Button({
         href={href}
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.97 }}
-        suppressHydrationWarning
         className={combinedClasses}
         {...props}
       >
@@ -75,7 +73,6 @@ export default function Button({
       whileTap={{ scale: 0.97 }}
       onClick={onClick}
       disabled={isLoading || props.disabled}
-      suppressHydrationWarning
       className={`${combinedClasses} ${props.disabled ? 'opacity-60 cursor-not-allowed' : ''}`}
       {...props}
     >

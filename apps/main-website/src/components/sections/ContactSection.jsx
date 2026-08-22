@@ -12,7 +12,6 @@ export function FaqItem({ faq, isOpen, onToggle }) {
     <GlassCard className="overflow-hidden p-0" hoverEffect={true}>
       <button
         onClick={onToggle}
-        suppressHydrationWarning
         className="flex w-full cursor-pointer select-none items-center justify-between p-4 text-left transition-colors hover:bg-black/30 sm:p-5"
       >
         <span className="pr-4 text-[0.95rem] font-semibold text-white sm:text-[1.02rem]">
@@ -146,7 +145,7 @@ export default function ContactSection({ faqs = FAQ_DATA }) {
         <motion.div
           initial={{ opacity: 0, x: -30 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.6 }}
           className="w-full"
         >
@@ -167,7 +166,6 @@ export default function ContactSection({ faqs = FAQ_DATA }) {
                   value={formData.name}
                   onChange={handleChange}
                   autoComplete="off"
-                  suppressHydrationWarning
                   className={`w-full rounded-lg border p-3.5 text-[0.95rem] text-white outline-none transition-all placeholder:text-white/30 bg-black/20 ${errors.name ? 'border-red-500' : 'border-white/15 focus:border-[#0ef]'
                     }`}
                 />
@@ -184,7 +182,6 @@ export default function ContactSection({ faqs = FAQ_DATA }) {
                   value={formData.email}
                   onChange={handleChange}
                   autoComplete="off"
-                  suppressHydrationWarning
                   className={`w-full rounded-lg border p-3.5 text-[0.95rem] text-white outline-none transition-all placeholder:text-white/30 bg-black/20 ${errors.email ? 'border-red-500' : 'border-white/15 focus:border-[#0ef]'
                     }`}
                 />
@@ -203,7 +200,6 @@ export default function ContactSection({ faqs = FAQ_DATA }) {
                   value={formData.phone}
                   onChange={handleChange}
                   autoComplete="off"
-                  suppressHydrationWarning
                   className={`w-full rounded-lg border p-3.5 text-[0.95rem] text-white outline-none transition-all placeholder:text-white/30 bg-black/20 ${errors.phone ? 'border-red-500' : 'border-white/15 focus:border-[#0ef]'
                     }`}
                 />
@@ -220,7 +216,6 @@ export default function ContactSection({ faqs = FAQ_DATA }) {
                   value={formData.subject}
                   onChange={handleChange}
                   autoComplete="off"
-                  suppressHydrationWarning
                   className={`w-full rounded-lg border p-3.5 text-[0.95rem] text-white outline-none transition-all placeholder:text-white/30 bg-black/20 ${errors.subject ? 'border-red-500' : 'border-white/15 focus:border-[#0ef]'
                     }`}
                 />
@@ -238,7 +233,6 @@ export default function ContactSection({ faqs = FAQ_DATA }) {
                 value={formData.message}
                 onChange={handleChange}
                 autoComplete="off"
-                suppressHydrationWarning
                 className={`w-full resize-none rounded-lg border p-3.5 text-[0.95rem] text-white outline-none transition-all placeholder:text-white/30 bg-black/20 ${errors.message ? 'border-red-500' : 'border-white/15 focus:border-[#0ef]'
                   }`}
               />
@@ -267,7 +261,7 @@ export default function ContactSection({ faqs = FAQ_DATA }) {
         <motion.div
           initial={{ opacity: 0, x: 30 }}
           whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.6 }}
           className="w-full"
         >

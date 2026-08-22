@@ -42,7 +42,7 @@ export default function VisionSection({
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.1 }}
           className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8"
         >
           {pillars.map((pillar, index) => (

@@ -27,7 +27,6 @@ export default function EventsPageClient({ events = [] }) {
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              suppressHydrationWarning
               className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-300 cursor-pointer ${
                 isActive
                   ? 'bg-[#0ef] text-[#050810] shadow-[0_0_20px_rgba(0,238,255,0.4)] scale-105 font-bold'
