@@ -54,15 +54,15 @@ export default function DirectorDesk({ directors = LEADERSHIP_DATA }) {
                 variants={cardVariants}
                 whileHover={{ y: -3 }}
                 transition={{ duration: 0.25 }}
-                className={`group relative flex flex-col md:flex-row items-stretch h-auto ${
-                  isDirector ? 'md:flex-row-reverse' : ''
+                className={`group relative flex flex-col min-[520px]:flex-row items-stretch min-[520px]:items-center h-auto ${
+                  isDirector ? 'min-[520px]:flex-row-reverse' : ''
                 } rounded-lg overflow-hidden border border-white/10 hover:border-[#0ef]/40 bg-gradient-to-br from-[#0c1424] via-[#090e18] to-[#040810] transition-all duration-300`}
               >
                 <div
-                  className={`relative w-full h-[240px] md:h-auto md:w-[240px] lg:w-[270px] shrink-0 self-stretch overflow-hidden bg-neutral-950 flex items-center justify-center ${
+                  className={`relative w-full h-[280px] min-[420px]:h-[360px] min-[520px]:h-[320px] lg:h-[360px] shrink-0 min-[520px]:w-[240px] lg:w-[280px] overflow-hidden bg-neutral-950 flex items-center justify-center ${
                     isDirector
-                      ? 'md:[clip-path:polygon(0_0,_100%_0,_100%_100%,_12%_100%)]'
-                      : 'md:[clip-path:polygon(0_0,_100%_0,_88%_100%,_0_100%)]'
+                      ? 'min-[520px]:[clip-path:polygon(0_0,_100%_0,_100%_100%,_12%_100%)]'
+                      : 'min-[520px]:[clip-path:polygon(0_0,_100%_0,_88%_100%,_0_100%)]'
                   }`}
                 >
                   {director.image ? (
@@ -70,16 +70,16 @@ export default function DirectorDesk({ directors = LEADERSHIP_DATA }) {
                       src={director.image}
                       alt={director.name}
                       fill
-                      sizes="(max-width: 768px) 100vw, 270px"
-                      className="h-[240px] md:h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 520px) 100vw, 280px"
+                      className="w-full h-full object-cover object-center min-[520px]:object-top transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="flex h-[240px] md:h-full w-full items-center justify-center bg-white/5 text-white/40">
+                    <div className="flex h-full w-full items-center justify-center bg-white/5 text-white/40">
                       <UserIcon className="w-12 h-12" />
                     </div>
                   )}
 
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#040810] via-transparent to-transparent md:hidden" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#040810] via-transparent to-transparent min-[520px]:hidden" />
                 </div>
 
                 <div className="relative z-10 flex flex-1 flex-col justify-between py-8 sm:py-9 lg:py-10 px-6 sm:px-7 lg:px-8 min-h-[240px] md:min-h-[260px]">

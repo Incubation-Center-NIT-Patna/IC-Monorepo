@@ -24,7 +24,7 @@ export default function GallerySection({ images = GALLERY_IMAGES_DATA }) {
         title="Moments & Gallery"
         accentWord="Gallery"
         subtitle="Glimpses of pitch sessions, mentor bootcamps, prototype builds, and startup milestones at NIT Patna."
-        className="!mb-2 sm:!mb-3"
+        className="pb-5 !mb-2 sm:!mb-3"
       />
 
       <div className="site-container relative mt-0 mb-1 max-w-[1050px] px-4">

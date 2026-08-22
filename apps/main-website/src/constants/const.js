@@ -10,7 +10,7 @@ export const CLOUDINARY_BASE_URL = "https://res.cloudinary.com/ddb6lsyht/image/u
 export const ic_logo = `${CLOUDINARY_BASE_URL}/v1782884080/ic_logo.png`;
 export const nitp_logo = `${CLOUDINARY_BASE_URL}/v1782887916/nitp_logo.png`;
 export const director_profile = "https://www.nitp.ac.in/Institute/Director";
-export const campus_image = "https://images.collegedunia.com/public/college_data/images/campusimage/1611227237IMG_20201103_111253.jpg";
+export const campus_image = `{CLOUDINARY_BASE_URL}/v1787400053/NIT_Patna_wucpqv.webp`;
 
 // Social Media Platforms
 export const facebook_url = "https://www.facebook.com/icnitp/";

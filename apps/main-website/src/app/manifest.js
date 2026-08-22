@@ -3,12 +3,12 @@ export default function manifest() {
     name: 'Incubation Center, NIT Patna',
     short_name: 'IC NITP',
     description:
-      'Official Incubation Center club of National Institute of Technology Patna for startups, innovation, mentorship, and entrepreneurship programs.',
+      'Official Incubation Center of National Institute of Technology Patna (NIT Patna). Fostering innovation, seed funding, prototyping workspace, startup mentorship, Pitchtember, and entrepreneurship growth in Bihar.',
     start_url: '/',
     scope: '/',
     display: 'standalone',
     background_color: '#020409',
-    theme_color: '#020409',
+    theme_color: '#0ef',
     categories: ['education', 'business', 'productivity'],
     icons: [
       {

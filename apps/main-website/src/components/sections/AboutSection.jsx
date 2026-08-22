@@ -51,7 +51,7 @@ export default function AboutSection({
           transition={{ duration: 0.7, ease: 'easeOut' }}
           className="flex w-full flex-col justify-between"
         >
-          <GlassCard className="relative hidden md:block h-full min-h-[380px] sm:min-h-[480px] lg:min-h-[540px] w-full overflow-hidden p-2.5" hoverEffect={true}>
+          <GlassCard className="relative hidden md:block h-full min-h-[320px] sm:min-h-[400px] lg:min-h-[460px] w-full overflow-hidden p-2.5" hoverEffect={true}>
             <Image
               src={campusImage}
               alt="Incubation Center NIT Patna"
