@@ -54,16 +54,14 @@ export default function DirectorDesk({ directors = LEADERSHIP_DATA }) {
                 variants={cardVariants}
                 whileHover={{ y: -3 }}
                 transition={{ duration: 0.25 }}
-                className={`group relative flex flex-col min-[520px]:flex-row items-stretch min-[520px]:items-center h-auto ${
-                  isDirector ? 'min-[520px]:flex-row-reverse' : ''
-                } rounded-lg overflow-hidden border border-white/10 hover:border-[#0ef]/40 bg-gradient-to-br from-[#0c1424] via-[#090e18] to-[#040810] transition-all duration-300`}
+                className={`group relative flex flex-col min-[520px]:flex-row items-stretch min-[520px]:items-center h-auto ${isDirector ? 'min-[520px]:flex-row-reverse' : ''
+                  } rounded-lg overflow-hidden border border-white/10 hover:border-[#0ef]/40 bg-gradient-to-br from-[#0c1424] via-[#090e18] to-[#040810] transition-all duration-300`}
               >
                 <div
-                  className={`relative w-full h-[280px] min-[420px]:h-[360px] min-[520px]:h-[320px] lg:h-[360px] shrink-0 min-[520px]:w-[240px] lg:w-[280px] overflow-hidden bg-neutral-950 flex items-center justify-center ${
-                    isDirector
-                      ? 'min-[520px]:[clip-path:polygon(0_0,_100%_0,_100%_100%,_12%_100%)]'
-                      : 'min-[520px]:[clip-path:polygon(0_0,_100%_0,_88%_100%,_0_100%)]'
-                  }`}
+                  className={`relative w-full h-[280px] min-[420px]:h-[360px] min-[520px]:h-[320px] lg:h-[360px] shrink-0 min-[520px]:w-[240px] lg:w-[280px] overflow-hidden bg-neutral-950 flex items-center justify-center ${isDirector
+                    ? 'min-[520px]:[clip-path:polygon(0_0,_100%_0,_100%_100%,_12%_100%)]'
+                    : 'min-[520px]:[clip-path:polygon(0_0,_100%_0,_88%_100%,_0_100%)]'
+                    }`}
                 >
                   {director.image ? (
                     <Image

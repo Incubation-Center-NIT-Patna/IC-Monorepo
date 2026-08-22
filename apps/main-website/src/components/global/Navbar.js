@@ -77,8 +77,8 @@ const DesktopNavItem = ({ item, scrolled, pathname, handleNavClick }) => {
                       handleNavClick(e, child.href);
                     }}
                     className={`text-[14px] font-medium transition-colors py-2 px-3 rounded-lg ${isChildActive
-                        ? 'text-[#00f7ff] bg-white/5 font-semibold'
-                        : 'text-white/80 hover:text-[#00f7ff] hover:bg-white/5'
+                      ? 'text-[#00f7ff] bg-white/5 font-semibold'
+                      : 'text-white/80 hover:text-[#00f7ff] hover:bg-white/5'
                       }`}
                   >
                     {child.label}
@@ -127,8 +127,8 @@ const MobileNavItem = ({
               handleNavClick(e, item.href);
             }}
             className={`w-full max-w-[320px] py-3 text-center text-[17px] font-semibold rounded-xl border transition-all flex items-center justify-center ${isParentActive
-                ? 'bg-[#00f7ff]/15 text-[#00f7ff] border-[#00f7ff]/40 shadow-[0_0_15px_rgba(0,247,255,0.2)]'
-                : 'bg-white/5 text-white border-white/10 hover:text-[#00f7ff] hover:border-[#00f7ff]/30'
+              ? 'bg-[#00f7ff]/15 text-[#00f7ff] border-[#00f7ff]/40 shadow-[0_0_15px_rgba(0,247,255,0.2)]'
+              : 'bg-white/5 text-white border-white/10 hover:text-[#00f7ff] hover:border-[#00f7ff]/30'
               }`}
           >
             {item.label}
@@ -142,8 +142,8 @@ const MobileNavItem = ({
     <div className="w-full flex flex-col items-center">
       <div
         className={`w-full max-w-[320px] flex items-center justify-between rounded-xl px-4 py-2 transition-all ${isParentActive
-            ? 'bg-[#00f7ff]/10 border border-[#00f7ff]/40'
-            : 'bg-white/5 border border-white/10 hover:border-[#00f7ff]/30'
+          ? 'bg-[#00f7ff]/10 border border-[#00f7ff]/40'
+          : 'bg-white/5 border border-white/10 hover:border-[#00f7ff]/30'
           }`}
       >
         <Link
@@ -194,8 +194,8 @@ const MobileNavItem = ({
                       handleNavClick(e, child.href);
                     }}
                     className={`w-full text-center py-2 px-3 rounded-lg text-[14px] font-medium transition-colors ${isChildActive
-                        ? 'text-[#00f7ff] font-semibold bg-white/5'
-                        : 'text-white/80 hover:text-[#00f7ff] hover:bg-white/5'
+                      ? 'text-[#00f7ff] font-semibold bg-white/5'
+                      : 'text-white/80 hover:text-[#00f7ff] hover:bg-white/5'
                       }`}
                   >
                     {child.label}
@@ -285,8 +285,8 @@ export default function Navbar() {
     >
       <header
         className={`w-full flex items-center justify-between transition-all duration-300 ${scrolled
-            ? 'py-2 px-5 sm:px-8 md:px-12 bg-black/85 backdrop-blur-md shadow-lg'
-            : 'py-4 px-5 sm:px-8 md:px-16 bg-transparent'
+          ? 'py-2 px-5 sm:px-8 md:px-12 bg-black/85 backdrop-blur-md shadow-lg'
+          : 'py-4 px-5 sm:px-8 md:px-16 bg-transparent'
           }`}
       >
         <a
@@ -300,8 +300,8 @@ export default function Navbar() {
             src={nitp_logo}
             alt="NITP Logo"
             className={`object-contain transition-all duration-300 ${scrolled
-                ? 'w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16'
-                : 'w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20'
+              ? 'w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16'
+              : 'w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20'
               }`}
           />
         </a>
@@ -369,8 +369,8 @@ export default function Navbar() {
             src={ic_logo}
             alt="IC Logo"
             className={`object-contain transition-all duration-300 ${scrolled
-                ? 'w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16'
-                : 'w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20'
+              ? 'w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16'
+              : 'w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20'
               }`}
           />
         </Link>
