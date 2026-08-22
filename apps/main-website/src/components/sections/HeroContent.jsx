@@ -10,7 +10,7 @@ export default function HeroContent({
   title = 'Incubation Center',
   subtitle = 'of NIT Patna.',
   typewriterStrings = ['We Incubate.', 'We Mentor.', 'We Support.', 'We Accelerate.'],
-  description = 'Empowering startups, innovators, and student entrepreneurs with structured mentorship, prototyping workspace, seed funding guidance, and investor access. Turn your breakthrough ideas into high-growth ventures.',
+  description = 'Empowering startups and entrepreneurs with mentorship, workspace, and funding to foster innovation and accelerate growth. Join us to turn your ideas into successful ventures.',
   ctaText = "Incubate Your Idea",
   ctaHref = '#idea',
 }) {

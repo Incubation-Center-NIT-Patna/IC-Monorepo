@@ -10,10 +10,10 @@ export const ABOUT_DATA = {
   campusImage:
     'https://images.collegedunia.com/public/college_data/images/campusimage/1611227237IMG_20201103_111253.jpg',
   stats: [
-    { label: 'Startups Incubated', value: '35+' },
-    { label: 'Mentors & Advisors', value: '50+' },
-    { label: 'Events Organized', value: '120+' },
-    { label: 'Funding Facilitated', value: '₹2.5Cr+' },
+    // { label: 'Startups Incubated', value: '35+' },
+    // { label: 'Mentors & Advisors', value: '50+' },
+    // { label: 'Events Organized', value: '120+' },
+    // { label: 'Funding Facilitated', value: '₹2.5Cr+' },
   ],
 };
 

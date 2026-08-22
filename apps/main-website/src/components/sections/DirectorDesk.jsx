@@ -99,6 +99,9 @@ export default function DirectorDesk({ directors = LEADERSHIP_DATA }) {
                       <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight">
                         {director.name}
                       </h3>
+                      <p className='text-xs'>
+                        {director.date}
+                      </p>
                     </div>
 
                     <div
