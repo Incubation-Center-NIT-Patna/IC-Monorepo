@@ -25,7 +25,7 @@ export default function GoogleSlider({ slides = SUPPORT_SLIDES_DATA }) {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: false, amount: 0.2 }}
+            viewport={{ once: true, amount: 0.1 }}
             transition={{ duration: 0.5 }}
             className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 mb-10 sm:mb-12"
           >
@@ -35,7 +35,6 @@ export default function GoogleSlider({ slides = SUPPORT_SLIDES_DATA }) {
                 <button
                   key={item.id || index}
                   onClick={() => setSlide(index)}
-                  suppressHydrationWarning
                   className={`px-5 py-3 sm:px-7 sm:py-3.5 rounded-lg text-sm sm:text-base font-bold transition-all duration-300 cursor-pointer ${
                     isActive
                       ? 'bg-white text-black ring-4 ring-[#009efa] shadow-[0_0_20px_rgba(0,158,250,0.5)] scale-105'

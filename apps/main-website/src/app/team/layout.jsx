@@ -58,7 +58,6 @@ export default function TeamLayout({ children }) {
         <div className="relative w-full max-w-[340px] z-30 sm:hidden">
           <button
             onClick={() => setDropdownOpen(!dropdownOpen)}
-            suppressHydrationWarning
             className="w-full flex items-center justify-between px-5 py-3 rounded-xl bg-[#060c1d] border border-white/15 text-white hover:border-white/30 backdrop-blur-xl transition-colors cursor-pointer shadow-md"
           >
             <div className="flex items-center gap-2.5">
@@ -102,7 +101,6 @@ export default function TeamLayout({ children }) {
                         setDropdownOpen(false);
                         router.push(tab.href);
                       }}
-                      suppressHydrationWarning
                       className={`w-full flex items-center justify-between p-2.5 rounded-lg transition-colors text-left cursor-pointer ${isSelected
                         ? 'bg-white/10 text-[#00f7ff] font-semibold'
                         : 'text-white/75 hover:text-white hover:bg-white/5'

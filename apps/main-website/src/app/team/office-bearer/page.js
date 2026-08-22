@@ -37,7 +37,6 @@ export default function PastOfficeBearersPage() {
       <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 mb-12 max-w-[900px] px-4">
         <button
           onClick={() => setSelectedSession('all')}
-          suppressHydrationWarning
           className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors cursor-pointer ${selectedSession === 'all'
             ? 'bg-[#00f7ff] text-[#020712] font-semibold'
             : 'bg-white/5 text-white/75 hover:text-white hover:bg-white/10 border border-white/10'
@@ -53,7 +52,6 @@ export default function PastOfficeBearersPage() {
             <button
               key={year}
               onClick={() => setSelectedSession(year)}
-              suppressHydrationWarning
               className={`px-4 py-2 rounded-full text-xs sm:text-sm font-medium transition-colors cursor-pointer ${isSelected
                 ? 'bg-[#00f7ff] text-[#020712] font-semibold'
                 : 'bg-white/5 text-white/75 hover:text-white hover:bg-white/10 border border-white/10'

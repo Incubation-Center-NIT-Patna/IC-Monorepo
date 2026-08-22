@@ -123,6 +123,13 @@ main > section:nth-of-type(2n+3),
   transform: translateZ(0);
 }
 
+@media (max-width: 768px) {
+  .glass-panel {
+    backdrop-filter: none;
+    background: rgba(8, 13, 24, 0.95);
+  }
+}
+
 .primary-button {
   display: inline-flex;
   align-items: center;

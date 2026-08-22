@@ -30,7 +30,6 @@ export default function GallerySection({ images = GALLERY_IMAGES_DATA }) {
       <div className="site-container relative mt-0 mb-1 max-w-[1050px] px-4">
         <button
           id="gallery-prev"
-          suppressHydrationWarning
           className="absolute left-0 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-[#0ef]/30 bg-black/50 text-[#0ef] backdrop-blur-md transition-all duration-300 hover:bg-[#0ef]/15 active:scale-95 sm:h-11 sm:w-11"
           aria-label="Previous image"
         >
@@ -39,7 +38,6 @@ export default function GallerySection({ images = GALLERY_IMAGES_DATA }) {
 
         <button
           id="gallery-next"
-          suppressHydrationWarning
           className="absolute right-0 top-1/2 z-20 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full border border-[#0ef]/30 bg-black/50 text-[#0ef] backdrop-blur-md transition-all duration-300 hover:bg-[#0ef]/15 active:scale-95 sm:h-11 sm:w-11"
           aria-label="Next image"
         >
@@ -106,7 +104,7 @@ export default function GallerySection({ images = GALLERY_IMAGES_DATA }) {
       <motion.div
         initial={{ opacity: 0, x: -20 }}
         whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: false, amount: 0.2 }}
+        viewport={{ once: true, amount: 0.1 }}
         transition={{ duration: 0.5 }}
         className="site-container mt-6 flex max-w-[1050px] justify-center"
       >

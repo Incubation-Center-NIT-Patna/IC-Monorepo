@@ -41,7 +41,7 @@ export default function DirectorDesk({ directors = LEADERSHIP_DATA }) {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.1 }}
           className="flex flex-col gap-6 sm:gap-8"
         >
           {directors.map((director, index) => {
@@ -59,7 +59,7 @@ export default function DirectorDesk({ directors = LEADERSHIP_DATA }) {
                 } rounded-lg overflow-hidden border border-white/10 hover:border-[#0ef]/40 bg-gradient-to-br from-[#0c1424] via-[#090e18] to-[#040810] transition-all duration-300`}
               >
                 <div
-                  className={`relative w-full md:w-[240px] lg:w-[270px] shrink-0 self-stretch overflow-hidden bg-neutral-950 flex items-center justify-center ${
+                  className={`relative w-full h-[240px] md:h-auto md:w-[240px] lg:w-[270px] shrink-0 self-stretch overflow-hidden bg-neutral-950 flex items-center justify-center ${
                     isDirector
                       ? 'md:[clip-path:polygon(0_0,_100%_0,_100%_100%,_12%_100%)]'
                       : 'md:[clip-path:polygon(0_0,_100%_0,_88%_100%,_0_100%)]'

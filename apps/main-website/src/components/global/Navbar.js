@@ -166,7 +166,6 @@ const MobileNavItem = ({
         <button
           onClick={() => toggleMobileMenu(item.id)}
           aria-label={`Toggle ${item.label}`}
-          suppressHydrationWarning
           className="text-[#00f7ff] text-xl p-1.5 cursor-pointer flex items-center justify-center"
         >
           <motion.span
@@ -332,7 +331,6 @@ export default function Navbar() {
           <button
             onClick={() => setIsOpen(true)}
             aria-label="Open menu"
-            suppressHydrationWarning
             className="md:hidden text-white text-2xl p-2 z-20 focus:outline-none cursor-pointer"
           >
             <MenuIcon className="w-7 h-7 text-white hover:text-[#00f7ff] transition-colors" />
@@ -351,7 +349,6 @@ export default function Navbar() {
               <button
                 onClick={closeMobileMenu}
                 aria-label="Close menu"
-                suppressHydrationWarning
                 className="absolute top-5 right-6 z-[9010] p-2.5 rounded-full bg-white/10 text-white hover:text-[#00f7ff] hover:bg-white/20 transition-all cursor-pointer"
               >
                 <CloseIcon className="w-6 h-6" />

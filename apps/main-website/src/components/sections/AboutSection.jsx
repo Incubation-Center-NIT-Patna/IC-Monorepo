@@ -47,11 +47,11 @@ export default function AboutSection({
         <motion.div
           initial={{ opacity: 0, scale: 0.85 }}
           whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.1 }}
           transition={{ duration: 0.7, ease: 'easeOut' }}
           className="flex w-full flex-col justify-between"
         >
-          <GlassCard className="relative h-full min-h-[380px] sm:min-h-[480px] lg:min-h-[540px] w-full overflow-hidden p-2.5" hoverEffect={true}>
+          <GlassCard className="relative hidden md:block h-full min-h-[380px] sm:min-h-[480px] lg:min-h-[540px] w-full overflow-hidden p-2.5" hoverEffect={true}>
             <Image
               src={campusImage}
               alt="Incubation Center NIT Patna"
@@ -83,7 +83,7 @@ export default function AboutSection({
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: false, amount: 0.2 }}
+          viewport={{ once: true, amount: 0.1 }}
           className="flex flex-col justify-center gap-5 text-white"
         >
           <motion.div variants={itemVariants} className="flex justify-center lg:justify-start">

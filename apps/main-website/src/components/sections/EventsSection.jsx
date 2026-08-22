@@ -96,7 +96,7 @@ export default function EventsSection({ events = EVENTS_DATA }) {
               key={`${event.id || index}-${index}`}
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: false, amount: 0.2 }}
+              viewport={{ once: true, amount: 0.1 }}
               transition={{ duration: 0.5 }}
             >
               <EventCard event={event} />
@@ -108,7 +108,7 @@ export default function EventsSection({ events = EVENTS_DATA }) {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: false, amount: 0.2 }}
+        viewport={{ once: true, amount: 0.1 }}
         transition={{ duration: 0.5 }}
         className="flex justify-center mt-6"
       >
