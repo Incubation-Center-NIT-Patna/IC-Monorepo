@@ -59,7 +59,7 @@ export default function DirectorDesk({ directors = LEADERSHIP_DATA }) {
                 } rounded-lg overflow-hidden border border-white/10 hover:border-[#0ef]/40 bg-gradient-to-br from-[#0c1424] via-[#090e18] to-[#040810] transition-all duration-300`}
               >
                 <div
-                  className={`relative w-full h-[240px] md:h-auto md:w-[240px] lg:w-[270px] shrink-0 self-stretch overflow-hidden bg-neutral-950 flex items-center justify-center ${
+                  className={`relative w-full h-[320px] sm:h-[400px] md:h-auto md:w-[240px] lg:w-[270px] shrink-0 self-stretch overflow-hidden bg-neutral-950 flex items-center justify-center ${
                     isDirector
                       ? 'md:[clip-path:polygon(0_0,_100%_0,_100%_100%,_12%_100%)]'
                       : 'md:[clip-path:polygon(0_0,_100%_0,_88%_100%,_0_100%)]'
@@ -71,10 +71,10 @@ export default function DirectorDesk({ directors = LEADERSHIP_DATA }) {
                       alt={director.name}
                       fill
                       sizes="(max-width: 768px) 100vw, 270px"
-                      className="h-[240px] md:h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                      className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="flex h-[240px] md:h-full w-full items-center justify-center bg-white/5 text-white/40">
+                    <div className="flex h-full w-full items-center justify-center bg-white/5 text-white/40">
                       <UserIcon className="w-12 h-12" />
                     </div>
                   )}
