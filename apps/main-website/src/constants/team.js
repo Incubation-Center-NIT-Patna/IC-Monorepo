@@ -120,26 +120,7 @@ export const FACULTY_TEAM_DATA = {
     },
   ],
   pastFaculty: [
-    {
-      id: 'fac-past-1',
-      name: 'Prof. S. K. Singh',
-      post: 'Ex-PIC Incubation',
-      tenure: '2020 - 2022',
-      email: 'sk.singh@nitp.ac.in',
-      about:
-        'Instrumental in establishing the foundation of the Incubation Center at NIT Patna, mentoring early-stage student startups.',
-      image: '',
-    },
-    {
-      id: 'fac-past-2',
-      name: 'Dr. Ramesh Chandra',
-      post: 'Ex-Faculty Advisor',
-      tenure: '2021 - 2023',
-      email: 'ramesh.cs@nitp.ac.in',
-      about:
-        'Guided computational and deep learning research teams, driving key academic-industry research collaborations.',
-      image: '',
-    },
+    
   ],
 };
 
@@ -325,30 +306,7 @@ export const STUDENT_TEAM_DATA = {
     },
   ],
   pastMembers: [
-    {
-      name: 'Rahul Kumar',
-      post: 'Ex-Student Coordinator',
-      session: '2023 - 2024',
-      about: 'Led the student body during the 2023-24 incubation cycle, pioneering key startup orientation programs.',
-      linkedin: 'https://linkedin.com',
-      image: '',
-    },
-    {
-      name: 'Priya Sharma',
-      post: 'Ex-Secretary',
-      session: '2023 - 2024',
-      about: 'Managed incubation communications, investor relations, and external startup outreach initiatives.',
-      linkedin: 'https://linkedin.com',
-      image: '',
-    },
-    {
-      name: 'Aman Verma',
-      post: 'Ex-Web Team Lead',
-      session: '2022 - 2023',
-      about: 'Architected early incubation center digital portals and full-stack event registration platforms.',
-      linkedin: 'https://linkedin.com',
-      image: '',
-    },
+    
   ],
 };
 

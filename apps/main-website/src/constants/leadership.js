@@ -4,7 +4,7 @@ export const LEADERSHIP_DATA = [
   {
     id: 'director',
     role: 'Director, NIT Patna',
-    name: 'Prof. Pradip K. Ray',
+    name: 'Prof. Pradip K. Jain',
     image: `${CLOUDINARY_BASE_URL}/v1782901704/director_yasexw.jpg`,
     accentColor: '#0ef',
     glowClass: 'hover:shadow-[0_0_25px_rgba(0,238,255,0.15)]',
@@ -20,9 +20,10 @@ export const LEADERSHIP_DATA = [
     image: `${CLOUDINARY_BASE_URL}/v1782901328/prof_bharat_gupta_ubqzlo.jpg`,
     accentColor: '#0ef',
     glowClass: 'hover:shadow-[0_0_25px_rgba(0,238,255,0.15)]',
-    link: 'https://www.linkedin.com/in/bharatgupta-nitp/',
+    link: 'https://www.linkedin.com/in/sgbharat/',
+    date: 'Mon, May 25th 2020',
     descriptionHtml: `
-      <p>Our vision at the Incubation Center is to bridge academia and industry by nurturing deep-tech ventures, fostering interdisciplinary startup collaborations, and mentoring student innovators to transform groundbreaking ideas into sustainable businesses that drive real societal value.</p>
+      <p>Dr. Bharat Gupta leads the Electronics and Communication Department, spearheading research and educational initiatives in cutting-edge technologies and applications.</p>
     `,
   },
 ];

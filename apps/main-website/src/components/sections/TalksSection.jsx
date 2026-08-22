@@ -93,7 +93,7 @@ export default function TalksSection({ talks = TALKS_DATA }) {
         transition={{ duration: 0.5 }}
         className="site-container flex justify-center"
       >
-        <Button href="/events" variant="primary" size="md">
+        <Button href="/" variant="primary" size="md">
           Explore More →
         </Button>
       </motion.div>
