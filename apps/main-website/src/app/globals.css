@@ -1,0 +1,155 @@
+@import "tailwindcss";
+
+:root {
+  --background: #020409;
+  --background-even: #000717;
+  --foreground: #f8fafc;
+  --accent: #00e5ff;
+  --muted: #9aa7b7;
+  --panel: rgba(8, 13, 24, 0.76);
+  --panel-border: rgba(255, 255, 255, 0.1);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-bai-jamjuree);
+  --font-mono: var(--font-bai-jamjuree);
+}
+
+/* Hide scrollbar for the entire site while preserving smooth scrolling */
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+html::-webkit-scrollbar,
+body::-webkit-scrollbar {
+  display: none;
+  width: 0px;
+  height: 0px;
+  background: transparent;
+}
+
+body {
+  min-height: 100vh;
+  background-color: var(--background);
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.12) 1px, transparent 1.3px),
+    radial-gradient(circle at 20% 10%, rgba(0, 229, 255, 0.11), transparent 28rem),
+    radial-gradient(circle at 85% 35%, rgba(49, 94, 255, 0.08), transparent 26rem);
+  background-position: center top;
+  background-size: 22px 22px, auto, auto;
+  color: var(--foreground);
+  font-family: var(--font-bai-jamjuree), Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+main {
+  background: transparent;
+}
+
+.admin-layout {
+  min-height: 100vh;
+  background: #ffe4f5;
+  color: #0f172a;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  content-visibility: auto;
+}
+
+.site-section {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: 4rem 1.25rem;
+  color: var(--foreground);
+}
+
+/* Alternating Even Sections (counted after Hero Section: Vision, DirectorDesk, Talks, Gallery) */
+main > section:nth-of-type(2n+3),
+.site-section-even {
+  background-color: var(--background-even);
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.08) 1px, transparent 1.3px),
+    radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.02), transparent 28rem),
+    radial-gradient(circle at 20% 80%, rgba(0, 229, 255, 0.04), transparent 30rem);
+  background-position: center top;
+  background-size: 22px 22px, auto, auto;
+}
+
+.site-container {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 1180px);
+  margin-inline: auto;
+}
+
+.section-title {
+  color: #fff;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.05;
+  letter-spacing: 0;
+}
+
+.section-title span,
+.accent-text {
+  color: var(--accent);
+}
+
+.section-copy {
+  color: rgba(226, 232, 240, 0.78);
+  font-size: clamp(0.95rem, 1.6vw, 1.08rem);
+  line-height: 1.75;
+}
+
+.glass-panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 18px 60px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(18px);
+  transform: translateZ(0);
+}
+
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #031018;
+  font-weight: 700;
+  line-height: 1;
+  box-shadow: 0 10px 30px rgba(0, 229, 255, 0.22);
+  transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+  transform: translateZ(0);
+}
+
+.primary-button:hover {
+  background: #fff;
+  box-shadow: 0 12px 32px rgba(255, 255, 255, 0.12);
+}
+
+@media (min-width: 768px) {
+  .site-section {
+    padding: 4.75rem 2rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .site-section {
+    padding-block: 5.25rem;
+  }
+}
