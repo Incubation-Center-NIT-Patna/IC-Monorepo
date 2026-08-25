@@ -42,7 +42,7 @@ export default function ScoringScale() {
         </div>
         
         <div className="text-center text-xs text-slate-500 mt-2 border-t border-[#E2E8F0] pt-2.5">
-          Standard rubric scale: <span className="text-[#1E40AF] font-semibold">{minScore} (Deficient)</span> to <span className="text-emerald-600 font-semibold">{maxScore} (Expert)</span>
+          Standard evaluation scale: <span className="text-[#1E40AF] font-semibold">{minScore} (Basic)</span> to <span className="text-emerald-600 font-semibold">{maxScore} (Excellent)</span>
         </div>
       </div>
     </CardWrapper>

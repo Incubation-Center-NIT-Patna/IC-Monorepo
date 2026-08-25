@@ -211,7 +211,7 @@ export default function TeamManagementPage() {
         <PageHeader
           icon={Users}
           title="Manage Team Details"
-          description="Tabular view of Faculty mentors, Post Bearers, and Student Coordinators."
+          description="Directory and management of Faculty mentors, Post Bearers, and Student Coordinators."
           actionText="Add Team Member"
           actionIcon={Plus}
           onAction={handleOpenAdd}

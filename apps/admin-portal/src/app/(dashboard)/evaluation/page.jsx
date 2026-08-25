@@ -230,8 +230,8 @@ export default function EvaluationScorecardPage() {
         {/* Top Header */}
         <PageHeader
           icon={Brain}
-          title="Candidate Evaluation & Scorecard"
-          description="Grade candidate rubric parameters, select feedback tags, and record assessment notes."
+          title="Candidate Evaluation & Assessment"
+          description="Evaluate candidate criteria parameters, select feedback tags, and record assessment notes."
           actions={
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold text-slate-500">Candidate:</span>
@@ -318,10 +318,10 @@ export default function EvaluationScorecardPage() {
                   </span>
                   <div>
                     <h3 className="text-sm font-bold text-slate-900">
-                      Evaluation Rubric Parameters
+                      Evaluation Criteria Parameters
                     </h3>
                     <p className="text-xs text-slate-500">
-                      Adjust parameter scores from 1.0 (Novice) to 5.0 (Mastery)
+                      Adjust parameter scores from 1.0 (Basic) to 5.0 (Excellent)
                     </p>
                   </div>
                 </div>
@@ -439,44 +439,13 @@ export default function EvaluationScorecardPage() {
                     Quick Feedback Tags
                   </h3>
                 </div>
-                <Badge variant="blue">{selectedTags.length} Tagged</Badge>
-              </div>
-
-              {/* Active Selected Tags */}
-              <div className="space-y-2">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                  Active Candidate Tags:
-                </span>
-                {selectedTags.length > 0 ? (
-                  <div className="flex flex-wrap gap-1.5 bg-slate-50/80 p-3 rounded-xl border border-slate-200/80">
-                    {selectedTags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-blue-50 text-[#1E40AF] border border-blue-200 text-xs font-bold shadow-2xs animate-in fade-in"
-                      >
-                        <span>{tag}</span>
-                        <button
-                          type="button"
-                          onClick={() => handleRemoveTag(tag)}
-                          className="hover:text-rose-600 p-0.5 rounded-md hover:bg-blue-100 transition-colors cursor-pointer"
-                          title={`Remove ${tag}`}
-                        >
-                          <X className="w-3.5 h-3.5" />
-                        </button>
-                      </span>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="p-3 rounded-xl bg-slate-50 border border-dashed border-slate-300 text-center text-xs text-slate-400 font-medium italic">
-                    No quick tags selected. Click tags below to add.
-                  </div>
-                )}
+                <Badge variant="blue">{selectedTags.length} Selected</Badge>
               </div>
 
               {/* Tag Pool */}
-              <div className="pt-2 border-t border-slate-100 space-y-2">
+              <div className="space-y-2">
                 <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
-                  Available Feedback Pool:
+                  Select Feedback Tags:
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {AVAILABLE_FEEDBACK_TAGS.map((tag) => {
@@ -536,7 +505,7 @@ export default function EvaluationScorecardPage() {
                 onClick={handleSubmitEvaluation}
                 className="w-full justify-center py-2.5 rounded-xl font-bold"
               >
-                Submit Scorecard
+                Submit Evaluation
               </Button>
             </div>
           </div>

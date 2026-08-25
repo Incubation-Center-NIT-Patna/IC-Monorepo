@@ -46,7 +46,7 @@ export default function UserRoleManagementPage() {
     { key: PERMISSIONS.MANAGE_EVENTS, label: 'Events & Talks' },
     { key: PERMISSIONS.MANAGE_TEAM, label: 'Faculty & Student Team' },
     { key: PERMISSIONS.MANAGE_GALLERY, label: 'Gallery & Media' },
-    { key: PERMISSIONS.MANAGE_FAQS, label: 'FAQs CMS' },
+    { key: PERMISSIONS.MANAGE_FAQS, label: 'FAQs Management' },
     { key: PERMISSIONS.INDUCTION_EVALUATE, label: 'Induction Candidate Evaluation' },
   ];
 
@@ -165,12 +165,12 @@ export default function UserRoleManagementPage() {
     },
     {
       key: 'assignedModules',
-      header: 'Assigned Modules',
+      header: 'Assigned Sections',
       sortable: false,
       render: (user) => (
         user.role === ROLES.SUPER_ADMIN ? (
           <span className="text-purple-700 font-semibold text-[11px]">
-            ★ Full All-Module Access
+            ★ Full Access to All Sections
           </span>
         ) : user.role === ROLES.ADMIN ? (
           <div className="flex flex-wrap gap-1">
@@ -184,7 +184,7 @@ export default function UserRoleManagementPage() {
                 </span>
               ))
             ) : (
-              <span className="text-slate-400 text-[11px]">No modules assigned</span>
+              <span className="text-slate-400 text-[11px]">No sections assigned</span>
             )}
           </div>
         ) : (
@@ -217,8 +217,8 @@ export default function UserRoleManagementPage() {
         {/* Page Header */}
         <PageHeader
           icon={Shield}
-          title="Manage Users & RBAC Permissions"
-          description="Manage administrative accounts, role tiers, and module permissions."
+          title="User Accounts & Access Permissions"
+          description="Manage user accounts, access roles, and section permissions."
           actionText="Add User"
           actionIcon={UserPlus}
           onAction={handleOpenAdd}
@@ -279,11 +279,11 @@ export default function UserRoleManagementPage() {
                   <div className="min-w-0 flex-1">
                     {u.role === ROLES.SUPER_ADMIN ? (
                       <span className="text-purple-700 font-bold text-[10px]">
-                        ★ Full All-Module Access
+                        ★ Full Access to All Sections
                       </span>
                     ) : (
                       <span className="text-slate-500 font-semibold text-[10px]">
-                        {u.assignedModules?.length || 0} Modules Assigned
+                        {u.assignedModules?.length || 0} Sections Assigned
                       </span>
                     )}
                   </div>
@@ -338,7 +338,7 @@ export default function UserRoleManagementPage() {
                 </div>
 
                 <div>
-                  <label className="block text-slate-700 font-semibold mb-1">RBAC Role Tier *</label>
+                  <label className="block text-slate-700 font-semibold mb-1">User Access Role *</label>
                   <div className="grid grid-cols-3 gap-2">
                     {Object.values(ROLES).map((roleKey) => {
                       const isSelected = formData.role === roleKey;
@@ -365,7 +365,7 @@ export default function UserRoleManagementPage() {
                 {formData.role === ROLES.ADMIN && (
                   <div className="pt-2 border-t border-[#E2E8F0]">
                     <label className="block text-slate-700 font-semibold mb-1.5">
-                      Assign Specific Functional Modules:
+                      Assign Specific Management Sections:
                     </label>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                       {availableModules.map((mod) => {

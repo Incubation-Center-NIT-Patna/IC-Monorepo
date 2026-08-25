@@ -72,13 +72,12 @@ export default function InductionPortalOverviewPage() {
       sortable: true,
       render: (cand) => (
         <span
-          className={`px-2 py-0.5 rounded-sm text-[10px] font-semibold uppercase ${
-            cand.status === 'Selected'
+          className={`px-2 py-0.5 rounded-sm text-[10px] font-semibold uppercase ${cand.status === 'Selected'
               ? 'badge-opacity-success'
               : cand.status === 'Interviewed'
-              ? 'badge-opacity-primary'
-              : 'badge-opacity-warning'
-          }`}
+                ? 'badge-opacity-primary'
+                : 'badge-opacity-warning'
+            }`}
         >
           {cand.status}
         </span>
@@ -107,8 +106,8 @@ export default function InductionPortalOverviewPage() {
         {/* Page Header */}
         <PageHeader
           icon={GraduationCap}
-          title="Induction Pipeline Portal"
-          description="Candidate recruitment pipeline and evaluation management."
+          title="Induction Portal"
+          description="Candidate recruitment, selection, and evaluation management."
           actions={
             <div className="flex items-center gap-2">
               <Link
@@ -128,8 +127,6 @@ export default function InductionPortalOverviewPage() {
             </div>
           }
         />
-
-
 
         {/* Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
@@ -180,11 +177,11 @@ export default function InductionPortalOverviewPage() {
           </CardWrapper>
         </div>
 
-        {/* Candidate Pipeline Paginated Table */}
+        {/* Candidate Selection Records Table */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-bold uppercase tracking-wider text-slate-500">
-              Candidate Pipeline Records
+              Candidate Selection Records
             </h2>
             <Link
               href="/evaluation"

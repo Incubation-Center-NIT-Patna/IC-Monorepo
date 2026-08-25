@@ -91,7 +91,7 @@ export default function TalksManagementPage() {
         <PageHeader
           icon={Mic}
           title="iEntrepreneur Talks"
-          description="Manage guest speaker sessions, founder keynotes, and entrepreneurship talk profiles in tabular view."
+          description="Manage guest speaker sessions, founder keynotes, and entrepreneurship talk profiles."
           actionText="Add Talk Session"
           actionIcon={Plus}
           onAction={handleOpenAdd}
@@ -112,9 +112,9 @@ export default function TalksManagementPage() {
         {/* Tabular Talks Table */}
         <CardWrapper className="p-0 overflow-hidden border-[#E2E8F0] bg-white">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse min-w-[650px] sm:min-w-full">
               <thead>
-                <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-slate-600 whitespace-nowrap">
                   <th className="py-3 px-4">Speaker</th>
                   <th className="py-3 px-4">Role / Organization</th>
                   <th className="py-3 px-4">Talk Keynote Summary</th>

@@ -89,8 +89,12 @@ export default function Sidebar({ isOpen, setIsOpen }) {
                 return item.href === '/profile';
               }
               if (isSuperAdmin) return true;
-              if (item.roles && !item.roles.includes(currentUser?.role)) return false;
-              if (item.permission && !hasPermission(item.permission)) return false;
+              if (item.permission) {
+                return hasPermission(item.permission);
+              }
+              if (item.roles) {
+                return item.roles.includes(currentUser?.role);
+              }
               return true;
             });
 

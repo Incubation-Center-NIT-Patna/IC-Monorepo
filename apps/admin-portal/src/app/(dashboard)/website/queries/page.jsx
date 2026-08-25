@@ -78,7 +78,7 @@ export default function IncubationQueriesPage() {
         <PageHeader
           icon={Inbox}
           title="Queries"
-          description="Track and process startup incubation applications and contact form submissions in tabular view."
+          description="Track and process startup incubation applications and contact form submissions."
         />
 
         {/* Toolbar & Filters */}
@@ -118,9 +118,9 @@ export default function IncubationQueriesPage() {
         {/* Tabular Form Table */}
         <CardWrapper className="p-4 sm:p-5">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse min-w-[720px] sm:min-w-full">
               <thead>
-                <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">
                   <th className="py-3 px-3">Founder / Contact</th>
                   <th className="py-3 px-3">Startup Domain</th>
                   <th className="py-3 px-3">Stage</th>

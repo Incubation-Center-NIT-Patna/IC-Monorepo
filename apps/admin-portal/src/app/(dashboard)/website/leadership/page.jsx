@@ -78,7 +78,7 @@ export default function LeadershipManagementPage() {
         <PageHeader
           icon={Sparkles}
           title="Manage Leadership"
-          description="Manage Director, Professor-in-Charge, and advisory board leadership messages in tabular view."
+          description="Manage Director, Professor-in-Charge, and advisory board leadership messages."
           actionText="Add Leader"
           actionIcon={Plus}
           onAction={handleOpenAdd}
@@ -94,9 +94,9 @@ export default function LeadershipManagementPage() {
         {/* Tabular Leadership Table */}
         <CardWrapper className="p-0 overflow-hidden border-[#E2E8F0] bg-white">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse min-w-[650px] sm:min-w-full">
               <thead>
-                <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-slate-600 whitespace-nowrap">
                   <th className="py-3 px-4">Official / Leader</th>
                   <th className="py-3 px-4">Role & Designation</th>
                   <th className="py-3 px-4">Desk Message Summary</th>

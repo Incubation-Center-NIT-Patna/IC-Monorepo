@@ -247,9 +247,9 @@ export default function MyProfilePage() {
         </div>
         <p className="text-xs text-slate-600 leading-relaxed">
           {currentUser?.role === ROLES.SUPER_ADMIN
-            ? 'Full administrative authority across all modules, candidate evaluation pipelines, user role policies, and system settings.'
+            ? 'Full administrative authority across all sections, candidate evaluation processes, user access policies, and system settings.'
             : currentUser?.role === ROLES.ADMIN
-            ? 'Functional module administrative scope to create and update authorized website content and review candidates.'
+            ? 'Authorized section management scope to publish website content and evaluate candidates.'
             : 'Standard member access with personal workspace view and profile customization.'}
         </p>
       </Card>

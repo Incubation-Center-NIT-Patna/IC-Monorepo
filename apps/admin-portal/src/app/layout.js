@@ -23,7 +23,7 @@ export const metadata = {
     template: '%s | IC NIT Patna Admin Portal',
   },
   description:
-    'Administrative Management Hub & RBAC Portal for Incubation Center, National Institute of Technology Patna.',
+    'Administrative Management Portal for Incubation Center, National Institute of Technology Patna.',
   applicationName: 'IC NITP Admin Portal',
   icons: {
     icon: '/ic_logo.png',

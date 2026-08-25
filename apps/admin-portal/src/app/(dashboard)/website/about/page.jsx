@@ -362,15 +362,15 @@ export default function AboutSectionEditorPage() {
             </div>
           </Card>
 
-          {/* SECTION 3: VISION PILLARS TABULAR TABLE */}
+          {/* SECTION 3: VISION PILLARS SECTION */}
           <div className="space-y-3 pt-2">
             <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
               <div>
                 <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-amber-600" />
-                  <span>3. Vision Pillars Table</span>
+                  <span>3. Vision Pillars</span>
                 </h3>
-                <p className="text-xs text-slate-500">Strategic incubation pillars and core objectives in tabular view.</p>
+                <p className="text-xs text-slate-500">Strategic incubation pillars and core objectives.</p>
               </div>
               <Button variant="primary" size="xs" icon={Plus} onClick={handleOpenAddVision}>
                 Add Vision Pillar
@@ -380,9 +380,9 @@ export default function AboutSectionEditorPage() {
             {/* Vision Pillars Data Table */}
             <CardWrapper className="p-0 overflow-hidden border-[#E2E8F0] bg-white">
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left border-collapse min-w-[650px] sm:min-w-full">
                   <thead>
-                    <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                    <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-slate-600 whitespace-nowrap">
                       <th className="py-3 px-4">Step & Title</th>
                       <th className="py-3 px-4">Tagline / Subtitle</th>
                       <th className="py-3 px-4">Description Summary</th>
@@ -446,7 +446,7 @@ export default function AboutSectionEditorPage() {
             </CardWrapper>
           </div>
 
-          {/* SECTION 4: HOW WE SUPPORT TABULAR TABLE */}
+          {/* SECTION 4: HOW WE SUPPORT SECTION */}
           <div className="space-y-3 pt-2">
             <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
               <div>
@@ -454,7 +454,7 @@ export default function AboutSectionEditorPage() {
                   <HeartHandshake className="w-4 h-4 text-[#1E40AF]" />
                   <span>4. How We Support Section</span>
                 </h3>
-                <p className="text-xs text-slate-500">Mentorship, funding, workspace, and networking support initiatives in tabular view.</p>
+                <p className="text-xs text-slate-500">Mentorship, funding, workspace, and networking support initiatives.</p>
               </div>
               <Button variant="primary" size="xs" icon={Plus} onClick={handleOpenAddSupport}>
                 Add Support Initiative
@@ -464,9 +464,9 @@ export default function AboutSectionEditorPage() {
             {/* Support Initiatives Data Table */}
             <CardWrapper className="p-0 overflow-hidden border-[#E2E8F0] bg-white">
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left border-collapse min-w-[650px] sm:min-w-full">
                   <thead>
-                    <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-slate-600">
+                    <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-slate-600 whitespace-nowrap">
                       <th className="py-3 px-4">Initiative Name & Title</th>
                       <th className="py-3 px-4">Category Tag</th>
                       <th className="py-3 px-4">Description Summary</th>

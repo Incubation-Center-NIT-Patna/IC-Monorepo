@@ -150,7 +150,7 @@ export default function DataTable({
       {/* Table Surface */}
       <div className="rounded-md border border-[#E2E8F0] bg-white overflow-hidden shadow-xs">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs border-collapse">
+          <table className="w-full text-left text-xs border-collapse min-w-[640px] sm:min-w-full">
             <thead className="bg-[#F8FAFC] text-slate-500 font-bold uppercase tracking-wider text-[10px] border-b border-[#E2E8F0]">
               <tr>
                 {columns.map((col) => {
@@ -161,7 +161,7 @@ export default function DataTable({
                     <th
                       key={col.key}
                       onClick={() => isSortable && handleSort(col.key, col.sortable)}
-                      className={`py-3 px-4 select-none ${col.className || ''} ${
+                      className={`py-3 px-4 select-none whitespace-nowrap ${col.className || ''} ${
                         isSortable ? 'cursor-pointer hover:text-slate-900 transition-colors' : ''
                       }`}
                     >

@@ -22,9 +22,10 @@ import {
   X,
 } from '@/components/icons';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { PERMISSIONS } from '@/constants/rbac';
 
 export default function DashboardPage() {
-  const { currentUser } = useAuth();
+  const { currentUser, hasPermission } = useAuth();
   const [stats] = useState(() => {
     const cmsStats = ContentService.getStats();
     const candStats = CandidateService.getStats();
@@ -63,20 +64,24 @@ export default function DashboardPage() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Link
-              href="/website/queries"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold shadow-xs transition-colors"
-            >
-              <Inbox className="w-4 h-4" />
-              <span>Queries</span>
-            </Link>
-            <Link
-              href="/evaluation"
-              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-[#1E40AF] hover:bg-[#1E3A8A] text-white text-xs font-semibold shadow-xs transition-colors"
-            >
-              <GraduationCap className="w-4 h-4" />
-              <span>Evaluate</span>
-            </Link>
+            {hasPermission(PERMISSIONS.MANAGE_QUERIES) && (
+              <Link
+                href="/website/queries"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold shadow-xs transition-colors"
+              >
+                <Inbox className="w-4 h-4" />
+                <span>Queries</span>
+              </Link>
+            )}
+            {hasPermission(PERMISSIONS.INDUCTION_EVALUATE) && (
+              <Link
+                href="/evaluation"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-[#1E40AF] hover:bg-[#1E3A8A] text-white text-xs font-semibold shadow-xs transition-colors"
+              >
+                <GraduationCap className="w-4 h-4" />
+                <span>Evaluate</span>
+              </Link>
+            )}
           </div>
         </div>
 
@@ -214,9 +219,9 @@ export default function DashboardPage() {
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left border-collapse min-w-[520px] sm:min-w-full">
                   <thead>
-                    <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                    <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">
                       <th className="py-2.5 px-3">Founder</th>
                       <th className="py-2.5 px-3">Startup Domain</th>
                       <th className="py-2.5 px-3">Stage</th>
@@ -303,9 +308,9 @@ export default function DashboardPage() {
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-left border-collapse min-w-[520px] sm:min-w-full">
                   <thead>
-                    <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                    <tr className="border-b border-[#E2E8F0] bg-[#F8FAFC] text-[10px] font-bold uppercase tracking-wider text-slate-500 whitespace-nowrap">
                       <th className="py-2.5 px-3">Candidate</th>
                       <th className="py-2.5 px-3">Branch & Roll</th>
                       <th className="py-2.5 px-3">Score</th>
@@ -408,7 +413,7 @@ export default function DashboardPage() {
             <CardWrapper className="p-4 sm:p-5">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold text-slate-900">Quick Navigation</h3>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">CMS Shortcuts</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Website Shortcuts</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {[
@@ -418,6 +423,7 @@ export default function DashboardPage() {
                     subtitle: 'Contact form submissions',
                     icon: Inbox,
                     bg: 'bg-amber-50 text-amber-700 border-amber-200',
+                    permission: PERMISSIONS.MANAGE_QUERIES,
                   },
                   {
                     href: '/website/incubations',
@@ -425,6 +431,7 @@ export default function DashboardPage() {
                     subtitle: 'Startup venture directory',
                     icon: Rocket,
                     bg: 'bg-purple-50 text-purple-700 border-purple-200',
+                    permission: PERMISSIONS.MANAGE_INCUBATIONS,
                   },
                   {
                     href: '/website/talks',
@@ -432,6 +439,7 @@ export default function DashboardPage() {
                     subtitle: 'Guest speaker keynotes',
                     icon: Mic,
                     bg: 'bg-blue-50 text-[#1E40AF] border-blue-200',
+                    permission: PERMISSIONS.MANAGE_TALKS,
                   },
                   {
                     href: '/website/about',
@@ -439,6 +447,7 @@ export default function DashboardPage() {
                     subtitle: 'Website intro & pillars',
                     icon: FileText,
                     bg: 'bg-emerald-50 text-emerald-700 border-emerald-200',
+                    permission: PERMISSIONS.MANAGE_ABOUT,
                   },
                   {
                     href: '/website/events',
@@ -446,6 +455,7 @@ export default function DashboardPage() {
                     subtitle: 'Pitch days & summits',
                     icon: CalendarDays,
                     bg: 'bg-rose-50 text-rose-700 border-rose-200',
+                    permission: PERMISSIONS.MANAGE_EVENTS,
                   },
                   {
                     href: '/website/team',
@@ -453,15 +463,18 @@ export default function DashboardPage() {
                     subtitle: 'Faculty & coordinators',
                     icon: Users2,
                     bg: 'bg-indigo-50 text-indigo-700 border-indigo-200',
+                    permission: PERMISSIONS.MANAGE_TEAM,
                   },
-                ].map((item) => {
-                  const Icon = item.icon;
-                  return (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className="p-2.5 rounded-lg border border-[#E2E8F0] bg-white hover:bg-slate-50 hover:border-slate-300 hover:shadow-xs transition-all flex items-center justify-between group"
-                    >
+                ]
+                  .filter((item) => !item.permission || hasPermission(item.permission))
+                  .map((item) => {
+                    const Icon = item.icon;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="p-2.5 rounded-lg border border-[#E2E8F0] bg-white hover:bg-slate-50 hover:border-slate-300 hover:shadow-xs transition-all flex items-center justify-between group"
+                      >
                       <div className="flex items-center gap-2.5 min-w-0">
                         <span className={`w-7 h-7 rounded-md ${item.bg} border flex items-center justify-center shrink-0 transition-transform group-hover:scale-105`}>
                           <Icon className="w-3.5 h-3.5" />

@@ -40,7 +40,7 @@ export const SIDEBAR_NAV_GROUPS = [
     ],
   },
   {
-    title: 'Website CMS',
+    title: 'Website Management',
     items: [
       {
         label: 'Notices',

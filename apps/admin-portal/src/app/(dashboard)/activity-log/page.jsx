@@ -43,7 +43,7 @@ export default function ActivityLogPage() {
   const columns = [
     {
       key: 'user',
-      header: 'Actor / User',
+      header: 'Performed By',
       sortable: true,
       render: (item) => (
         <div className="flex items-center gap-2.5">
@@ -126,8 +126,8 @@ export default function ActivityLogPage() {
         {/* Header */}
         <PageHeader
           icon={History}
-          title="Activity Log Audit Trail"
-          description="Real-time timeline of CMS updates, candidate evaluations, and role permission changes."
+          title="Activity & Audit Log"
+          description="Real-time timeline of website content updates, candidate evaluations, and access permission changes."
         />
 
         {/* Category Filter Pills */}
@@ -151,7 +151,7 @@ export default function ActivityLogPage() {
         {isLoading ? (
           <div className="flex flex-col items-center justify-center py-16 gap-2.5 bg-white rounded-2xl border border-[#E2E8F0] shadow-xs">
             <div className="w-7 h-7 border-2 border-[#1E40AF]/20 border-t-[#1E40AF] rounded-full animate-spin"></div>
-            <p className="text-xs text-slate-500 font-bold">Loading activity audit records...</p>
+            <p className="text-xs text-slate-500 font-bold">Loading activity records...</p>
           </div>
         ) : (
           <>
