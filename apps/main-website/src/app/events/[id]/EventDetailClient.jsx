@@ -5,6 +5,7 @@ import Image from 'next/image';
 import GlassCard from '@/components/ui/GlassCard';
 import Button from '@/components/ui/Button';
 import Badge from '@/components/ui/Badge';
+import { getOptimizedCloudinaryUrl } from '@/utils/cloudinary';
 import {
   CalendarIcon,
   ClockIcon,
@@ -15,6 +16,7 @@ import {
 
 export default function EventDetailClient({ event }) {
   const [copied, setCopied] = useState(false);
+  const optimizedImage = getOptimizedCloudinaryUrl(event.image, { width: 1200 });
 
   const handleCopyLink = () => {
     if (typeof window !== 'undefined') {
@@ -29,7 +31,7 @@ export default function EventDetailClient({ event }) {
       <div className="relative rounded-3xl overflow-hidden border border-white/10 bg-[#060a14] mb-10 shadow-2xl">
         <div className="relative h-[280px] sm:h-[380px] md:h-[440px] w-full bg-neutral-950">
           <Image
-            src={event.image}
+            src={optimizedImage}
             alt={event.title}
             fill
             priority

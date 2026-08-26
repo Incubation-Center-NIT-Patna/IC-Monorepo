@@ -7,6 +7,7 @@ import { motion } from 'motion/react';
 import GlassCard from '@/components/ui/GlassCard';
 import Badge from '@/components/ui/Badge';
 import { CalendarIcon, LocationIcon } from '@/components/icons';
+import { getOptimizedCloudinaryUrl } from '@/utils/cloudinary';
 
 const CATEGORIES = ['All', 'Competition', 'Workshop', 'Conclave', 'Summit', 'Investor Connect'];
 
@@ -55,7 +56,7 @@ export default function EventsPageClient({ events = [] }) {
               >
                 <div className="relative h-[200px] w-full overflow-hidden bg-neutral-900">
                   <Image
-                    src={event.image}
+                    src={getOptimizedCloudinaryUrl(event.image, { width: 500 })}
                     alt={event.title}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 380px"

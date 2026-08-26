@@ -8,11 +8,14 @@ import { Autoplay, FreeMode } from 'swiper/modules';
 import SectionHeader from '@/components/ui/SectionHeader';
 import Button from '@/components/ui/Button';
 import { TALKS_DATA } from '@/constants/talks';
+import { getOptimizedCloudinaryUrl } from '@/utils/cloudinary';
 
 import 'swiper/css';
 import 'swiper/css/free-mode';
 
 export function TalkCard({ talk }) {
+  const optimizedPhoto = getOptimizedCloudinaryUrl(talk.photo, { width: 150 });
+
   return (
     <motion.div
       whileHover={{ y: -6, scale: 1.02 }}
@@ -28,7 +31,7 @@ export function TalkCard({ talk }) {
       <div className="flex shrink-0 items-center gap-4 border-t border-white/10 bg-black/75 p-4">
         <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 border border-[#0ef] bg-neutral-800">
           <Image
-            src={talk.photo}
+            src={optimizedPhoto}
             alt={talk.name}
             fill
             sizes="48px"
