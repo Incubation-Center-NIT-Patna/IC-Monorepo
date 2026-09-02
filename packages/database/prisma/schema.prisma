@@ -32,6 +32,12 @@ model User {
   trustedDevices      TrustedDevice[]
   roles               UserRole[]
 
+  // Event platform relationships
+  eventParticipations EventParticipant[]
+  eventStaffRoles     EventStaff[]
+  eventScans          EventScan[]
+  eventSubmissions    EventSubmission[]
+
   @@map("user")
 }
 
@@ -66,6 +72,7 @@ model Account {
   password              String?
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
+  issuer                String?
 
   @@index([userId])
   @@map("account")
@@ -175,4 +182,308 @@ model AccountRecoveryRequest {
 model OtpCooldown {
   phoneNumber String   @id
   expiresAt   DateTime
-}
+}
+
+// ==========================================
+// EVENT PLATFORM
+// ==========================================
+
+enum EventType {
+  STARTUP_HUNT
+  TREASURE_HUNT
+  HACKATHON
+  QUIZ
+  COMPETITION
+  CUSTOM
+}
+
+enum EventStatus {
+  DRAFT
+  REGISTRATION_OPEN
+  REGISTRATION_CLOSED
+  ACTIVE
+  BUILDING
+  SUBMISSIONS_OPEN
+  SUBMISSIONS_CLOSED
+  COMPLETED
+  CANCELLED
+}
+
+enum CheckpointType {
+  QR
+  CODE
+  NFC
+  LOCATION
+  MANUAL
+  CUSTOM
+}
+
+enum EventStaffRole {
+  OWNER
+  ADMIN
+  STAFF
+  JUDGE
+  VIEWER
+}
+
+
+model Event {
+  id          String      @id @default(uuid())
+  name        String
+  slug        String      @unique
+  description String?
+
+  type        EventType
+  status      EventStatus @default(DRAFT)
+
+  startsAt    DateTime?
+  endsAt      DateTime?
+
+  config      Json?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  participants EventParticipant[]
+  teams        EventTeam[]
+  staff        EventStaff[]
+  checkpoints  EventCheckpoint[]
+  resources    EventResource[]
+  submissions  EventSubmission[]
+
+  @@index([type])
+  @@index([status])
+}
+
+
+model EventParticipant {
+  id           String   @id @default(uuid())
+
+  eventId      String
+  userId       String
+
+  registeredAt DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  teamMemberships EventTeamMember[]
+  teamJoinRequests TeamJoinRequest[]
+
+  @@unique([eventId, userId])
+  @@index([eventId])
+  @@index([userId])
+}
+
+model EventTeam {
+  id          String @id @default(uuid())
+
+  eventId     String
+  name        String
+
+  totalPoints Int @default(0)
+
+  metadata    Json?
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  members       EventTeamMember[]
+  checkpoints   EventTeamCheckpoint[]
+  scans         EventScan[]
+  resources     EventTeamResource[]
+  submissions   EventSubmission[]
+  joinRequests  TeamJoinRequest[]
+
+  @@unique([eventId, name])
+  @@index([eventId])
+}
+
+model EventTeamMember {
+  id            String @id @default(uuid())
+
+  participantId String @unique
+  teamId        String
+
+  joinedAt      DateTime @default(now())
+
+  participant EventParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+  team        EventTeam        @relation(fields: [teamId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+}
+
+
+model EventStaff {
+  id        String @id @default(uuid())
+
+  eventId   String
+  userId    String
+
+  role      EventStaffRole
+
+  createdAt DateTime @default(now())
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+  @@index([userId])
+}
+
+
+model EventResource {
+  id          String @id @default(uuid())
+
+  eventId     String
+
+  name        String
+  description String?
+  type        String
+
+  content     Json?
+
+  active      Boolean @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  teamResources EventTeamResource[]
+
+  @@index([eventId])
+}
+
+model EventTeamResource {
+  id           String @id @default(uuid())
+
+  teamId       String
+  resourceId   String
+
+  checkpointId String?
+
+  unlockedAt   DateTime @default(now())
+
+  team     EventTeam     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  resource EventResource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, resourceId])
+  @@index([teamId])
+  @@index([resourceId])
+}
+
+
+model EventCheckpoint {
+  id        String @id @default(uuid())
+
+  eventId   String
+  sequence  Int
+
+  name      String?
+  type      CheckpointType
+
+  points    Int @default(0)
+
+  config    Json?
+
+  active    Boolean @default(true)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  teamCheckpoints EventTeamCheckpoint[]
+
+  @@unique([eventId, sequence])
+  @@index([eventId])
+}
+
+model EventTeamCheckpoint {
+  id           String @id @default(uuid())
+
+  teamId       String
+  checkpointId String
+
+  tokenHash    String @unique
+
+  status       String @default("LOCKED")
+
+  assignedAt   DateTime @default(now())
+  completedAt  DateTime?
+
+  team       EventTeam       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  checkpoint EventCheckpoint @relation(fields: [checkpointId], references: [id], onDelete: Cascade)
+
+  scans EventScan[]
+
+  @@unique([teamId, checkpointId])
+  @@index([teamId])
+  @@index([checkpointId])
+}
+
+model EventScan {
+  id               String @id @default(uuid())
+
+  teamId           String
+  teamCheckpointId String
+
+  scannedByUserId  String
+
+  pointsAwarded    Int @default(0)
+
+  scannedAt        DateTime @default(now())
+
+  team           EventTeam           @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  teamCheckpoint EventTeamCheckpoint @relation(fields: [teamCheckpointId], references: [id], onDelete: Cascade)
+  scannedBy      User                @relation(fields: [scannedByUserId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, teamCheckpointId])
+  @@index([teamId])
+  @@index([scannedByUserId])
+  @@index([scannedAt])
+}
+
+model EventSubmission {
+  id        String @id @default(uuid())
+
+  eventId   String
+  teamId    String?
+
+  submittedByUserId String?
+
+  data      Json
+
+  status    String @default("DRAFT")
+
+  submittedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  event       Event      @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  team        EventTeam? @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  submittedBy User?      @relation(fields: [submittedByUserId], references: [id], onDelete: Cascade)
+
+  @@index([eventId])
+  @@index([teamId])
+}
+
+model TeamJoinRequest {
+  id            String @id @default(uuid())
+  teamId        String
+  participantId String
+  status        String @default("PENDING") // PENDING, APPROVED, REJECTED
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  team        EventTeam        @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  participant EventParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
+
+  @@unique([teamId, participantId])
+  @@index([teamId])
+  @@index([participantId])
+}

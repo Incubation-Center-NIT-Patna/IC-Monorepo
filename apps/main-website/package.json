@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev -p 3000",
+    "dev": "cross-env-shell \"next dev -p $PORT_MAIN_WEBSITE\"",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
@@ -11,7 +11,7 @@
   "dependencies": {
     "lucide-react": "^1.16.0",
     "motion": "^13.1.0",
-    "next": "16.3.1",
+    "next": "16.3.2",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "swiper": "^14.1.0",
