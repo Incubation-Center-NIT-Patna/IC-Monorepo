@@ -3,6 +3,7 @@ import { prisma } from "../../src/index";
 import { seedPermissions } from "./permissions";
 import { seedRoles } from "./roles";
 import { seedSuperAdmin } from "./super-admin";
+import { seedEvents } from "./events";
 
 async function main() {
   console.log("==================================");
@@ -14,6 +15,8 @@ async function main() {
   await seedRoles(prisma);
 
   await seedSuperAdmin(prisma);
+
+  await seedEvents(prisma);
 
   console.log("\n🎉 Database seed completed.");
 }

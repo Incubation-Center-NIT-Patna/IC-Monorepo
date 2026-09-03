@@ -1,6 +1,12 @@
 {
   "$schema": "https://turborepo.dev/schema.json",
   "ui": "tui",
+  "globalEnv": [
+    "PORT_MAIN_WEBSITE",
+    "PORT_INDUCTION_PORTAL",
+    "PORT_EVENTS_PORTAL",
+    "API_PORT"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],

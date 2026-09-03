@@ -1,4 +1,4 @@
-import { env } from "./env";
+import { env } from "@repo/env";
 import { buildApp } from "./app";
 
 const app = buildApp();

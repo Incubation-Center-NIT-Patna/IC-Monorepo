@@ -1,7 +1,7 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: rmp-postgres
+    container_name: ic-postgres
     restart: unless-stopped
 
     environment:
@@ -34,7 +34,7 @@ services:
 
     restart: unless-stopped
 
-    command: sh -c "cd packages/database && npx prisma migrate deploy && npx tsx prisma/seed/index.ts && cd ../../apps/api && npm run start"
+    command: sh -c "cd packages/database && npx prisma generate && npx prisma db push --accept-data-loss && npx tsx prisma/seed-event.ts && cd ../../apps/api && npm run start"
 
     environment:
       NODE_ENV: production
@@ -68,6 +68,8 @@ services:
     build:
       context: .
       dockerfile: apps/induction-portal/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
 
     container_name: rmp-web
 
@@ -81,6 +83,28 @@ services:
 
     ports:
       - "${WEB_PORT:-3000}:3000"
+
+    depends_on:
+      - api
+      
+  events-portal:
+    build:
+      context: .
+      dockerfile: apps/events-portal/Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+
+    container_name: rmp-events
+
+    restart: unless-stopped
+
+    environment:
+      NODE_ENV: production
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+      API_URL: http://api:4000/api
+
+    ports:
+      - "3002:3002"
 
     depends_on:
       - api

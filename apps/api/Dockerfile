@@ -19,6 +19,7 @@ RUN pnpm install
 # Build the project and its dependencies
 COPY --from=builder /app/out/full/ .
 COPY turbo.json turbo.json
+RUN pnpm --filter @repo/database run db:generate
 RUN pnpm turbo run build --filter=api
 
 FROM node:22-alpine AS runner
