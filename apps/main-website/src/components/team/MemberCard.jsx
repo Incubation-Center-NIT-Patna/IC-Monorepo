@@ -5,9 +5,11 @@ import Image from 'next/image';
 import { motion } from 'motion/react';
 import Badge from '@/components/ui/Badge';
 import { GitHubIcon, LinkedInIcon, InstagramIcon } from '@/components/icons';
+import { getOptimizedCloudinaryUrl } from '@/utils/cloudinary';
 
 export default function MemberCard({ info, isPast = false }) {
   const [imgError, setImgError] = useState(!info.image || info.image.trim() === '');
+  const optimizedSrc = getOptimizedCloudinaryUrl(info.image, { width: 320 });
 
   const hasGithub = Boolean(info.github && info.github !== '#');
   const hasLinkedin = Boolean(info.linkedin && info.linkedin !== '#');
@@ -32,7 +34,7 @@ export default function MemberCard({ info, isPast = false }) {
       >
         {!imgError ? (
           <Image
-            src={info.image}
+            src={optimizedSrc}
             alt={info.name}
             fill
             sizes="128px"

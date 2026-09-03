@@ -9,6 +9,7 @@ import SectionHeader from '@/components/ui/SectionHeader';
 import Button from '@/components/ui/Button';
 import { GALLERY_IMAGES_DATA } from '@/constants/gallery';
 import { ArrowLeftIcon, ArrowRightIcon } from '@/components/icons';
+import { getOptimizedCloudinaryUrl } from '@/utils/cloudinary';
 
 import 'swiper/css';
 import 'swiper/css/effect-coverflow';
@@ -80,7 +81,7 @@ export default function GallerySection({ images = GALLERY_IMAGES_DATA }) {
             >
               <div className="group relative h-full w-full overflow-hidden rounded-2xl bg-neutral-900 border border-white/10">
                 <Image
-                  src={image.src}
+                  src={getOptimizedCloudinaryUrl(image.src, { width: 600 })}
                   alt={image.alt || image.caption || 'Gallery photo'}
                   fill
                   sizes="(max-width: 640px) 260px, (max-width: 768px) 340px, 410px"
@@ -98,7 +99,7 @@ export default function GallerySection({ images = GALLERY_IMAGES_DATA }) {
           ))}
         </Swiper>
 
-        <div className="gallery-pagination flex justify-center items-center gap-2 mt-6 [&_.swiper-pagination-bullet]:w-2.5 [&_.swiper-pagination-bullet]:h-2.5 [&_.swiper-pagination-bullet]:rounded-full [&_.swiper-pagination-bullet]:bg-[#0ef]/40 [&_.swiper-pagination-bullet]:transition-all [&_.swiper-pagination-bullet-active]:bg-[#0ef] [&_.swiper-pagination-bullet-active]:w-4 [&_.swiper-pagination-bullet-active]:shadow-[0_0_8px_#0ef]" />
+        <div className="gallery-pagination hidden sm:flex justify-center items-center gap-2 mt-6 [&_.swiper-pagination-bullet]:w-2.5 [&_.swiper-pagination-bullet]:h-2.5 [&_.swiper-pagination-bullet]:rounded-full [&_.swiper-pagination-bullet]:bg-[#0ef]/40 [&_.swiper-pagination-bullet]:transition-all [&_.swiper-pagination-bullet-active]:bg-[#0ef] [&_.swiper-pagination-bullet-active]:w-4 [&_.swiper-pagination-bullet-active]:shadow-[0_0_8px_#0ef]" />
       </div>
 
       <motion.div

@@ -4,6 +4,7 @@ import React, { useState, useRef, useCallback } from 'react';
 import Image from 'next/image';
 import { motion } from 'motion/react';
 import LightboxModal from '@/components/ui/LightboxModal';
+import { getOptimizedCloudinaryUrl } from '@/utils/cloudinary';
 
 const INITIAL_LOAD_COUNT = 12;
 const BATCH_LOAD_COUNT = 6;
@@ -62,7 +63,7 @@ export default function GalleryPageClient({ images = [] }) {
             className="relative overflow-hidden w-full aspect-[4/3] rounded-2xl border border-white/10 shadow-lg cursor-pointer bg-neutral-900 group transition-all duration-300 hover:border-[#0ef]/60 hover:shadow-[0_0_25px_rgba(14,239,255,0.25)]"
           >
             <Image
-              src={img.src}
+              src={getOptimizedCloudinaryUrl(img.src, { width: 600 })}
               alt={img.alt || img.caption || 'Gallery photo'}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"

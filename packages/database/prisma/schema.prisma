@@ -15,22 +15,30 @@ datasource db {
 // Better auth tables
 
 model User {
-  id                  String          @id
+  id                  String           @id
   name                String?
-  email               String?         @unique
-  emailVerified       Boolean         @default(false)
-  phoneNumber         String?         @unique
-  phoneNumberVerified Boolean         @default(false)
+  email               String?          @unique
+  emailVerified       Boolean          @default(false)
+  phoneNumber         String?          @unique
+  phoneNumberVerified Boolean          @default(false)
   image               String?
-  banned              Boolean         @default(false)
+  banned              Boolean          @default(false)
   bannedAt            DateTime?
   bannedReason        String?
-  createdAt           DateTime        @default(now())
-  updatedAt           DateTime        @updatedAt
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
   sessions            Session[]
   accounts            Account[]
   trustedDevices      TrustedDevice[]
   roles               UserRole[]
+  teamMemberships     TeamMember[]
+  applications        Application[]
+  createdTasks        Task[]
+  taskSubmissions     TaskSubmission[]
+  interviews          Interview[]
+  notices             Notice[]
+  queries             Query[]
+  queryResponses      QueryResponse[]
 
   // Event platform relationships
   eventParticipations EventParticipant[]
@@ -89,7 +97,6 @@ model Verification {
   @@index([identifier])
   @@map("verification")
 }
-
 
 model TrustedDevice {
   id              String    @id @default(cuid())
@@ -182,6 +189,172 @@ model AccountRecoveryRequest {
 model OtpCooldown {
   phoneNumber String   @id
   expiresAt   DateTime
+}
+
+// Schema design for Induction Portal -->
+model Team {
+  id              String           @id @default(uuid())
+  name            String           @unique @db.VarChar(100)
+  description     String?
+  createdAt       DateTime         @default(now())
+  members         TeamMember[]
+  applications    Application[]
+  tasks           Task[]
+  interviewRounds InterviewRound[]
+  noticeTeams     NoticeTeam[]
+  queries         Query[]
+}
+
+model TeamMember {
+  teamId String
+  userId String
+  team   Team   @relation(fields: [teamId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@id([teamId, userId])
+}
+
+enum ApplicationStatus {
+  PENDING
+  SHORTLISTED
+  ACCEPTED
+  REJECTED
+}
+
+model Application {
+  id              String            @id @default(uuid())
+  priority        Int
+  studentId       String
+  teamId          String
+  student         User              @relation(fields: [studentId], references: [id])
+  team            Team              @relation(fields: [teamId], references: [id])
+  currentStatus   ApplicationStatus
+  createdAt       DateTime          @default(now())
+  taskSubmissions TaskSubmission[]
+  interviews      Interview[]
+
+  @@unique([studentId, teamId])
+  @@unique([studentId, priority])
+}
+
+model Task {
+  id              String           @id @default(uuid())
+  teamId          String
+  team            Team             @relation(fields: [teamId], references: [id])
+  createdById     String
+  createdBy       User             @relation(fields: [createdById], references: [id])
+  title           String           @db.VarChar(100)
+  description     String?
+  deadline        DateTime
+  maxScore        Int
+  createdAt       DateTime         @default(now())
+  userId          String?
+  taskSubmissions TaskSubmission[]
+}
+
+model TaskSubmission {
+  id            String      @id @default(uuid())
+  taskId        String
+  task          Task        @relation(fields: [taskId], references: [id])
+  applicationId String
+  application   Application @relation(fields: [applicationId], references: [id])
+  evaluatedById String?
+  evaluatedBy   User?       @relation(fields: [evaluatedById], references: [id])
+  submissionUrl String
+  score         Int?
+  feedback      String?
+  submittedAt   DateTime    @default(now())
+}
+
+model InterviewRound {
+  id                   String                @id @default(uuid())
+  teamId               String
+  team                 Team                  @relation(fields: [teamId], references: [id])
+  roundNumber          Int
+  roundName            String                @db.VarChar(100)
+  evaluationParameters EvaluationParameter[]
+  interviews           Interview[]
+}
+
+model EvaluationParameter {
+  id                   String                @id @default(uuid())
+  roundId              String
+  round                InterviewRound        @relation(fields: [roundId], references: [id])
+  parameterName        String                @db.VarChar(100)
+  weighttage           Int
+  interviewEvaluations InterviewEvaluation[]
+}
+
+model Interview {
+  id                   String                @id @default(uuid())
+  applicationId        String
+  application          Application           @relation(fields: [applicationId], references: [id])
+  roundId              String
+  round                InterviewRound        @relation(fields: [roundId], references: [id])
+  InterviewerId        String
+  interviewer          User                  @relation(fields: [InterviewerId], references: [id])
+  interviewNotes       String?
+  conductAt            DateTime
+  interviewEvaluations InterviewEvaluation[]
+}
+
+model InterviewEvaluation {
+  id          String              @id @default(uuid())
+  interviewId String
+  interview   Interview           @relation(fields: [interviewId], references: [id])
+  parameterId String
+  parameter   EvaluationParameter @relation(fields: [parameterId], references: [id])
+  rawScore    Int
+
+  @@unique([interviewId, parameterId])
+}
+
+model Notice {
+  id          String       @id @default(uuid())
+  postedBy    String
+  posted      User         @relation(fields: [postedBy], references: [id])
+  title       String       @db.VarChar(100)
+  content     String
+  isGlobal    Boolean      @default(false)
+  createdAt   DateTime     @default(now())
+  noticeTeams NoticeTeam[]
+}
+
+model NoticeTeam {
+  noticeId String
+  notice   Notice @relation(fields: [noticeId], references: [id])
+  teamId   String
+  team     Team   @relation(fields: [teamId], references: [id])
+
+  @@id([noticeId, teamId])
+}
+
+enum QueryStatus {
+  OPEN
+  RESOLVED
+}
+
+model Query {
+  id             String          @id @default(uuid())
+  studentId      String
+  student        User            @relation(fields: [studentId], references: [id])
+  teamId         String
+  team           Team            @relation(fields: [teamId], references: [id])
+  subject        String          @db.VarChar(100)
+  message        String
+  status         QueryStatus     @default(OPEN)
+  createdAt      DateTime        @default(now())
+  queryResponses QueryResponse[]
+}
+
+model QueryResponse {
+  id         String   @id @default(uuid())
+  queryId    String
+  query      Query    @relation(fields: [queryId], references: [id])
+  responseId String
+  responder  User     @relation(fields: [responseId], references: [id])
+  response   String
+  createdAt  DateTime @default(now())
 }
 
 // ==========================================

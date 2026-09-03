@@ -1,12 +1,9 @@
 import { CLOUDINARY_BASE_URL } from './const';
 
-const BASE_URL = `${CLOUDINARY_BASE_URL}/f_auto,q_auto:good,w_800/`;
-const FULL_URL = `${CLOUDINARY_BASE_URL}/f_auto,q_auto:good,w_1920/`;
-
 const createImg = (id, path, alt, caption = null) => ({
   id,
-  src: `${BASE_URL}${path}`,
-  fullSrc: `${FULL_URL}${path}`,
+  src: `${CLOUDINARY_BASE_URL}/${path}`,
+  fullSrc: `${CLOUDINARY_BASE_URL}/${path}`,
   alt,
   caption,
 });

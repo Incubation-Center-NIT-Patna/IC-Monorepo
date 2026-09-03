@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback, useSyncExternalStore } from 'r
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { CloseIcon, ArrowLeftIcon, ArrowRightIcon } from '@/components/icons';
+import { getOptimizedCloudinaryUrl } from '@/utils/cloudinary';
 
 const emptySubscribe = () => () => { };
 
@@ -116,7 +117,7 @@ export default function LightboxModal({
                 </div>
               )}
               <img
-                src={currentImage.fullSrc || currentImage.src}
+                src={getOptimizedCloudinaryUrl(currentImage.fullSrc || currentImage.src, { width: 1600 })}
                 alt={currentImage.alt || 'Gallery photo'}
                 onLoad={() => setIsImageLoading(false)}
                 onError={() => setIsImageLoading(false)}
