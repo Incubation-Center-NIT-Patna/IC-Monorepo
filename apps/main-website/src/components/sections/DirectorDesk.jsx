@@ -6,6 +6,7 @@ import { motion } from 'motion/react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import { LEADERSHIP_DATA } from '@/constants/leadership';
 import { PlayIcon, UserIcon } from '@/components/icons';
+import { getOptimizedCloudinaryUrl } from '@/utils/cloudinary';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -67,7 +68,7 @@ export default function DirectorDesk({ directors = LEADERSHIP_DATA }) {
                 >
                   {director.image ? (
                     <Image
-                      src={director.image}
+                      src={getOptimizedCloudinaryUrl(director.image, { width: 500 })}
                       alt={director.name}
                       fill
                       sizes="(max-width: 768px) 100vw, 270px"

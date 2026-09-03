@@ -5,9 +5,11 @@ import Image from 'next/image';
 import { motion } from 'motion/react';
 import Badge from '@/components/ui/Badge';
 import { EnvelopeIcon } from '@/components/icons';
+import { getOptimizedCloudinaryUrl } from '@/utils/cloudinary';
 
 export default function FacultyCard({ info, isHead = false, isPast = false }) {
   const [imgError, setImgError] = useState(!info.image || info.image.trim() === '');
+  const optimizedSrc = getOptimizedCloudinaryUrl(info.image, { width: 360 });
 
   return (
     <motion.div
@@ -34,7 +36,7 @@ export default function FacultyCard({ info, isHead = false, isPast = false }) {
       >
         {!imgError ? (
           <Image
-            src={info.image}
+            src={optimizedSrc}
             alt={info.name}
             fill
             sizes="144px"

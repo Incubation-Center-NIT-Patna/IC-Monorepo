@@ -187,7 +187,7 @@ export default function Footer() {
             exit={{ opacity: 0, scale: 0.8 }}
             onClick={scrollToTop}
             aria-label="Back to top"
-            className="fixed bottom-6 right-6 z-[9990] group flex items-center gap-2 py-2.5 px-4 rounded-full bg-[#060d1d]/90 border border-[#0ef]/50 text-[#0ef] backdrop-blur-xl shadow-[0_0_25px_rgba(0,238,255,0.35)] hover:border-[#0ef] hover:shadow-[0_0_35px_rgba(0,238,255,0.7)] hover:bg-[#0ef] hover:text-[#050810] transition-all duration-300 cursor-pointer select-none"
+            className="fixed bottom-[19px] sm:bottom-6 right-4 sm:right-6 z-[9990] group flex items-center gap-2 py-2.5 px-4 rounded-full bg-[#060d1d]/90 border border-[#0ef]/50 text-[#0ef] backdrop-blur-xl shadow-[0_0_25px_rgba(0,238,255,0.35)] hover:border-[#0ef] hover:shadow-[0_0_35px_rgba(0,238,255,0.7)] hover:bg-[#0ef] hover:text-[#050810] transition-all duration-300 cursor-pointer select-none"
           >
             <ArrowUpIcon className="w-4 h-4 transition-transform duration-300 group-hover:-translate-y-1" />
             <span className="text-xs font-mono font-bold tracking-wider uppercase">

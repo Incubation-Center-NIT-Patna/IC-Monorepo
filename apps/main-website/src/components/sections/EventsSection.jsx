@@ -7,17 +7,19 @@ import { motion } from 'motion/react';
 import SectionHeader from '@/components/ui/SectionHeader';
 import Button from '@/components/ui/Button';
 import { EVENTS_DATA } from '@/constants/events';
+import { getOptimizedCloudinaryUrl } from '@/utils/cloudinary';
 
 export function EventCard({ event }) {
   const targetUrl = event.id ? `/events/${event.id}` : (event.url || '/events');
   const isExternal = targetUrl.startsWith('http');
+  const optimizedImage = getOptimizedCloudinaryUrl(event.image, { width: 400 });
 
   return (
     <div className="perspective-[1000px] group h-[220px] w-[220px] shrink-0 sm:h-[260px] sm:w-[260px] md:h-[280px] md:w-[280px]">
       <div className="relative h-full w-full rounded-xl text-center shadow-[0_10px_30px_rgba(0,0,0,0.35)] transition-transform duration-700 [transform-style:preserve-3d] group-hover:[transform:rotateY(180deg)]">
         <div className="absolute inset-0 h-full w-full overflow-hidden rounded-xl bg-neutral-800 [backface-visibility:hidden]">
           <Image
-            src={event.image}
+            src={optimizedImage}
             alt={event.title}
             fill
             sizes="(max-width: 640px) 220px, (max-width: 768px) 260px, 280px"
