@@ -7,6 +7,8 @@ import { requireAuth } from "../../middleware/auth";
 import { prisma } from "@repo/database";
 
 import { teamRoutes } from "./teams";
+import { resourceRoutes } from "./resources";
+import { getLiveDashboardData } from "./admin";
 
 export async function eventsRoutes(app: FastifyInstance) {
   // Public or generic authenticated event routes
@@ -61,9 +63,20 @@ export async function eventsRoutes(app: FastifyInstance) {
     },
   );
 
+  // Live Dashboard Endpoint: GET /api/events/:eventId/live
+  app.get(
+    "/:eventId/live",
+    async (request, reply) => {
+      const { eventId } = request.params as { eventId: string };
+      const data = await getLiveDashboardData(eventId);
+      return reply.send(data);
+    },
+  );
+
   // Register sub-routes
   app.register(participantRoutes);
   app.register(teamRoutes);
+  app.register(resourceRoutes, { prefix: "/:eventId/resources" });
   app.register(scanRoutes, { prefix: "/:eventId/checkpoints/scan" });
   app.register(submissionRoutes, { prefix: "/:eventId/submission" });
   app.register(adminRoutes, { prefix: "/admin" });

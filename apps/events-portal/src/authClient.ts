@@ -1,7 +1,5 @@
 import { createClient } from "@repo/auth/client";
 
-if (!process.env.NEXT_PUBLIC_API_URL) {
-  throw new Error("NEXT_PUBLIC_API_URL is not set");
-}
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000/api";
 
-export const authClient = createClient(`${process.env.NEXT_PUBLIC_API_URL}/auth`);
+export const authClient = createClient(`${apiUrl}/auth`);

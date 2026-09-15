@@ -69,6 +69,11 @@ export default function ParticipantLayout({
           {["HACKATHON", "STARTUP_HUNT", "COMPETITION"].includes(event?.type) && (
             <Link href={`/${eventId}/submission`} className="text-gray-400 hover:text-cyan-400 transition-colors">Builder</Link>
           )}
+
+          <Link href={`/${eventId}/live`} className="text-gray-400 hover:text-cyan-400 transition-colors flex items-center gap-1.5">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+            Live
+          </Link>
         </nav>
       </header>
       <main className="flex-1 w-full">

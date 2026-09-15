@@ -45,6 +45,7 @@ model User {
   eventStaffRoles     EventStaff[]
   eventScans          EventScan[]
   eventSubmissions    EventSubmission[]
+  eventActivities     EventActivity[]
 
   @@map("user")
 }
@@ -399,23 +400,22 @@ enum EventStaffRole {
   VIEWER
 }
 
-
 model Event {
-  id          String      @id @default(uuid())
+  id          String  @id @default(uuid())
   name        String
-  slug        String      @unique
+  slug        String  @unique
   description String?
 
-  type        EventType
-  status      EventStatus @default(DRAFT)
+  type   EventType
+  status EventStatus @default(DRAFT)
 
-  startsAt    DateTime?
-  endsAt      DateTime?
+  startsAt DateTime?
+  endsAt   DateTime?
 
-  config      Json?
+  config Json?
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   participants EventParticipant[]
   teams        EventTeam[]
@@ -423,24 +423,24 @@ model Event {
   checkpoints  EventCheckpoint[]
   resources    EventResource[]
   submissions  EventSubmission[]
+  activities   EventActivity[]
 
   @@index([type])
   @@index([status])
 }
 
-
 model EventParticipant {
-  id           String   @id @default(uuid())
+  id String @id @default(uuid())
 
-  eventId      String
-  userId       String
+  eventId String
+  userId  String
 
   registeredAt DateTime @default(now())
 
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  teamMemberships EventTeamMember[]
+  teamMemberships  EventTeamMember[]
   teamJoinRequests TeamJoinRequest[]
 
   @@unique([eventId, userId])
@@ -449,38 +449,39 @@ model EventParticipant {
 }
 
 model EventTeam {
-  id          String @id @default(uuid())
+  id String @id @default(uuid())
 
-  eventId     String
-  name        String
+  eventId String
+  name    String
 
   totalPoints Int @default(0)
 
-  metadata    Json?
+  metadata Json?
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
-  members       EventTeamMember[]
-  checkpoints   EventTeamCheckpoint[]
-  scans         EventScan[]
-  resources     EventTeamResource[]
-  submissions   EventSubmission[]
-  joinRequests  TeamJoinRequest[]
+  members      EventTeamMember[]
+  checkpoints  EventTeamCheckpoint[]
+  scans        EventScan[]
+  resources    EventTeamResource[]
+  submissions  EventSubmission[]
+  joinRequests TeamJoinRequest[]
+  activities   EventActivity[]
 
   @@unique([eventId, name])
   @@index([eventId])
 }
 
 model EventTeamMember {
-  id            String @id @default(uuid())
+  id String @id @default(uuid())
 
   participantId String @unique
   teamId        String
 
-  joinedAt      DateTime @default(now())
+  joinedAt DateTime @default(now())
 
   participant EventParticipant @relation(fields: [participantId], references: [id], onDelete: Cascade)
   team        EventTeam        @relation(fields: [teamId], references: [id], onDelete: Cascade)
@@ -488,14 +489,13 @@ model EventTeamMember {
   @@index([teamId])
 }
 
-
 model EventStaff {
-  id        String @id @default(uuid())
+  id String @id @default(uuid())
 
-  eventId   String
-  userId    String
+  eventId String
+  userId  String
 
-  role      EventStaffRole
+  role EventStaffRole
 
   createdAt DateTime @default(now())
 
@@ -506,39 +506,48 @@ model EventStaff {
   @@index([userId])
 }
 
-
 model EventResource {
-  id          String @id @default(uuid())
+  id String @id @default(uuid())
 
-  eventId     String
+  eventId String
 
   name        String
   description String?
   type        String
 
-  content     Json?
+  content Json?
 
-  active      Boolean @default(true)
+  active Boolean @default(true)
 
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  totalQuantity     Int @default(100)
+  availableQuantity Int @default(100)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
 
   teamResources EventTeamResource[]
+  activities    EventActivity[]
 
   @@index([eventId])
 }
 
 model EventTeamResource {
-  id           String @id @default(uuid())
+  id String @id @default(uuid())
 
-  teamId       String
-  resourceId   String
+  teamId     String
+  resourceId String
 
   checkpointId String?
 
-  unlockedAt   DateTime @default(now())
+  status     String    @default("UNLOCKED")
+  quantity   Int       @default(0)
+  acquiredAt DateTime?
+  releasedAt DateTime?
+
+  unlockedAt DateTime @default(now())
+  updatedAt  DateTime @default(now()) @updatedAt
 
   team     EventTeam     @relation(fields: [teamId], references: [id], onDelete: Cascade)
   resource EventResource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
@@ -548,21 +557,20 @@ model EventTeamResource {
   @@index([resourceId])
 }
 
-
 model EventCheckpoint {
-  id        String @id @default(uuid())
+  id String @id @default(uuid())
 
-  eventId   String
-  sequence  Int
+  eventId  String
+  sequence Int
 
-  name      String?
-  type      CheckpointType
+  name String?
+  type CheckpointType
 
-  points    Int @default(0)
+  points Int @default(0)
 
-  config    Json?
+  config Json?
 
-  active    Boolean @default(true)
+  active Boolean @default(true)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -576,17 +584,17 @@ model EventCheckpoint {
 }
 
 model EventTeamCheckpoint {
-  id           String @id @default(uuid())
+  id String @id @default(uuid())
 
   teamId       String
   checkpointId String
 
-  tokenHash    String @unique
+  tokenHash String @unique
 
-  status       String @default("LOCKED")
+  status String @default("LOCKED")
 
-  assignedAt   DateTime @default(now())
-  completedAt  DateTime?
+  assignedAt  DateTime  @default(now())
+  completedAt DateTime?
 
   team       EventTeam       @relation(fields: [teamId], references: [id], onDelete: Cascade)
   checkpoint EventCheckpoint @relation(fields: [checkpointId], references: [id], onDelete: Cascade)
@@ -599,16 +607,16 @@ model EventTeamCheckpoint {
 }
 
 model EventScan {
-  id               String @id @default(uuid())
+  id String @id @default(uuid())
 
   teamId           String
   teamCheckpointId String
 
-  scannedByUserId  String
+  scannedByUserId String
 
-  pointsAwarded    Int @default(0)
+  pointsAwarded Int @default(0)
 
-  scannedAt        DateTime @default(now())
+  scannedAt DateTime @default(now())
 
   team           EventTeam           @relation(fields: [teamId], references: [id], onDelete: Cascade)
   teamCheckpoint EventTeamCheckpoint @relation(fields: [teamCheckpointId], references: [id], onDelete: Cascade)
@@ -621,16 +629,16 @@ model EventScan {
 }
 
 model EventSubmission {
-  id        String @id @default(uuid())
+  id String @id @default(uuid())
 
-  eventId   String
-  teamId    String?
+  eventId String
+  teamId  String?
 
   submittedByUserId String?
 
-  data      Json
+  data Json
 
-  status    String @default("DRAFT")
+  status String @default("DRAFT")
 
   submittedAt DateTime?
 
@@ -646,10 +654,10 @@ model EventSubmission {
 }
 
 model TeamJoinRequest {
-  id            String @id @default(uuid())
+  id            String   @id @default(uuid())
   teamId        String
   participantId String
-  status        String @default("PENDING") // PENDING, APPROVED, REJECTED
+  status        String   @default("PENDING") // PENDING, APPROVED, REJECTED
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 
@@ -659,4 +667,37 @@ model TeamJoinRequest {
   @@unique([teamId, participantId])
   @@index([teamId])
   @@index([participantId])
+}
+
+enum EventActivityAction {
+  SCAN
+  ACCEPT
+  REJECT
+  ACQUIRE
+  RELEASE
+}
+
+model EventActivity {
+  id           String              @id @default(uuid())
+
+  eventId      String
+  teamId       String?
+  userId       String?
+  resourceId   String?
+  checkpointId String?
+
+  action       EventActivityAction
+  quantity     Int?
+  metadata     Json?
+
+  createdAt    DateTime            @default(now())
+
+  event        Event               @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  team         EventTeam?          @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user         User?               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  resource     EventResource?      @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@index([eventId, createdAt])
+  @@index([teamId, createdAt])
+  @@index([resourceId, createdAt])
 }

@@ -1,10 +1,10 @@
 import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { requireAuth } from "../../middleware/auth";
-import { prisma } from "@repo/database";
+import { prisma, Prisma } from "@repo/database";
 
 const saveSubmissionSchema = z.object({
-  data: z.record(z.any()),
+  data: z.record(z.string(), z.any()),
 });
 
 export async function submissionRoutes(app: FastifyInstance) {
@@ -77,7 +77,7 @@ export async function submissionRoutes(app: FastifyInstance) {
       if (existing) {
         submission = await prisma.eventSubmission.update({
           where: { id: existing.id },
-          data: { data: body.data.data, submittedByUserId: user.id },
+          data: { data: body.data.data as Prisma.InputJsonValue, submittedByUserId: user.id },
         });
       } else {
         submission = await prisma.eventSubmission.create({
@@ -85,7 +85,7 @@ export async function submissionRoutes(app: FastifyInstance) {
             eventId,
             teamId,
             submittedByUserId: user.id,
-            data: body.data.data,
+            data: body.data.data as Prisma.InputJsonValue,
             status: "DRAFT",
           },
         });

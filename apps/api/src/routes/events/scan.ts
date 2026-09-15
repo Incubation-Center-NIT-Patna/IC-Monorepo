@@ -144,13 +144,31 @@ export async function scanRoutes(app: FastifyInstance) {
                   teamId: teamId,
                   resourceId: resource.id,
                   checkpointId: teamCheckpoint.checkpoint.id,
+                  status: "UNLOCKED",
                 },
                 include: { resource: true }
               });
             }
           }
 
-          return { scan, updatedTeam, unlockedResource };
+          // Record audit activity in timeline
+          const activity = await tx.eventActivity.create({
+            data: {
+              eventId: eventId,
+              teamId: teamId,
+              userId: user.id,
+              resourceId: unlockedResource?.resourceId ?? null,
+              checkpointId: teamCheckpoint.checkpointId,
+              action: "SCAN",
+              metadata: {
+                checkpointName: teamCheckpoint.checkpoint.name ?? `Checkpoint #${teamCheckpoint.checkpoint.sequence}`,
+                pointsAwarded: teamCheckpoint.checkpoint.points,
+                resourceUnlocked: unlockedResource?.resource?.name ?? null,
+              },
+            },
+          });
+
+          return { scan, updatedTeam, unlockedResource, activity };
         });
 
         return reply.send({

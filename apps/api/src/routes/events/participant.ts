@@ -115,4 +115,43 @@ export async function participantRoutes(app: FastifyInstance) {
       });
     },
   );
+
+  app.get(
+    "/:eventId/timeline",
+    { preHandler: [requireAuth] },
+    async (request, reply) => {
+      const { eventId } = request.params as { eventId: string };
+      const user = (request as any).user;
+
+      const participant = await prisma.eventParticipant.findUnique({
+        where: {
+          eventId_userId: {
+            eventId,
+            userId: user.id,
+          },
+        },
+        include: {
+          teamMemberships: true,
+        },
+      });
+
+      if (!participant || !participant.teamMemberships[0]) {
+        return reply.status(403).send({ error: "No team found for this participant" });
+      }
+
+      const teamId = participant.teamMemberships[0].teamId;
+
+      const activities = await prisma.eventActivity.findMany({
+        where: { eventId, teamId },
+        include: {
+          resource: { select: { id: true, name: true, type: true } },
+          user: { select: { id: true, name: true, email: true } },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 50,
+      });
+
+      return reply.send({ activities });
+    },
+  );
 }
