@@ -5,6 +5,7 @@ import { submissionRoutes } from "./submission";
 import { adminRoutes } from "./admin";
 import { eventResourceRoutes } from "./resources";
 import { adminLogRoutes } from "./admin-logs";
+import { resourceRoutes } from "./resources";
 import { requireAuth } from "../../middleware/auth";
 import { prisma } from "@repo/database";
 
@@ -74,4 +75,5 @@ export async function eventsRoutes(app: FastifyInstance) {
   app.register(eventResourceRoutes, { prefix: "/admin" });
   // Admin logs + overview
   app.register(adminLogRoutes, { prefix: "/admin" });
+  app.register(resourceRoutes, { prefix: "/:eventId/resources" });
 }

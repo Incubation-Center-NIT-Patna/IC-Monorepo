@@ -468,6 +468,7 @@ model EventTeam {
   checkpoints   EventTeamCheckpoint[]
   scans         EventScan[]
   resources     EventTeamResource[]
+  resourceLogs  EventResourceAuditLog[]
   submissions   EventSubmission[]
   joinRequests  TeamJoinRequest[]
   scanVotes     ResourceScanVote[]
@@ -537,22 +538,27 @@ model EventResource {
 
   teamResources    EventTeamResource[]
   scanVotes        ResourceScanVote[]
-
-  @@index([eventId])
+enum EventResourceAction {
+  ACQUIRE
+  RELEASE
 }
 
-model EventTeamResource {
-  id           String @id @default(uuid())
 
+model EventTeamResource {
+  id           String    @id @default(uuid())
   teamId       String
   resourceId   String
-
   checkpointId String?
 
-  unlockedAt   DateTime @default(now())
+  // Task 4 additions
+  quantity     Int       @default(1)
+  acquiredAt   DateTime  @default(now())
+  releasedAt   DateTime?
 
-  team     EventTeam     @relation(fields: [teamId], references: [id], onDelete: Cascade)
-  resource EventResource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+  unlockedAt   DateTime  @default(now())
+
+  team         EventTeam     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  resource     EventResource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
 
   @@unique([teamId, resourceId])
   @@index([teamId])
@@ -736,4 +742,18 @@ model TeamScanCooldown {
   team EventTeam @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@index([expiresAt])
+model EventResourceAuditLog {
+  id         String              @id @default(uuid())
+  teamId     String
+  resourceId String
+  action     EventResourceAction
+  quantity   Int
+  timestamp  DateTime            @default(now())
+
+  team       EventTeam     @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  resource   EventResource @relation(fields: [resourceId], references: [id], onDelete: Cascade)
+
+  @@index([teamId])
+  @@index([resourceId])
+  @@index([timestamp])
 }
