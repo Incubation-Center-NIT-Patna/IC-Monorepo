@@ -1,8 +1,10 @@
 import type { FastifyInstance } from "fastify";
 import { participantRoutes } from "./participant";
-import { scanRoutes } from "./scan";
+import { scanVoteRoutes } from "./scan";
 import { submissionRoutes } from "./submission";
 import { adminRoutes } from "./admin";
+import { eventResourceRoutes } from "./resources";
+import { adminLogRoutes } from "./admin-logs";
 import { resourceRoutes } from "./resources";
 import { requireAuth } from "../../middleware/auth";
 import { prisma } from "@repo/database";
@@ -54,7 +56,7 @@ export async function eventsRoutes(app: FastifyInstance) {
         },
       });
 
-      if (!event) {
+      if (!event || event.status === "DRAFT") {
         return reply.status(404).send({ error: "Event not found" });
       }
 
@@ -65,8 +67,13 @@ export async function eventsRoutes(app: FastifyInstance) {
   // Register sub-routes
   app.register(participantRoutes);
   app.register(teamRoutes);
-  app.register(scanRoutes, { prefix: "/:eventId/checkpoints/scan" });
+  // Phase 1 scan initiation + Phase 2/3 vote endpoints
+  app.register(scanVoteRoutes, { prefix: "/:eventId/scan" });
   app.register(submissionRoutes, { prefix: "/:eventId/submission" });
   app.register(adminRoutes, { prefix: "/admin" });
+  // Admin resource management (CRUD + QR generation + Excel import)
+  app.register(eventResourceRoutes, { prefix: "/admin" });
+  // Admin logs + overview
+  app.register(adminLogRoutes, { prefix: "/admin" });
   app.register(resourceRoutes, { prefix: "/:eventId/resources" });
 }
