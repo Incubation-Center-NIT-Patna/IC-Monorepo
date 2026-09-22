@@ -7,9 +7,8 @@ import { CLOUDINARY_BASE_URL } from '@/constants/const';
 import { getOptimizedCloudinaryUrl, useNetworkQuality } from '@/utils/cloudinary';
 
 const RAW_HERO_IMAGES = [
-  `${CLOUDINARY_BASE_URL}/v1782896081/home1_xxlclo.jpg`,
-  `${CLOUDINARY_BASE_URL}/v1782896080/home2_fwse0q.jpg`,
-  `${CLOUDINARY_BASE_URL}/v1782896080/home3_mss71d.jpg`,
+  `${CLOUDINARY_BASE_URL}/v1782887029/img15_gvvduj.jpg`,
+  `${CLOUDINARY_BASE_URL}/v1782887046/img9_arcgxv.jpg`,
   `${CLOUDINARY_BASE_URL}/v1782896082/home4_fgdtfi.jpg`,
   `${CLOUDINARY_BASE_URL}/v1782896090/IMG20230921194023_rzcmok.jpg`,
 ];

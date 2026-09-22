@@ -193,6 +193,7 @@ export default function TeamHubPage() {
       method: "POST",
       headers: authHeaders,
       credentials: "include",
+      body: JSON.stringify({}),
     });
     setActionLoading(null);
     if (res.ok) {
