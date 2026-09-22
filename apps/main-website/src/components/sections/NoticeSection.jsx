@@ -41,7 +41,12 @@ export default function NoticeSection({ notices = [] }) {
               >
                 {notice.title}
               </a>
-              <em className="mt-1 block text-[0.78rem] italic text-[#ccc] truncate">
+              {notice.description && (
+                <p className="mt-1.5 text-[0.85rem] text-[#ddd] leading-relaxed break-words whitespace-normal">
+                  {notice.description}
+                </p>
+              )}
+              <em className="mt-1.5 block text-[0.78rem] italic text-[#ccc] truncate">
                 {notice.date}
               </em>
             </motion.div>

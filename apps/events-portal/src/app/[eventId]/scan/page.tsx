@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useRef, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Html5Qrcode } from "html5-qrcode";
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
 import { authClient } from "@/authClient";
 import { getApiUrl } from "@/lib/api";
 import Link from "next/link";
@@ -202,12 +202,16 @@ export default function ScanPage() {
         const element = document.getElementById("qr-reader");
         if (!element) return;
 
-        const qrCode = new Html5Qrcode("qr-reader");
+        const qrCode = new Html5Qrcode("qr-reader", {
+          formatsToSupport: [Html5QrcodeSupportedFormats.QR_CODE]
+        });
         html5QrCodeRef.current = qrCode;
 
         await qrCode.start(
           { facingMode: "environment" },
-          { fps: 10, qrbox: { width: 240, height: 240 } },
+          { 
+            fps: 15
+          },
           (decodedText) => {
             if (isMounted) {
               if (html5QrCodeRef.current?.isScanning) {

@@ -538,6 +538,8 @@ model EventResource {
 
   teamResources    EventTeamResource[]
   scanVotes        ResourceScanVote[]
+  auditLogs        EventResourceAuditLog[]
+}
 enum EventResourceAction {
   ACQUIRE
   RELEASE
@@ -742,6 +744,7 @@ model TeamScanCooldown {
   team EventTeam @relation(fields: [teamId], references: [id], onDelete: Cascade)
 
   @@index([expiresAt])
+}
 model EventResourceAuditLog {
   id         String              @id @default(uuid())
   teamId     String
