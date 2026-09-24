@@ -2,7 +2,7 @@ export const NOTICES_DATA = [
   {
     id: 'notice-2',
     title: 'PITCHVERSE (event) Completed',
-    description: 'The Pitchverse event has successfully concluded. Thank you to all the sponsers and participants.',
+    description: 'The Pitchverse event has successfully concluded. Thank you to all the sponsors and participants.',
     date: '20 September\'26',
     url: '',
     isPinned: true,
