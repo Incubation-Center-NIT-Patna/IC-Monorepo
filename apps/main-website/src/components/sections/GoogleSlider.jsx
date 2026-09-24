@@ -16,7 +16,7 @@ export default function GoogleSlider({ slides = SUPPORT_SLIDES_DATA }) {
   return (
     <section id="support" className="site-section">
       <SectionHeader
-        title="How? we Support."
+        title="How we Support?"
         accentWord="Support."
       />
 
