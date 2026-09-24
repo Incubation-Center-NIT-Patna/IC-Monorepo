@@ -139,7 +139,7 @@ export default function EventDetailClient({ event }) {
           )}
 
           {/* Event Sponsors & Partners Section */}
-          <EventSponsorsSection sponsors={event.sponsors} />
+          {/* <EventSponsorsSection sponsors={event.sponsors} /> */}
 
           {event.eligibility && (
             <GlassCard className="p-6 rounded-3xl border border-[#0ef]/30 bg-[#0ef]/5" hoverEffect={false}>
