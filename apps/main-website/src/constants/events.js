@@ -2,6 +2,31 @@ import { CLOUDINARY_BASE_URL, pitchtember_url } from './const';
 
 export const EVENTS_DATA = [
   {
+    id: 'pitchverse-2026',
+    title: 'Pitchverse 2026',
+    tagline: 'Where Fiction Gets Funded',
+    category: 'Competition',
+    status: 'Past',
+    date: '19/09/2026',
+    startDate: '2026-09-19',
+    endDate: null,
+    time: 'Patna Campus: TBD | Bihta Campus: TBD',
+    venue: 'Patna Campus (CV Raman Hall) & Bihta Campus',
+    mode: 'In-Person',
+    image: 'https://res.cloudinary.com/ddb6lsyht/image/upload/v1790505907/Pitchverseposter2026.png',
+    url: '/timeline',
+    description: 'An unconventional entrepreneurship event where fiction meets venture capital. Participants step into the roles of iconic fictional characters and pitch their impossible, absurd, or extraordinary products as if they were real startups seeking investment.',
+    highlights: [
+      'Cosplay and fictional product pitching',
+      'High-energy negotiation and venture capital simulation',
+      'Blending culture, creativity, investment, and entertainment'
+    ],
+    speakers: [
+      { name: 'Prof. Bharat Gupta', role: 'Professor-In-Charge, IC NITP' }
+    ],
+    eligibility: 'All NIT Patna students, aspiring student entrepreneurs, and creators.'
+  },
+  {
     id: 'orientation-2023',
     title: 'Orientation Session 2023',
     tagline: 'Welcoming New Innovators & Startup Founders',
@@ -217,77 +242,4 @@ export const EVENTS_DATA = [
       },
     ],
   },
-  {
-    id: 'hack-the-future-2024',
-    title: 'Hack The Future 2024',
-    tagline: '36-Hour National Level Hackathon',
-    category: 'Hackathon',
-    status: 'Upcoming',
-    date: '15/04/2024 to 17/04/2024',
-    startDate: '2024-04-15',
-    endDate: '2024-04-17',
-    time: '09:00 AM - 09:00 PM IST',
-    venue: 'Computer Center, NIT Patna',
-    mode: 'In-Person',
-    image: `${CLOUDINARY_BASE_URL}/v1782890669/pitchtember_ax6djs.jpg`,
-    url: '/timeline',
-    description: 'Join the ultimate 36-hour coding marathon. Build innovative solutions for real-world problems using modern tech stacks.',
-    highlights: [
-      '36 hours of continuous coding.',
-      'Free meals, swag, and cloud credits.',
-      'Cash prizes worth ₹1,00,000.'
-    ],
-    speakers: [],
-    eligibility: 'Open to all university students.',
-    sponsors: [
-      {
-        id: 'github',
-        name: 'GitHub',
-        shortName: 'GitHub',
-        tier: 'Developer Partner',
-        isHighlighted: true,
-        logoUrl: 'https://cdn.simpleicons.org/github',
-        website: 'https://github.com/',
-        description:
-          'Providing developers with collaborative tools for source control, project management, open-source development, and CI/CD.',
-        perk: 'Developer Tools & Resources',
-      },
-      {
-        id: 'cloudflare',
-        name: 'Cloudflare',
-        shortName: 'Cloudflare',
-        tier: 'Infrastructure Partner',
-        isHighlighted: true,
-        logoUrl: 'https://cdn.simpleicons.org/cloudflare',
-        website: 'https://www.cloudflare.com/',
-        description:
-          'Providing developers with web security, performance, networking, and edge infrastructure technologies.',
-        perk: 'Web Infrastructure Resources',
-      },
-      {
-        id: 'mongodb',
-        name: 'MongoDB',
-        shortName: 'MongoDB',
-        tier: 'Database Partner',
-        isHighlighted: false,
-        logoUrl: 'https://cdn.simpleicons.org/mongodb',
-        website: 'https://www.mongodb.com/',
-        description:
-          'Supporting hackathon teams with modern database technology for building scalable and data-driven applications.',
-        perk: 'Database Resources',
-      },
-      {
-        id: 'postman',
-        name: 'Postman',
-        shortName: 'Postman',
-        tier: 'API Partner',
-        isHighlighted: false,
-        logoUrl: 'https://cdn.simpleicons.org/postman',
-        website: 'https://www.postman.com/',
-        description:
-          'Helping developers design, test, document, and collaborate on APIs during rapid application development.',
-        perk: 'API Development Tools',
-      },
-    ],
-  }
 ];
