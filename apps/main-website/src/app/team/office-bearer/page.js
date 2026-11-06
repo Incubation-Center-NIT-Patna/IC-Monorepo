@@ -154,7 +154,7 @@ export default function OfficeBearersPage() {
         className="text-center mb-12 max-w-[800px] px-4"
       >
         <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
-          Office Bearers
+          Honouring <span className="text-[#0ef]">Office Bearers</span>
         </h2>
       </motion.div>
 
