@@ -4,6 +4,9 @@ import { seedPermissions } from "./permissions";
 import { seedRoles } from "./roles";
 import { seedSuperAdmin } from "./super-admin";
 import { seedEvents } from "./events";
+import { seedInduction } from "./induction";
+import { seedCms } from "./cms";
+import { seedTasks } from "./tasks";
 
 async function main() {
   console.log("==================================");
@@ -17,6 +20,12 @@ async function main() {
   await seedSuperAdmin(prisma);
 
   await seedEvents(prisma);
+
+  await seedInduction(prisma);
+
+  await seedCms(prisma);
+
+  await seedTasks(prisma);
 
   console.log("\n🎉 Database seed completed.");
 }

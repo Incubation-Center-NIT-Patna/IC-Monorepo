@@ -1,31 +1,45 @@
-"use client";
+'use client';
 
-import React, { useEffect } from "react";
-import { CheckCircle2, AlertCircle, Info } from "@/components/icons";
+import React, { useEffect } from 'react';
+import {
+  CheckCircle2,
+  AlertCircle,
+  Info,
+  X,
+} from '@/components/icons';
 
-const variants = {
+const VARIANTS = {
   success: {
     icon: CheckCircle2,
-    iconColor: "text-emerald-600",
-    bgColor: "bg-white border-emerald-300 text-gray-900 shadow-xl",
+    iconWrap: 'bg-emerald-50 text-emerald-600 border-emerald-200',
+    border: 'border-emerald-200/90',
+    accent: 'bg-emerald-500',
   },
   error: {
     icon: AlertCircle,
-    iconColor: "text-rose-600",
-    bgColor: "bg-white border-rose-300 text-gray-900 shadow-xl",
+    iconWrap: 'bg-rose-50 text-rose-600 border-rose-200',
+    border: 'border-rose-200/90',
+    accent: 'bg-rose-500',
+  },
+  warning: {
+    icon: AlertCircle,
+    iconWrap: 'bg-amber-50 text-amber-600 border-amber-200',
+    border: 'border-amber-200/90',
+    accent: 'bg-amber-500',
   },
   info: {
     icon: Info,
-    iconColor: "text-[#1F3BB3]",
-    bgColor: "bg-white border-[#1F3BB3]/30 text-gray-900 shadow-xl",
+    iconWrap: 'bg-blue-50 text-[#1E40AF] border-blue-200',
+    border: 'border-blue-200/90',
+    accent: 'bg-[#1E40AF]',
   },
 };
 
 /**
- * Toast Notification
- * Centered at bottom, no close button, auto-hides in 2 seconds by default.
+ * Standard Toast Notification
+ * Positioned at top-center (just below the laptop camera).
  */
-export default function Toast({ toast, onClose, duration = 2000 }) {
+export default function Toast({ toast, onClose, duration = 3000 }) {
   useEffect(() => {
     if (!toast?.message) return;
 
@@ -34,23 +48,42 @@ export default function Toast({ toast, onClose, duration = 2000 }) {
     }, duration);
 
     return () => clearTimeout(timer);
-  }, [toast?.message, duration, onClose]);
+  }, [toast?.message, toast?.type, duration, onClose]);
 
   if (!toast?.message) return null;
 
-  const { icon: Icon, iconColor, bgColor } =
-    variants[toast.type] || variants.info;
+  const variant = VARIANTS[toast.type] || VARIANTS.info;
+  const Icon = variant.icon;
 
   return (
-    <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none transition-all">
+    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[9999] pointer-events-none px-4 w-full max-w-md flex justify-center">
       <div
         role="alert"
-        className={`pointer-events-auto flex items-center gap-3 px-4 py-2.5 rounded-md border ${bgColor} shadow-lg animate-in fade-in slide-in-from-bottom-4 duration-200 min-w-[260px] max-w-md`}
+        aria-live="polite"
+        className={`pointer-events-auto relative overflow-hidden flex items-center gap-3 pl-3.5 pr-3 py-2.5 rounded-xl border ${variant.border} bg-white/95 backdrop-blur-md shadow-lg shadow-slate-900/10 animate-in fade-in slide-in-from-top-3 duration-200 w-auto min-w-[280px] max-w-md`}
       >
-        <Icon size={16} className={`shrink-0 ${iconColor}`} />
-        <p className="text-xs sm:text-sm font-semibold text-slate-900 flex-1">
+        <span
+          className={`absolute left-0 top-0 bottom-0 w-1 ${variant.accent}`}
+          aria-hidden="true"
+        />
+        <span
+          className={`w-7 h-7 rounded-lg border flex items-center justify-center shrink-0 ${variant.iconWrap}`}
+        >
+          <Icon className="w-4 h-4" />
+        </span>
+        <p className="text-xs sm:text-[13px] font-semibold text-slate-800 flex-1 leading-snug">
           {toast.message}
         </p>
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Close notification"
+            className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors shrink-0 cursor-pointer"
+          >
+            <X className="w-3.5 h-3.5" />
+          </button>
+        )}
       </div>
     </div>
   );

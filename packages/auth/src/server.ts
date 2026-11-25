@@ -1,3 +1,3 @@
 // packages/auth/src/server.ts
 
-export { auth } from "./server/auth";
+export { auth, isAllowedGoogleEmail } from "./server/auth";

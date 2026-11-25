@@ -27,7 +27,12 @@ const schema = z.object({
   GOOGLE_CLIENT_SECRET: z.string({
     error: "GOOGLE_CLIENT_SECRET is required for admin Google sign-in",
   }),
-  GOOGLE_ALLOWED_DOMAINS: z.string().default("nitp.ac.in"),
+  GOOGLE_URL: z
+    .string({
+      error: "GOOGLE_URL is required for Google OAuth callback",
+    })
+    .url(),
+  GOOGLE_ALLOWED_DOMAINS: z.string().optional(),
   CORS_ORIGIN: z
     .string()
     .transform((s) =>
@@ -68,13 +73,11 @@ const schema = z.object({
     .transform((v) => v?.trim() || undefined)
     .pipe(z.string().url().optional()),
   WEB_REVALIDATE_SECRET: z.string().optional(),
-  /* S3 - careers file uploads (required - core to the careers feature) */
-  AWS_ACCESS_KEY_ID: z.string({ error: "AWS_ACCESS_KEY_ID is required" }),
-  AWS_SECRET_ACCESS_KEY: z.string({
-    error: "AWS_SECRET_ACCESS_KEY is required",
-  }),
-  AWS_REGION: z.string({ error: "AWS_REGION is required" }),
-  AWS_BUCKET_NAME: z.string({ error: "AWS_BUCKET_NAME is required" }),
+  /* Cloudinary Storage Configuration */
+  CLOUDINARY_CLOUD_NAME: z.string().optional(),
+  CLOUDINARY_API_KEY: z.string().optional(),
+  CLOUDINARY_API_SECRET: z.string().optional(),
+  CLOUDINARY_URL: z.string().optional(),
 });
 
 const parsed = schema.safeParse(process.env);

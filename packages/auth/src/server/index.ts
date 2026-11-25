@@ -1,4 +1,4 @@
-export { auth } from "./auth";
+export { auth, isAllowedGoogleEmail } from "./auth";
 export {
   trustedDeviceService,
   type FingerprintPayload,

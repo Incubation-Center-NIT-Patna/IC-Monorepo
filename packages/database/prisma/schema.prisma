@@ -33,12 +33,19 @@ model User {
   roles               UserRole[]
   teamMemberships     TeamMember[]
   applications        Application[]
-  createdTasks        Task[]
+  createdTasks        Task[]                @relation("TaskCreator")
+  assignedTasks       Task[]                @relation("TaskAssignee")
   taskSubmissions     TaskSubmission[]
   interviews          Interview[]
   notices             Notice[]
   queries             Query[]
   queryResponses      QueryResponse[]
+
+  // Induction platform relationships
+  studentProfile           StudentProfile?
+  inductionAccount         InductionAccount?
+  createdInductionAccounts InductionAccount[]  @relation("InductionAccountCreator")
+  inductionAuditLogs       InductionAuditLog[]
 
   // Event platform relationships
   eventParticipations EventParticipant[]
@@ -46,6 +53,19 @@ model User {
   eventScans          EventScan[]
   eventSubmissions    EventSubmission[]
   scanVoteEntries     ResourceScanVoteEntry[]
+
+  // Admin & Profile Extensions
+  department          String?
+  post                String?
+  bio                 String?
+  linkedin            String?
+  github              String?
+  instagram           String?
+  metadata            Json?
+  creationSource      String?               @default("manual") // "manual" | "induction" | "system"
+  createdFromCandidate Candidate?           @relation("CandidateLinkedUser")
+  createdCandidates   Candidate[]           @relation("CandidateCreatedBy")
+  activityLogs        SystemActivityLog[]
 
   @@map("user")
 }
@@ -133,6 +153,7 @@ model Permission {
   updatedAt DateTime @updatedAt
 
   roles RolePermission[]
+  teamPermissions TeamPermission[]
 
   @@unique([resource, action, scope])
   @@index([resource])
@@ -150,6 +171,7 @@ model Role {
 
   permissions RolePermission[]
   users       UserRole[]
+  teamRoles   TeamRole[]
 }
 
 model RolePermission {
@@ -192,27 +214,66 @@ model OtpCooldown {
   expiresAt   DateTime
 }
 
-// Schema design for Induction Portal -->
+enum TeamType {
+  OPERATIONAL
+  GLOBAL
+  FACULTY
+}
+
+// Schema design for Induction & System Teams -->
 model Team {
-  id              String           @id @default(uuid())
-  name            String           @unique @db.VarChar(100)
-  description     String?
-  createdAt       DateTime         @default(now())
-  members         TeamMember[]
-  applications    Application[]
-  tasks           Task[]
-  interviewRounds InterviewRound[]
-  noticeTeams     NoticeTeam[]
-  queries         Query[]
+  id                String             @id @default(uuid())
+  name              String             @unique @db.VarChar(100)
+  description       String?
+  type              TeamType           @default(OPERATIONAL)
+  order             Int                @default(0)
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @default(now()) @updatedAt
+  members           TeamMember[]
+  permissions       TeamPermission[]
+  roles             TeamRole[]
+  applications      Application[]
+  tasks             Task[]
+  interviewRounds   InterviewRound[]
+  noticeTeams       NoticeTeam[]
+  queries           Query[]
+  inductionAccounts InductionAccount[]
+
+  @@index([type])
+}
+
+model TeamPermission {
+  teamId       String
+  permissionId String
+
+  team       Team       @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  permission Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@id([teamId, permissionId])
+  @@index([permissionId])
+}
+
+model TeamRole {
+  teamId String
+  roleId String
+
+  team Team @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([teamId, roleId])
+  @@index([roleId])
 }
 
 model TeamMember {
-  teamId String
-  userId String
-  team   Team   @relation(fields: [teamId], references: [id])
-  user   User   @relation(fields: [userId], references: [id])
+  teamId   String
+  userId   String
+  position String @default("Member")
+  order    Int    @default(0)
+  team     Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([teamId, userId])
+  @@index([userId])
 }
 
 enum ApplicationStatus {
@@ -222,33 +283,65 @@ enum ApplicationStatus {
   REJECTED
 }
 
+model Candidate {
+  id              String        @id @default(uuid())
+  name            String
+  email           String        @unique
+  rollNumber      String        @unique
+  branch          String
+  phone           String?
+  year            Int?          @default(1)
+  resumeUrl       String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @default(now()) @updatedAt
+
+  // Link to converted system User
+  linkedUserId    String?       @unique
+  linkedUser      User?         @relation("CandidateLinkedUser", fields: [linkedUserId], references: [id], onDelete: SetNull)
+  userCreatedById String?
+  userCreatedBy   User?         @relation("CandidateCreatedBy", fields: [userCreatedById], references: [id], onDelete: SetNull)
+  userCreatedAt   DateTime?
+
+  applications    Application[]
+
+  @@index([email])
+  @@index([rollNumber])
+}
+
 model Application {
   id              String            @id @default(uuid())
   priority        Int
-  studentId       String
+  studentId       String?
+  candidateId     String?
   teamId          String
-  student         User              @relation(fields: [studentId], references: [id])
+  student         User?             @relation(fields: [studentId], references: [id])
+  candidate       Candidate?        @relation(fields: [candidateId], references: [id], onDelete: Cascade)
   team            Team              @relation(fields: [teamId], references: [id])
   currentStatus   ApplicationStatus
   createdAt       DateTime          @default(now())
   taskSubmissions TaskSubmission[]
   interviews      Interview[]
 
-  @@unique([studentId, teamId])
-  @@unique([studentId, priority])
+  @@index([candidateId])
+  @@index([studentId])
 }
 
 model Task {
   id              String           @id @default(uuid())
-  teamId          String
-  team            Team             @relation(fields: [teamId], references: [id])
+  teamId          String?
+  team            Team?            @relation(fields: [teamId], references: [id])
   createdById     String
-  createdBy       User             @relation(fields: [createdById], references: [id])
+  createdBy       User             @relation("TaskCreator", fields: [createdById], references: [id])
+  assignedToId    String?
+  assignedTo      User?            @relation("TaskAssignee", fields: [assignedToId], references: [id])
   title           String           @db.VarChar(100)
   description     String?
-  deadline        DateTime
-  maxScore        Int
+  deadline        DateTime?
+  status          String           @default("PENDING") // PENDING, IN_PROGRESS, COMPLETED
+  priority        String           @default("MEDIUM")  // LOW, MEDIUM, HIGH, URGENT
+  maxScore        Int?             @default(100)
   createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @default(now()) @updatedAt
   userId          String?
   taskSubmissions TaskSubmission[]
 }
@@ -273,6 +366,8 @@ model InterviewRound {
   team                 Team                  @relation(fields: [teamId], references: [id])
   roundNumber          Int
   roundName            String                @db.VarChar(100)
+  duration             Int                   @default(15)
+  active               Boolean               @default(true)
   evaluationParameters EvaluationParameter[]
   interviews           Interview[]
 }
@@ -295,6 +390,8 @@ model Interview {
   InterviewerId        String
   interviewer          User                  @relation(fields: [InterviewerId], references: [id])
   interviewNotes       String?
+  feedbackTags         String[]              @default([])
+  recommendation       String?
   conductAt            DateTime
   interviewEvaluations InterviewEvaluation[]
 }
@@ -305,9 +402,75 @@ model InterviewEvaluation {
   interview   Interview           @relation(fields: [interviewId], references: [id])
   parameterId String
   parameter   EvaluationParameter @relation(fields: [parameterId], references: [id])
-  rawScore    Int
+  rawScore    Float
 
   @@unique([interviewId, parameterId])
+}
+
+// Induction Profile & Account Models -->
+
+model StudentProfile {
+  id         String   @id @default(uuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  rollNumber String   @unique
+  branch     String
+  year       Int?
+  resumeUrl  String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([userId])
+  @@index([rollNumber])
+}
+
+enum InductionAccountType {
+  INTERVIEWER
+  EVALUATOR
+  TEAM_COORDINATOR
+  INDUCTION_VOLUNTEER
+  REVIEWER
+}
+
+enum InductionAccountStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
+}
+
+model InductionAccount {
+  id          String                 @id @default(uuid())
+  userId      String                 @unique
+  user        User                   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        InductionAccountType
+  status      InductionAccountStatus @default(ACTIVE)
+  teamId      String?
+  team        Team?                  @relation(fields: [teamId], references: [id], onDelete: SetNull)
+  metadata    Json?
+  createdById String?
+  createdBy   User?                  @relation("InductionAccountCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  createdAt   DateTime               @default(now())
+  updatedAt   DateTime               @updatedAt
+
+  @@index([userId])
+  @@index([type])
+  @@index([status])
+  @@index([teamId])
+}
+
+model InductionAuditLog {
+  id         String   @id @default(uuid())
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action     String
+  targetType String
+  targetId   String
+  details    Json?
+  timestamp  DateTime @default(now())
+
+  @@index([userId])
+  @@index([targetType, targetId])
+  @@index([timestamp])
 }
 
 model Notice {
@@ -760,3 +923,172 @@ model EventResourceAuditLog {
   @@index([resourceId])
   @@index([timestamp])
 }
+
+// ==========================================
+// MAIN WEBSITE CONTENT MANAGEMENT (CMS)
+// ==========================================
+
+model CmsNotice {
+  id          String   @id @default(cuid())
+  title       String
+  tag         String   @default("Incubation")
+  date        String   @default("")
+  active      Boolean  @default(true)
+  priority    String   @default("High")
+  link        String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([active])
+  @@index([tag])
+}
+
+model CmsIncubation {
+  id          String   @id @default(cuid())
+  name        String
+  founder     String
+  sector      String
+  status      String   @default("Incubated")
+  funding     String?
+  website     String?
+  image       String?
+  description String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([status])
+  @@index([sector])
+}
+
+model CmsEvent {
+  id               String   @id @default(cuid())
+  title            String
+  category         String   @default("Flagship Event")
+  date             String
+  time             String?
+  venue            String?
+  status           String   @default("Upcoming")
+  registrationLink String?
+  image            String?
+  description      String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@index([status])
+  @@index([category])
+}
+
+model CmsTeamMember {
+  id         String   @id @default(cuid())
+  name       String
+  category   String   @default("faculty")
+  post       String
+  email      String?
+  department String?
+  image      String?
+  about      String?
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([category])
+}
+
+model CmsGalleryItem {
+  id        String   @id @default(cuid())
+  title     String
+  category  String   @default("Events")
+  url       String
+  date      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+}
+
+model CmsFaq {
+  id        String   @id @default(cuid())
+  question  String
+  category  String   @default("General")
+  answer    String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+}
+
+model CmsTalk {
+  id        String   @id @default(cuid())
+  name      String
+  role      String
+  photo     String?
+  content   String
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CmsQuery {
+  id          String    @id @default(cuid())
+  name        String
+  email       String
+  phone       String?
+  domain      String?
+  stage       String?
+  message     String
+  status      String    @default("New")
+  reply       String?
+  repliedAt   DateTime?
+  submittedAt DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status])
+}
+
+model CmsCategory {
+  id        String   @id @default(cuid())
+  module    String
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([module, name])
+  @@index([module])
+}
+
+// ==========================================
+// CENTRALIZED SYSTEM ACTIVITY LOGS & SETTINGS
+// ==========================================
+
+model SystemActivityLog {
+  id        String   @id @default(cuid())
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  userName  String
+  userRole  String
+  action    String
+  category  String
+  type      String   @default("user-action")
+  status    String   @default("Completed")
+  details   Json?
+  timestamp DateTime @default(now())
+
+  @@index([userId])
+  @@index([category])
+  @@index([timestamp])
+}
+
+model SystemSetting {
+  key       String   @id
+  value     Json
+  category  String   @default("general")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([category])
+}
+

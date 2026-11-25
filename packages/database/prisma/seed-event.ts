@@ -1,50 +1,24 @@
 import { prisma } from "../src/client";
 import { randomBytes } from "crypto";
 
-import { betterAuth } from "better-auth";
-import { prismaAdapter } from "better-auth/adapters/prisma";
-
-const auth = betterAuth({
-  database: prismaAdapter(prisma, { provider: "postgresql" }),
-  emailAndPassword: { enabled: true },
-});
-
 async function main() {
-  console.log("Seeding IC Events Platform...");
+  console.log("Seeding IC Events Platform (Passwordless)...");
 
-  // 1. Clean up existing test user to ensure correct password hashing
-  await prisma.user.deleteMany({ where: { email: "participant@example.com" } });
-
-  let user = null;
-  try {
-    const res = await auth.api.signUpEmail({
-      body: {
-        email: "participant@example.com",
-        password: "Password123!",
-        name: "Test Participant",
-      },
-      headers: new Headers({
-        "Origin": "http://localhost:4000",
-        "Content-Type": "application/json"
-      })
-    });
-    user = res.user;
-    
-    // Update ID to match expected test ID
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { id: "test-user-id-123" }
-    });
-    user.id = "test-user-id-123";
-    
-    await prisma.account.updateMany({
-      where: { userId: user.id },
-      data: { accountId: "test-user-id-123", userId: "test-user-id-123" }
-    });
-  } catch (err) {
-    console.error("Failed to seed user via better-auth:", err);
-    process.exit(1);
-  }
+  // 1. Ensure test user exists
+  const user = await prisma.user.upsert({
+    where: { id: "test-user-id-123" },
+    create: {
+      id: "test-user-id-123",
+      email: "participant@nitp.ac.in",
+      name: "Test Participant",
+      emailVerified: true,
+    },
+    update: {
+      email: "participant@nitp.ac.in",
+      name: "Test Participant",
+      emailVerified: true,
+    },
+  });
 
   // 2. Create Startup Hunt Event
   const event = await prisma.event.upsert({

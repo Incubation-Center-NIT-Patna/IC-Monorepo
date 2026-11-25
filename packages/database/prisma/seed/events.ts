@@ -1,7 +1,7 @@
 import type { PrismaClient } from "../../generated/prisma/client";
 
 export async function seedEvents(prisma: PrismaClient) {
-  console.log("\n🚀 Seeding events...");
+  console.log("\n🚀 Seeding events (2 records)...");
 
   const events = [
     {
@@ -22,24 +22,6 @@ export async function seedEvents(prisma: PrismaClient) {
       startsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7), // Starts next week
       endsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 10), // Ends in 10 days
     },
-    {
-      name: "Cyber Security Quiz",
-      slug: "cyber-security-quiz",
-      description: "Test your knowledge on the latest cyber security trends and vulnerabilities.",
-      type: "QUIZ" as const,
-      status: "COMPLETED" as const,
-      startsAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 10), // Started 10 days ago
-      endsAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 9), // Ended 9 days ago
-    },
-    {
-      name: "Campus Treasure Hunt",
-      slug: "campus-treasure-hunt",
-      description: "Explore the campus and solve puzzles to win exciting prizes. Scan QR codes at checkpoints to earn points.",
-      type: "TREASURE_HUNT" as const,
-      status: "ACTIVE" as const,
-      startsAt: new Date(Date.now() - 1000 * 60 * 60), // Started 1 hour ago
-      endsAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 1), // Ends tomorrow
-    },
   ];
 
   for (const event of events) {
@@ -50,5 +32,5 @@ export async function seedEvents(prisma: PrismaClient) {
     });
   }
 
-  console.log("✅ Seeded events successfully.");
+  console.log("✅ Seeded events successfully (2 records).");
 }

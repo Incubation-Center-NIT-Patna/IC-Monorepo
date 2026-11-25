@@ -6,6 +6,7 @@ import fastifyMultipart from "@fastify/multipart";
 import fastifyRateLimit from "@fastify/rate-limit";
 import { env } from "./env";
 import { registerRoutes } from "./routes";
+import { registerActivityLogger } from "./middleware/activity-logger";
 
 export function buildApp() {
   const app = Fastify({
@@ -30,6 +31,25 @@ export function buildApp() {
 
   app.register(fastifyCookie);
 
+  // Allow empty or whitespace-only bodies when Content-Type is application/json
+  app.addContentTypeParser(
+    "application/json",
+    { parseAs: "string" },
+    (_req, body, done) => {
+      const str = (body as string)?.trim();
+      if (!str) {
+        done(null, {});
+        return;
+      }
+      try {
+        done(null, JSON.parse(str));
+      } catch (err: any) {
+        err.statusCode = 400;
+        done(err, undefined);
+      }
+    },
+  );
+
   app.register(fastifyJwt, {
     secret: env.JWT_SECRET,
     cookie: { cookieName: "auth_token", signed: false },
@@ -42,6 +62,14 @@ export function buildApp() {
   // Global registration only - `global: false` means no route is limited
   // unless it opts in via `{ config: { rateLimit: {...} } }`.
   app.register(fastifyRateLimit, { global: false });
+
+  // Security headers on every response
+  app.addHook("onSend", async (_request, reply) => {
+    reply.header("X-Content-Type-Options", "nosniff");
+    reply.header("X-Frame-Options", "DENY");
+    reply.header("Referrer-Policy", "strict-origin-when-cross-origin");
+    reply.header("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+  });
 
   // Global Error Handler
   app.setErrorHandler((error: any, request, reply) => {
@@ -58,6 +86,8 @@ export function buildApp() {
       error: "Internal Server Error" 
     });
   });
+
+  registerActivityLogger(app);
 
   registerRoutes(app);
 

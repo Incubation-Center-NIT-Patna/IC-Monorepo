@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
-import { ContentService } from '@/services/contentService';
-import { CandidateService } from '@/services/candidateService';
-import { ActivityService } from '@/services/activityService';
+import { ContentService } from '@/services/main-website/contentService';
+import { CandidateService } from '@/services/incubation/candidateService';
+import { ActivityService, getRecentActivitiesPreview } from '@/services/admin/activityService';
 import { formatTimeAgo } from '@/utils/timeUtils';
 import CardWrapper from '@/components/Common/CardWrapper';
 import {
@@ -24,28 +24,67 @@ import {
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { PERMISSIONS } from '@/constants/rbac';
 
+import apiClient from '@/lib/api';
+
 export default function DashboardPage() {
   const { currentUser, hasPermission } = useAuth();
-  const [stats] = useState(() => {
-    const cmsStats = ContentService.getStats();
-    const candStats = CandidateService.getStats();
-    return {
-      ...cmsStats,
-      totalApplicants: candStats.total,
-    };
+  const [stats, setStats] = useState({
+    activeNotices: 0,
+    totalIncubations: 0,
+    graduatedStartups: 0,
+    upcomingEvents: 0,
+    totalMentors: 0,
+    totalStudents: 0,
+    pendingQueries: 0,
+    totalApplicants: 0,
   });
 
-  const [candidates] = useState(() => {
-    return CandidateService.getCandidates().slice(0, 5);
-  });
+  const [candidates, setCandidates] = useState([]);
+  const [recentQueries, setRecentQueries] = useState([]);
+  const [recentActivities, setRecentActivities] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const [recentQueries] = useState(() => {
-    return ContentService.getItems('queries').slice(0, 5);
-  });
+  useEffect(() => {
+    async function loadLiveData() {
+      try {
+        setIsLoading(true);
+        const [dashStats, appRes, queriesRes, actRes] = await Promise.all([
+          apiClient.get('/dashboard/stats').catch(() => null),
+          CandidateService.fetchApplications({ page: 1, limit: 5 }).catch(() => null),
+          ContentService.getItems('queries').catch(() => []),
+          getRecentActivitiesPreview(5).catch(() => []),
+        ]);
 
-  const [recentActivities] = useState(() => {
-    return ActivityService.getActivities().slice(0, 5);
-  });
+        if (dashStats) {
+          setStats({
+            activeNotices: dashStats.activeNotices ?? 0,
+            totalIncubations: dashStats.totalIncubations ?? 0,
+            graduatedStartups: dashStats.graduatedStartups ?? 0,
+            upcomingEvents: dashStats.upcomingEvents ?? 0,
+            totalMentors: dashStats.totalMentors ?? 0,
+            totalStudents: dashStats.totalStudents ?? 0,
+            pendingQueries: dashStats.pendingQueries ?? 0,
+            totalApplicants: dashStats.totalApplications ?? 0,
+          });
+        }
+        if (appRes?.candidates) {
+          setCandidates(appRes.candidates.slice(0, 5));
+        }
+        if (Array.isArray(queriesRes)) {
+          setRecentQueries(queriesRes.slice(0, 5));
+        }
+        if (Array.isArray(actRes)) {
+          setRecentActivities(actRes);
+        }
+      } catch (err) {
+        console.warn('Dashboard live data fetch error:', err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
+    loadLiveData();
+  }, []);
 
   const [selectedDashboardQuery, setSelectedDashboardQuery] = useState(null);
 
@@ -66,7 +105,7 @@ export default function DashboardPage() {
           <div className="flex items-center gap-2">
             {hasPermission(PERMISSIONS.MANAGE_QUERIES) && (
               <Link
-                href="/website/queries"
+                href="/main-website/queries"
                 className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold shadow-xs transition-colors"
               >
                 <Inbox className="w-4 h-4" />
@@ -100,7 +139,7 @@ export default function DashboardPage() {
               {stats.pendingQueries} <span className="text-xs font-bold text-amber-700">New</span>
             </h3>
             <Link
-              href="/website/queries"
+              href="/main-website/queries"
               className="text-[11px] font-bold text-[#1E40AF] hover:underline flex items-center gap-1 mt-1.5"
             >
               <span>View Panel</span>
@@ -121,7 +160,7 @@ export default function DashboardPage() {
               {stats.activeNotices}
             </h3>
             <Link
-              href="/website/notices"
+              href="/main-website/notices"
               className="text-[11px] font-bold text-[#1E40AF] hover:underline flex items-center gap-1 mt-1.5"
             >
               <span>Manage</span>
@@ -142,7 +181,7 @@ export default function DashboardPage() {
               {stats.totalIncubations}
             </h3>
             <Link
-              href="/website/incubations"
+              href="/main-website/incubations"
               className="text-[11px] font-bold text-[#1E40AF] hover:underline flex items-center gap-1 mt-1.5"
             >
               <span>Manage</span>
@@ -163,7 +202,7 @@ export default function DashboardPage() {
               {stats.upcomingEvents}
             </h3>
             <Link
-              href="/website/events"
+              href="/main-website/events"
               className="text-[11px] font-bold text-[#1E40AF] hover:underline flex items-center gap-1 mt-1.5"
             >
               <span>Manage</span>
@@ -210,7 +249,7 @@ export default function DashboardPage() {
                 </div>
 
                 <Link
-                  href="/website/queries"
+                  href="/main-website/queries"
                   className="text-xs font-semibold text-[#1E40AF] hover:underline flex items-center gap-1"
                 >
                   <span>View all</span>
@@ -413,12 +452,12 @@ export default function DashboardPage() {
             <CardWrapper className="p-4 sm:p-5">
               <div className="flex items-center justify-between mb-3">
                 <h3 className="text-sm font-bold text-slate-900">Quick Navigation</h3>
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Website Shortcuts</span>
+                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Main Website Shortcuts</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {[
                   {
-                    href: '/website/queries',
+                    href: '/main-website/queries',
                     title: 'Queries',
                     subtitle: 'Contact form submissions',
                     icon: Inbox,
@@ -426,7 +465,7 @@ export default function DashboardPage() {
                     permission: PERMISSIONS.MANAGE_QUERIES,
                   },
                   {
-                    href: '/website/incubations',
+                    href: '/main-website/incubations',
                     title: 'Incubations',
                     subtitle: 'Startup venture directory',
                     icon: Rocket,
@@ -434,7 +473,7 @@ export default function DashboardPage() {
                     permission: PERMISSIONS.MANAGE_INCUBATIONS,
                   },
                   {
-                    href: '/website/talks',
+                    href: '/main-website/talks',
                     title: 'Entrepreneur Talks',
                     subtitle: 'Guest speaker keynotes',
                     icon: Mic,
@@ -442,15 +481,7 @@ export default function DashboardPage() {
                     permission: PERMISSIONS.MANAGE_TALKS,
                   },
                   {
-                    href: '/website/about',
-                    title: 'About Section',
-                    subtitle: 'Website intro & pillars',
-                    icon: FileText,
-                    bg: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                    permission: PERMISSIONS.MANAGE_ABOUT,
-                  },
-                  {
-                    href: '/website/events',
+                    href: '/main-website/events',
                     title: 'Events',
                     subtitle: 'Pitch days & summits',
                     icon: CalendarDays,
@@ -458,12 +489,12 @@ export default function DashboardPage() {
                     permission: PERMISSIONS.MANAGE_EVENTS,
                   },
                   {
-                    href: '/website/team',
-                    title: 'Team & Mentors',
-                    subtitle: 'Faculty & coordinators',
+                    href: '/users',
+                    title: 'Team Members',
+                    subtitle: 'Members, roles & tasks',
                     icon: Users2,
                     bg: 'bg-indigo-50 text-indigo-700 border-indigo-200',
-                    permission: PERMISSIONS.MANAGE_TEAM,
+                    permission: PERMISSIONS.MANAGE_USERS,
                   },
                 ]
                   .filter((item) => !item.permission || hasPermission(item.permission))
@@ -532,7 +563,7 @@ export default function DashboardPage() {
 
               <div className="flex justify-between items-center pt-3 border-t border-[#E2E8F0]">
                 <Link
-                  href="/website/queries"
+                  href="/main-website/queries"
                   className="text-xs font-semibold text-[#1E40AF] hover:underline flex items-center gap-1"
                 >
                   <span>Open in Full Queries Panel</span>

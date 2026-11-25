@@ -85,17 +85,16 @@ export default function Sidebar({ isOpen, setIsOpen }) {
         <div className="flex-1 overflow-y-auto px-3 py-1 space-y-4 custom-scrollbar">
           {SIDEBAR_NAV_GROUPS.map((group, gIdx) => {
             const visibleItems = group.items.filter((item) => {
-              if (isMember) {
-                return item.href === '/profile';
-              }
               if (isSuperAdmin) return true;
+              if (item.href === '/profile' || item.href === '/tasks') return true;
               if (item.permission) {
                 return hasPermission(item.permission);
               }
               if (item.roles) {
-                return item.roles.includes(currentUser?.role);
+                const primaryRole = currentUser?.role;
+                return item.roles.includes(primaryRole);
               }
-              return true;
+              return false;
             });
 
             if (visibleItems.length === 0) return null;

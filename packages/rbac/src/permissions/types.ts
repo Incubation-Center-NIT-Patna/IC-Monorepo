@@ -8,6 +8,7 @@ export type PermissionAction =
   | "review"
   | "publish"
   | "assign"
+  | "manage"
   | "refund"
   | "ban"
   | "moderate";

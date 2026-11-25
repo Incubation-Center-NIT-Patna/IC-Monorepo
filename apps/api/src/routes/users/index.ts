@@ -2,32 +2,17 @@ import type { FastifyInstance } from "fastify";
 import { z } from "zod";
 import { UserPermissions } from "@repo/rbac";
 import { prisma } from "@repo/database";
+import { isAllowedGoogleEmail } from "@repo/auth/server";
 import { requireAuth } from "../../middleware/auth";
 import { authorize } from "../../middleware/rbac";
 import { permissionService, roleService } from "../../rbac";
-import { scrypt, randomBytes } from "node:crypto";
-
-function hashPassword(password: string): Promise<string> {
-  const salt = randomBytes(16).toString("hex");
-  return new Promise((resolve, reject) => {
-    scrypt(
-      password.normalize("NFKC"),
-      salt,
-      64,
-      { N: 16384, r: 16, p: 1, maxmem: 128 * 16384 * 16 * 2 },
-      (err, key) => {
-        if (err) reject(err);
-        else resolve(`${salt}:${key.toString("hex")}`);
-      },
-    );
-  });
-}
 
 const createUserSchema = z.object({
-  name: z.string().min(1),
-  email: z.string().email().optional(),
+  name: z.string().min(1, "Name is required").trim(),
+  email: z.string().email("Valid email is required").trim().toLowerCase(),
   phoneNumber: z.string().min(6).optional(),
-  password: z.string().min(8, "Password must be at least 8 characters"),
+  roleIds: z.array(z.string()).optional(),
+  teamIds: z.array(z.string()).optional(),
 });
 
 const updateUserSchema = z.object({
@@ -35,14 +20,37 @@ const updateUserSchema = z.object({
   email: z.string().email().optional(),
   phoneNumber: z.string().min(6).optional(),
   roleIds: z.array(z.string()).optional(),
-});
-
-const changePasswordSchema = z.object({
-  newPassword: z.string().min(8, "Password must be at least 8 characters"),
+  teamIds: z.array(z.string()).optional(),
 });
 
 const banUserSchema = z.object({
   reason: z.string().min(1).optional(),
+});
+
+const safeUrlSchema = z
+  .string()
+  .trim()
+  .refine(
+    (val) =>
+      val === "" ||
+      val.startsWith("https://") ||
+      val.startsWith("http://") ||
+      val.startsWith("/"),
+    { message: "URL must start with https://, http://, or /" },
+  );
+
+const updateMeSchema = z.object({
+  name: z.string().min(1, "Name is required").max(120).trim().optional(),
+  phoneNumber: z.string().max(30).optional().nullable(),
+  avatar: safeUrlSchema.optional().nullable(),
+  image: safeUrlSchema.optional().nullable(),
+  department: z.string().max(150).trim().optional().nullable(),
+  post: z.string().max(150).trim().optional().nullable(),
+  bio: z.string().max(2000).trim().optional().nullable(),
+  linkedin: safeUrlSchema.optional().nullable(),
+  github: safeUrlSchema.optional().nullable(),
+  instagram: safeUrlSchema.optional().nullable(),
+  metadata: z.record(z.string(), z.unknown()).optional(),
 });
 
 const listUsersSchema = z.object({
@@ -54,22 +62,129 @@ const listUsersSchema = z.object({
 });
 
 export async function usersRoutes(app: FastifyInstance) {
-  // GET /api/users/me - current user + roles (no permission check, auth only)
+  // GET /api/users/me - current user + roles + teams (no permission check, auth only)
   app.get("/me", { preHandler: [requireAuth] }, async (request, reply) => {
-    const user = (request as any).user;
-    const [roles, authorization] = await Promise.all([
-      roleService.getUserRoles(user.id),
-      permissionService.getAuthorizationContext(user.id),
+    const sessionUser = (request as any).user;
+    const [freshUser, roles, authorization] = await Promise.all([
+      prisma.user.findUnique({
+        where: { id: sessionUser.id },
+        include: {
+          teamMemberships: {
+            select: {
+              team: {
+                select: {
+                  id: true,
+                  name: true,
+                  description: true,
+                },
+              },
+            },
+          },
+        },
+      }),
+      roleService.getUserRoles(sessionUser.id),
+      permissionService.getAuthorizationContext(sessionUser.id),
     ]);
+
+    const user = freshUser || sessionUser;
+    const teams = (freshUser?.teamMemberships || []).map((tm) => tm.team);
+    const primaryRole = authorization.isSuperAdmin
+      ? "Super Admin"
+      : roles[0]?.name || "Member";
+
     return reply.send({
-      user,
+      user: {
+        ...user,
+        avatar: user.image,
+        role: primaryRole,
+        teams,
+      },
       roles,
+      teams,
       permissions: authorization.permissions.map(
         (permission) => permission.key,
       ),
       isSuperAdmin: authorization.isSuperAdmin,
     });
   });
+
+  // PUT /api/users/me & PATCH /api/users/me - update current user profile
+  const handleUpdateMe = async (request: any, reply: any) => {
+    const user = (request as any).user;
+    const parsed = updateMeSchema.safeParse(request.body || {});
+    if (!parsed.success) {
+      return reply.status(400).send({ error: parsed.error.flatten() });
+    }
+    const body = parsed.data;
+
+    const updated = await prisma.user.update({
+      where: { id: user.id },
+      data: {
+        ...(body.name !== undefined ? { name: body.name } : {}),
+        ...(body.phoneNumber !== undefined ? { phoneNumber: body.phoneNumber || null } : {}),
+        ...(body.avatar !== undefined || body.image !== undefined
+          ? { image: body.avatar || body.image || null }
+          : {}),
+        ...(body.department !== undefined ? { department: body.department } : {}),
+        ...(body.post !== undefined ? { post: body.post } : {}),
+        ...(body.bio !== undefined ? { bio: body.bio } : {}),
+        ...(body.linkedin !== undefined ? { linkedin: body.linkedin } : {}),
+        ...(body.github !== undefined ? { github: body.github } : {}),
+        ...(body.instagram !== undefined ? { instagram: body.instagram } : {}),
+        ...(body.metadata !== undefined ? { metadata: body.metadata as any } : {}),
+      },
+    });
+
+    const [roles, authorization, freshWithTeams] = await Promise.all([
+      roleService.getUserRoles(user.id),
+      permissionService.getAuthorizationContext(user.id),
+      prisma.user.findUnique({
+        where: { id: user.id },
+        select: {
+          teamMemberships: {
+            select: {
+              team: { select: { id: true, name: true, description: true } },
+            },
+          },
+        },
+      }),
+    ]);
+
+    const primaryRole = authorization.isSuperAdmin
+      ? "Super Admin"
+      : roles[0]?.name || "Member";
+    const teams = (freshWithTeams?.teamMemberships || []).map((tm) => tm.team);
+
+    // Log profile update
+    await prisma.systemActivityLog.create({
+      data: {
+        userId: user.id,
+        userName: updated.name || updated.email || "User",
+        userRole: primaryRole,
+        action: "Updated profile information",
+        category: "Users",
+        type: "user-action",
+        status: "Completed",
+      },
+    });
+
+    return reply.send({
+      success: true,
+      user: {
+        ...updated,
+        avatar: updated.image,
+        role: primaryRole,
+        teams,
+      },
+      roles,
+      teams,
+      permissions: authorization.permissions.map((p) => p.key),
+      isSuperAdmin: authorization.isSuperAdmin,
+    });
+  };
+
+  app.put("/me", { preHandler: [requireAuth] }, handleUpdateMe);
+  app.patch("/me", { preHandler: [requireAuth] }, handleUpdateMe);
 
   // GET /api/users/me/roles - roles only (used by admin login for role check)
   app.get("/me/roles", { preHandler: [requireAuth] }, async (request, reply) => {
@@ -150,73 +265,121 @@ export async function usersRoutes(app: FastifyInstance) {
     },
   );
 
-  // POST /api/users - admin creates a new user
+  // POST /api/users - Only Super Admin and Developer can add/register users
   app.post(
     "/",
     {
-      preHandler: [
-        requireAuth,
-        authorize({ permission: UserPermissions.CREATE_ANY }),
-      ],
+      preHandler: [requireAuth],
     },
     async (request, reply) => {
-      const data = createUserSchema.safeParse(request.body);
-      if (!data.success) {
-        return reply.status(400).send({ error: data.error.flatten() });
-      }
-      if (!data.data.email && !data.data.phoneNumber) {
-        return reply
-          .status(400)
-          .send({ error: "email or phoneNumber is required" });
+      const actor = (request as any).user;
+      const [actorRoles, actorAuth] = await Promise.all([
+        roleService.getUserRoles(actor.id),
+        permissionService.getAuthorizationContext(actor.id),
+      ]);
+
+      const isAllowed =
+        actorAuth.isSuperAdmin ||
+        actorRoles.some(
+          (r) =>
+            r.name.toLowerCase() === "developer" ||
+            r.name.toLowerCase() === "super admin",
+        );
+
+      if (!isAllowed) {
+        return reply.status(403).send({
+          error:
+            "Forbidden: Only Super Admins and Developers can add or register users.",
+        });
       }
 
-      if (data.data.email) {
-        const existing = await prisma.user.findUnique({
-          where: { email: data.data.email },
-        });
-        if (existing)
-          return reply.status(409).send({ error: "Email already in use" });
-      }
-      if (data.data.phoneNumber) {
-        const existing = await prisma.user.findUnique({
-          where: { phoneNumber: data.data.phoneNumber },
-        });
-        if (existing)
-          return reply
-            .status(409)
-            .send({ error: "Phone number already in use" });
+      const body = createUserSchema.safeParse(request.body);
+      if (!body.success) {
+        return reply.status(400).send({ error: body.error.flatten() });
       }
 
-      const userId = crypto.randomUUID();
-      const hashed = await hashPassword(data.data.password);
+      const { name, email, phoneNumber, roleIds, teamIds } = body.data;
+
+      // Policy: Validate email format
+      if (!isAllowedGoogleEmail(email)) {
+        return reply.status(400).send({
+          error: "Invalid email address. Please provide a valid Google email.",
+        });
+      }
+
+      // Check if user already exists
+      const existing = await prisma.user.findFirst({
+        where: { email: { equals: email, mode: "insensitive" } },
+      });
+      if (existing) {
+        return reply.status(409).send({
+          error: "A user with this email address is already registered in the system.",
+        });
+      }
+
+      // If assigning roles, prevent non-Super Admins from assigning the Super Admin role
+      if (roleIds && roleIds.length > 0 && !actorAuth.isSuperAdmin) {
+        const superAdminRole = await prisma.role.findUnique({
+          where: { name: "Super Admin" },
+        });
+        if (superAdminRole && roleIds.includes(superAdminRole.id)) {
+          return reply.status(403).send({
+            error: "Only Super Admins can assign the Super Admin role.",
+          });
+        }
+      }
 
       const user = await prisma.user.create({
         data: {
-          id: userId,
-          name: data.data.name,
-          email: data.data.email ?? null,
-          phoneNumber: data.data.phoneNumber ?? null,
+          id: crypto.randomUUID(),
+          name,
+          email,
+          phoneNumber: phoneNumber ?? null,
+          emailVerified: true,
         },
         select: {
           id: true,
           name: true,
           email: true,
           phoneNumber: true,
+          emailVerified: true,
           createdAt: true,
         },
       });
 
-      await prisma.account.create({
-        data: {
-          id: crypto.randomUUID(),
-          accountId: userId,
-          providerId: "credential",
-          userId,
-          password: hashed,
+      if (roleIds && roleIds.length > 0) {
+        const validRoles = await prisma.role.findMany({
+          where: { id: { in: roleIds } },
+        });
+        if (validRoles.length > 0) {
+          await prisma.userRole.createMany({
+            data: validRoles.map((role) => ({
+              userId: user.id,
+              roleId: role.id,
+            })),
+          });
+        }
+      }
+
+      if (teamIds && teamIds.length > 0) {
+        for (const teamId of teamIds) {
+          await prisma.teamMember.create({
+            data: {
+              userId: user.id,
+              teamId,
+            },
+          });
+        }
+      }
+
+      const createdRoles = await roleService.getUserRoles(user.id);
+
+      return reply.status(201).send({
+        user: {
+          ...user,
+          roles: createdRoles,
         },
       });
-
-      return reply.status(201).send({ user });
     },
   );
 
@@ -269,6 +432,7 @@ export async function usersRoutes(app: FastifyInstance) {
             phoneNumberVerified: true,
             emailVerified: true,
             image: true,
+            creationSource: true,
             banned: true,
             bannedAt: true,
             bannedReason: true,
@@ -281,6 +445,18 @@ export async function usersRoutes(app: FastifyInstance) {
                 },
               },
             },
+            teamMemberships: {
+              select: {
+                team: {
+                  select: { id: true, name: true },
+                },
+              },
+            },
+            _count: {
+              select: {
+                assignedTasks: true,
+              },
+            },
           },
         }),
         prisma.user.count({ where }),
@@ -289,6 +465,7 @@ export async function usersRoutes(app: FastifyInstance) {
       const formatted = users.map((u) => ({
         ...u,
         roles: u.roles.map((r) => r.role),
+        teams: u.teamMemberships.map((tm) => tm.team),
       }));
 
       return reply.send({
@@ -408,15 +585,76 @@ export async function usersRoutes(app: FastifyInstance) {
 
       if (data.data.roleIds !== undefined) {
         const actor = (request as any).user;
-        const authorization = await permissionService.getAuthorizationContext(
-          actor.id,
+        const [actorRoles, authorization, targetRoles] = await Promise.all([
+          roleService.getUserRoles(actor.id),
+          permissionService.getAuthorizationContext(actor.id),
+          roleService.getUserRoles(id),
+        ]);
+
+        const targetIsSuperAdmin = targetRoles.some(
+          (r) => r.name.toLowerCase() === "super admin",
         );
 
-        if (authorization.isSuperAdmin) {
+        // If target is Super Admin, only another Super Admin can change their roles
+        if (targetIsSuperAdmin && !authorization.isSuperAdmin) {
+          return reply.status(403).send({
+            error: "Forbidden: Only Super Admins can modify the roles of a Super Admin.",
+          });
+        }
+
+        const canManageRoles =
+          authorization.isSuperAdmin ||
+          actorRoles.some((r) => r.name.toLowerCase() === "developer");
+
+        if (canManageRoles) {
+          const superAdminRole = await prisma.role.findUnique({
+            where: { name: "Super Admin" },
+          });
+
+          if (!authorization.isSuperAdmin && superAdminRole && data.data.roleIds.includes(superAdminRole.id)) {
+            return reply.status(403).send({
+              error: "Only Super Admins can assign the Super Admin role.",
+            });
+          }
+
+          // Protect the last active Super Admin from demotion
+          if (
+            targetIsSuperAdmin &&
+            superAdminRole &&
+            !data.data.roleIds.includes(superAdminRole.id)
+          ) {
+            const activeSuperAdminCount = await prisma.userRole.count({
+              where: {
+                roleId: superAdminRole.id,
+                userId: { not: id },
+                user: { banned: false },
+              },
+            });
+            if (activeSuperAdminCount === 0) {
+              return reply.status(400).send({
+                error:
+                  "Protected role: Cannot remove or demote the only active Super Admin in the system.",
+              });
+            }
+          }
+
           await prisma.userRole.deleteMany({ where: { userId: id } });
           if (data.data.roleIds.length > 0) {
             await prisma.userRole.createMany({
               data: data.data.roleIds.map((roleId) => ({ userId: id, roleId })),
+            });
+          }
+        }
+      }
+
+      if (data.data.teamIds !== undefined) {
+        await prisma.teamMember.deleteMany({ where: { userId: id } });
+        if (data.data.teamIds.length > 0) {
+          for (const teamId of data.data.teamIds) {
+            await prisma.teamMember.upsert({
+              where: { teamId_userId: { teamId, userId: id } },
+              create: { teamId, userId: id },
+              update: {},
             });
           }
         }
@@ -450,6 +688,44 @@ export async function usersRoutes(app: FastifyInstance) {
         return reply.status(404).send({ error: "User not found" });
       }
 
+      const [actorAuth, targetRoles] = await Promise.all([
+        permissionService.getAuthorizationContext(actor.id),
+        roleService.getUserRoles(id),
+      ]);
+
+      const targetIsSuperAdmin = targetRoles.some(
+        (r) => r.name.toLowerCase() === "super admin",
+      );
+
+      if (targetIsSuperAdmin) {
+        if (!actorAuth.isSuperAdmin) {
+          return reply.status(403).send({
+            error: "Forbidden: Only Super Admins can delete a Super Admin account.",
+          });
+        }
+
+        const superAdminRole = await prisma.role.findUnique({
+          where: { name: "Super Admin" },
+        });
+
+        if (superAdminRole) {
+          const remainingSuperAdmins = await prisma.userRole.count({
+            where: {
+              roleId: superAdminRole.id,
+              userId: { not: id },
+              user: { banned: false },
+            },
+          });
+
+          if (remainingSuperAdmins === 0) {
+            return reply.status(400).send({
+              error:
+                "Protected role: Cannot delete the only active Super Admin in the system.",
+            });
+          }
+        }
+      }
+
       await prisma.user.delete({ where: { id } });
 
       return reply.send({ success: true });
@@ -480,6 +756,44 @@ export async function usersRoutes(app: FastifyInstance) {
       const actor = (request as any).user;
       if (actor.id === id) {
         return reply.status(400).send({ error: "Cannot ban yourself" });
+      }
+
+      const [actorAuth, targetRoles] = await Promise.all([
+        permissionService.getAuthorizationContext(actor.id),
+        roleService.getUserRoles(id),
+      ]);
+
+      const targetIsSuperAdmin = targetRoles.some(
+        (r) => r.name.toLowerCase() === "super admin",
+      );
+
+      if (targetIsSuperAdmin) {
+        if (!actorAuth.isSuperAdmin) {
+          return reply.status(403).send({
+            error: "Forbidden: Only Super Admins can suspend a Super Admin account.",
+          });
+        }
+
+        const superAdminRole = await prisma.role.findUnique({
+          where: { name: "Super Admin" },
+        });
+
+        if (superAdminRole) {
+          const remainingSuperAdmins = await prisma.userRole.count({
+            where: {
+              roleId: superAdminRole.id,
+              userId: { not: id },
+              user: { banned: false },
+            },
+          });
+
+          if (remainingSuperAdmins === 0) {
+            return reply.status(400).send({
+              error:
+                "Protected role: Cannot suspend the only active Super Admin in the system.",
+            });
+          }
+        }
       }
 
       await prisma.user.update({
@@ -519,55 +833,6 @@ export async function usersRoutes(app: FastifyInstance) {
         where: { id },
         data: { banned: false, bannedAt: null, bannedReason: null },
       });
-
-      return reply.send({ success: true });
-    },
-  );
-
-  // PATCH /api/users/:id/password - admin force-sets a user's password
-  app.patch(
-    "/:id/password",
-    {
-      preHandler: [
-        requireAuth,
-        authorize({ permission: UserPermissions.UPDATE_ANY }),
-      ],
-    },
-    async (request, reply) => {
-      const { id } = request.params as { id: string };
-      const body = changePasswordSchema.safeParse(request.body);
-      if (!body.success) {
-        return reply.status(400).send({ error: body.error.flatten() });
-      }
-
-      const existing = await prisma.user.findUnique({ where: { id } });
-      if (!existing) {
-        return reply.status(404).send({ error: "User not found" });
-      }
-
-      const hashed = await hashPassword(body.data.newPassword);
-
-      // Update the credential account for this user
-      const updated = await prisma.account.updateMany({
-        where: { userId: id, providerId: "credential" },
-        data: { password: hashed },
-      });
-
-      if (updated.count === 0) {
-        // User has no credential account - create one
-        await prisma.account.create({
-          data: {
-            id: crypto.randomUUID(),
-            accountId: id,
-            providerId: "credential",
-            userId: id,
-            password: hashed,
-          },
-        });
-      }
-
-      // Invalidate all sessions so the user must log in with new password
-      await prisma.session.deleteMany({ where: { userId: id } });
 
       return reply.send({ success: true });
     },

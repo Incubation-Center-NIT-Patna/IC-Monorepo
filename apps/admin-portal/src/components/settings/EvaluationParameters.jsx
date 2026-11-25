@@ -4,22 +4,39 @@ import React, { useState } from 'react';
 import CardWrapper from '@/components/Common/CardWrapper';
 import SectionTitle from '@/components/Common/SectionTitle';
 import EvaluationRow from '@/components/settings/EvaluationRow.jsx'; 
-import { DEFAULT_EVALUATION_PARAMETERS } from '@/components/settings/evaluationData.js';
 import { Sliders, Plus } from '@/components/icons';
 
-export default function EvaluationParameters() {
-  const [parameters, setParameters] = useState(DEFAULT_EVALUATION_PARAMETERS);
+export default function EvaluationParameters({
+  parameters: controlledParameters,
+  onParametersChange,
+}) {
+  const [internalParameters, setInternalParameters] = useState([]);
+
+  const parameters = controlledParameters !== undefined ? controlledParameters : internalParameters;
+
+  const updateParameters = (newParams) => {
+    if (onParametersChange) {
+      onParametersChange(newParams);
+    } else {
+      setInternalParameters(newParams);
+    }
+  };
 
   const handleAddParameter = () => {
-    setParameters([...parameters, { id: crypto.randomUUID(), name: 'New Parameter', weight: 0 }]);
+    updateParameters([
+      ...parameters,
+      { id: crypto.randomUUID(), name: 'New Parameter', weight: 10 },
+    ]);
   };
 
   const handleDeleteParameter = (idToFilter) => {
-    setParameters(parameters.filter((p) => { return p.id !== idToFilter }));
+    updateParameters(parameters.filter((p) => p.id !== idToFilter));
   };
 
   const handleUpdateParameter = (id, key, val) => {
-    setParameters(parameters.map((p) => { return p.id === id ? { ...p, [key]: val } : p }));
+    updateParameters(
+      parameters.map((p) => (p.id === id ? { ...p, [key]: val } : p))
+    );
   };
 
   return (

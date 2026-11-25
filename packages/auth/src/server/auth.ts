@@ -2,38 +2,38 @@ import { betterAuth } from "better-auth";
 import { APIError } from "better-auth/api";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@repo/database";
-import { smsService } from "./sms.service";
-import { phoneNumber } from "better-auth/plugins";
-import { trustedDevice } from "./trusted-device.plugin";
 
-const rawOrigins =
-  process.env.CORS_ORIGIN ?? "http://localhost:3000,http://localhost:7030";
+function requireEnv(name: string): string {
+  const val = process.env[name];
+  if (!val || !val.trim()) {
+    throw new Error(`Configuration Error: ${name} environment variable is required.`);
+  }
+  return val.trim();
+}
+
+const rawOrigins = requireEnv("CORS_ORIGIN");
 const trustedOrigins = rawOrigins
   .split(",")
   .map((o) => o.trim())
   .filter(Boolean);
 
-// Google sign-in on the admin login page is restricted to staff Workspace
-// domains. Google's own `hd` provider option only supports a single domain,
-// so multi-domain restriction is enforced in the user.create hook below
-// instead (see the emailVerified check for why this only affects OAuth sign-ups).
-const allowedGoogleDomains = (
-  process.env.GOOGLE_ALLOWED_DOMAINS ?? "nitp.ac.in"
-)
-  .split(",")
-  .map((d) => d.trim().toLowerCase())
-  .filter(Boolean);
-
-function isAllowedGoogleEmail(email: string) {
-  const domain = email.split("@")[1]?.toLowerCase();
-  return !!domain && allowedGoogleDomains.includes(domain);
+/**
+ * Platform policy:
+ * Allow verified Google accounts whose email is pre-registered in the database.
+ */
+export function isAllowedGoogleEmail(email: string | null | undefined): boolean {
+  if (!email || typeof email !== "string") return false;
+  const normalized = email.trim().toLowerCase();
+  const parts = normalized.split("@");
+  if (parts.length !== 2) return false;
+  const [local, domain] = parts;
+  return Boolean(local && domain && domain.includes("."));
 }
 
-// In production the API lives at api.incubationcenter.nitp.ac.in and the web at incubationcenter.nitp.ac.in.
-// Without crossSubDomainCookies the session cookie is scoped to api.incubationcenter.nitp.ac.in only,
-// so Next.js server-side requests (which forward the browser's incubationcenter.nitp.ac.in cookies)
-// never include it and every admin API call returns 401.
-const authBaseUrl = process.env.BETTER_AUTH_URL ?? "http://localhost:4000";
+const authBaseUrl = requireEnv("BETTER_AUTH_URL");
+const authSecret = requireEnv("BETTER_AUTH_SECRET");
+const googleClientId = requireEnv("GOOGLE_CLIENT_ID");
+const googleClientSecret = requireEnv("GOOGLE_CLIENT_SECRET");
 const authHostname = (() => {
   try {
     return new URL(authBaseUrl).hostname;
@@ -47,123 +47,125 @@ const isIP = /^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$/.test(authHostname);
 const cookieDomain =
   isLocalhost || isIP
     ? undefined
-    : "." + authHostname.split(".").slice(-2).join("."); // api.incubationcenter.nitp.ac.in → .incubationcenter.nitp.ac.in
+    : "." + authHostname.split(".").slice(-2).join(".");
 
 export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
 
-  secret: process.env.BETTER_AUTH_SECRET,
-  baseURL: process.env.BETTER_AUTH_URL,
-  emailAndPassword: {
-    enabled: true,
-  },
+  secret: authSecret,
+  baseURL: authBaseUrl,
+
+  // STRICT POLICY: Non-Google authentication methods completely disabled
+  // emailAndPassword is not configured (disabled)
+  
   trustedOrigins,
   trustedProxies: true,
+
   advanced: {
     crossSubDomainCookies: {
       enabled: !isLocalhost,
       domain: cookieDomain,
     },
   },
+
   rateLimit: {
-    window: 60, // 60 seconds
-    max: 100, // 100 requests per IP per window
+    window: 60,
+    max: 100,
   },
+
+  // Google OAuth is the ONLY authentication provider
   socialProviders: {
     google: {
-      clientId: process.env.GOOGLE_CLIENT_ID ?? "",
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+      clientId: googleClientId,
+      clientSecret: googleClientSecret,
+      redirectURI: process.env.GOOGLE_URL || undefined,
+      prompt: "select_account",
+      accessType: "offline",
     },
   },
+
   account: {
     accountLinking: {
       enabled: true,
-      // Existing admin users were provisioned via phone/credential signup and
-      // never went through an email-verification flow, so their local
-      // emailVerified is false. Google's own OAuth email is independently
-      // verified, so it's safe to link without requiring the local flag too.
       requireLocalEmailVerified: false,
     },
   },
+
   databaseHooks: {
     user: {
       create: {
         before: async (user) => {
-          // Only OAuth sign-ups arrive with a pre-verified email (credential
-          // and phone signups never set emailVerified: true) - this scopes
-          // the domain allowlist to Google sign-ins without touching phone
-          // signup, which uses a synthetic @incubationcenter.local email.
-          if (user.emailVerified && !isAllowedGoogleEmail(user.email)) {
+          // Reject unverified Google accounts
+          if (!user.emailVerified) {
             throw new APIError("FORBIDDEN", {
               message:
-                "Sign-in is restricted to Incubation Center NITP staff Google accounts.",
+                "Google account email is not verified. Access is prohibited.",
+            });
+          }
+
+          if (!isAllowedGoogleEmail(user.email)) {
+            throw new APIError("FORBIDDEN", {
+              message: "Invalid Google account email address.",
+            });
+          }
+
+          // Strict Policy: Open self-registration is disabled.
+          // The user's email MUST already be pre-registered in the database by a Super Admin or Developer.
+          const existingPreRegistered = await prisma.user.findFirst({
+            where: { email: { equals: user.email, mode: "insensitive" } },
+            select: { id: true, banned: true },
+          });
+
+          if (!existingPreRegistered) {
+            throw new APIError("NOT_FOUND", {
+              message:
+                "User not found. Your email is not registered in the system. Only pre-registered users added by a Super Admin or Developer can sign in.",
+            });
+          }
+
+          if (existingPreRegistered.banned) {
+            throw new APIError("FORBIDDEN", {
+              message: "Account suspended. Please contact administration.",
+            });
+          }
+        },
+      },
+    },
+    session: {
+      create: {
+        before: async (session) => {
+          // Verify that user exists, email is verified, not banned, and domain is @nitp.ac.in
+          const targetUser = await prisma.user.findUnique({
+            where: { id: session.userId },
+            select: { id: true, email: true, emailVerified: true, banned: true },
+          });
+
+          if (!targetUser) {
+            throw new APIError("NOT_FOUND", {
+              message:
+                "User not found. Your email is not registered in the database.",
+            });
+          }
+
+          if (targetUser.banned) {
+            throw new APIError("FORBIDDEN", {
+              message: "Account suspended. Please contact administration.",
+            });
+          }
+
+          if (!isAllowedGoogleEmail(targetUser.email)) {
+            throw new APIError("FORBIDDEN", {
+              message:
+                "Access denied. A valid Google account email is required to establish a session.",
             });
           }
         },
       },
     },
   },
-  plugins: [
-    phoneNumber({
-      sendOTP: async ({ phoneNumber, code }) => {
-        const cooldown = await prisma.otpCooldown.findUnique({
-          where: { phoneNumber },
-        });
-        if (cooldown && cooldown.expiresAt > new Date()) {
-          throw new APIError("BAD_REQUEST", {
-            message: "Please wait before requesting another OTP",
-          });
-        }
 
-        const success = await smsService.sendOTP(phoneNumber, code);
-        if (!success) {
-          throw new APIError("INTERNAL_SERVER_ERROR", {
-            message: "Failed to send OTP",
-          });
-        }
-
-        await prisma.otpCooldown.upsert({
-          where: { phoneNumber },
-          create: { phoneNumber, expiresAt: new Date(Date.now() + 60000) },
-          update: { expiresAt: new Date(Date.now() + 60000) },
-        });
-      },
-      sendPasswordResetOTP: async ({ phoneNumber, code }) => {
-        const cooldown = await prisma.otpCooldown.findUnique({
-          where: { phoneNumber },
-        });
-        if (cooldown && cooldown.expiresAt > new Date()) {
-          throw new APIError("BAD_REQUEST", {
-            message: "Please wait before requesting another OTP",
-          });
-        }
-
-        const success = await smsService.sendOTP(phoneNumber, code);
-        if (!success) {
-          throw new APIError("INTERNAL_SERVER_ERROR", {
-            message: "Failed to send Password Reset OTP",
-          });
-        }
-
-        await prisma.otpCooldown.upsert({
-          where: { phoneNumber },
-          create: { phoneNumber, expiresAt: new Date(Date.now() + 60000) },
-          update: { expiresAt: new Date(Date.now() + 60000) },
-        });
-      },
-
-      signUpOnVerification: {
-        getTempName(phoneNumber) {
-          return phoneNumber;
-        },
-
-        getTempEmail(phoneNumber) {
-          return `${phoneNumber}@incubationcenter.local`;
-        },
-      },
-    }),
-    trustedDevice(),
-  ],
+  // No phone number, SMS, OTP, or trusted-device bypass plugins
+  plugins: [],
 });

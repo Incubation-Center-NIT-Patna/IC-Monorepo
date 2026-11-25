@@ -9,6 +9,7 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const rawError = searchParams.get("error");
   const { data: session, isPending: sessionPending } = authClient.useSession();
 
   const [isSignUp, setIsSignUp] = useState(false);
@@ -16,7 +17,19 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(() => {
+    if (rawError) {
+      const lower = rawError.toLowerCase();
+      if (lower.includes("not_found") || lower.includes("not found")) {
+        return "User not found: Your email is not registered in the system. Only pre-registered users added by a Super Admin or Developer can sign in.";
+      }
+      if (lower.includes("forbidden") || lower.includes("domain")) {
+        return "Access restricted: Only official @nitp.ac.in Google accounts are authorized.";
+      }
+      return rawError;
+    }
+    return "";
+  });
 
   useEffect(() => {
     if (!sessionPending && session) {

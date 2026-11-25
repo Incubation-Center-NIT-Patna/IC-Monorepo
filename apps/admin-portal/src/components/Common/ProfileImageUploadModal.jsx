@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
+import apiClient from '@/lib/api';
 import {
   X,
   Upload,
@@ -62,27 +63,17 @@ export default function ProfileImageUploadModal({
       const formData = new FormData();
       formData.append('file', file);
 
-      const res = await fetch('/api/upload', {
-        method: 'POST',
-        body: formData,
+      const data = await apiClient.post('/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
 
-      const data = await res.json();
-
-      if (res.ok && data.success && data.url) {
+      if (data && data.success && data.url) {
         setSelectedImage(data.url);
       } else {
-        throw new Error(data.message || 'Upload failed');
+        throw new Error(data?.message || 'Upload failed');
       }
     } catch (err) {
-      // Fallback to local Data URL
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        if (e.target?.result) {
-          setSelectedImage(e.target.result);
-        }
-      };
-      reader.readAsDataURL(file);
+      setError(err?.message || 'Image upload failed. Please try again.');
     } finally {
       setIsUploading(false);
       setZoom(1);

@@ -21,11 +21,10 @@ export function CustomSlider({
           max={max}
           value={value}
           onChange={(e) => onChange(Number(e.target.value))}
-         className="w-full h-1.5 bg-gray-800 rounded-lg appearance-none cursor-pointer outline-none "
+          className="w-full h-1.5 bg-slate-200 accent-[#1E40AF] rounded-lg appearance-none cursor-pointer outline-none"
         />
 
-        
-       <span className="bg-[#10b981]  text-teal-400 text-xs font-mono font-bold px-2 py-1 rounded min-w-[50px] text-center">
+        <span className="bg-blue-50 text-[#1E40AF] border border-blue-200 text-xs font-mono font-bold px-2 py-1 rounded min-w-[50px] text-center">
           {value}%
         </span>
       </div>

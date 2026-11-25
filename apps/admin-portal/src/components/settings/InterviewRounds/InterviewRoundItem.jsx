@@ -30,7 +30,7 @@ export default function InterviewRoundItem({ round, index, onDelete, onReactivat
               </span>
             </div>
           ) : (
-            <span className="mt-0.5 inline-flex rounded-sm badge-opacity-warning px-2 py-0.5 text-[10px] font-semibold">
+            <span className="mt-1 inline-flex rounded-sm bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 text-[10px] font-semibold">
               Inactive
             </span>
           )}

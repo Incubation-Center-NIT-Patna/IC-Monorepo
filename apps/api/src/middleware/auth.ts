@@ -1,5 +1,6 @@
 import type { FastifyRequest, FastifyReply } from "fastify";
 import { auth } from "@repo/auth/server";
+import { prisma } from "@repo/database";
 
 export async function requireAuth(
   request: FastifyRequest,
@@ -19,22 +20,42 @@ export async function requireAuth(
       headers: webHeaders,
     });
 
-    request.log.info(
-      {
-        cookieHeader: request.headers.cookie,
-        hasSession: !!session,
-        userId: session?.user?.id,
-      },
-      "[requireAuth] session verification result",
-    );
-
-    if (!session || !session.user) {
-      return reply.status(401).send({ error: "Unauthorized" });
+    if (session && session.user) {
+      (request as any).user = session.user;
+      (request as any).session = session.session;
+      return;
     }
 
-    // Attach user and session to request
-    (request as any).user = session.user;
-    (request as any).session = session.session;
+    // Direct token validation fallback (handles Bearer token & unsigned cookie)
+    const authHeader = request.headers.authorization;
+    const bearerToken = authHeader?.startsWith("Bearer ")
+      ? authHeader.slice(7).trim()
+      : null;
+    const cookieHeader = request.headers.cookie;
+    const cookieMatch = cookieHeader?.match(/better-auth\.session_token=([^;]+)/);
+    const rawCookieToken = cookieMatch && cookieMatch[1]
+      ? decodeURIComponent(cookieMatch[1]).split(".")[0]
+      : null;
+
+    const tokenToVerify = bearerToken || rawCookieToken;
+    if (tokenToVerify) {
+      const dbSession = await prisma.session.findUnique({
+        where: { token: tokenToVerify },
+        include: { user: true },
+      });
+
+      if (
+        dbSession &&
+        dbSession.expiresAt > new Date() &&
+        !dbSession.user.banned
+      ) {
+        (request as any).user = dbSession.user;
+        (request as any).session = dbSession;
+        return;
+      }
+    }
+
+    return reply.status(401).send({ error: "Unauthorized" });
   } catch (error: any) {
     request.log.error(error, "[requireAuth] error verifying session");
     return reply.status(401).send({ error: "Unauthorized" });
@@ -62,8 +83,37 @@ export async function optionalAuth(
     if (session && session.user) {
       (request as any).user = session.user;
       (request as any).session = session.session;
+      return;
     }
-  } catch (error: any) {
-    // Ignore errors for optional auth
+
+    const authHeader = request.headers.authorization;
+    const bearerToken = authHeader?.startsWith("Bearer ")
+      ? authHeader.slice(7).trim()
+      : null;
+    const cookieHeader = request.headers.cookie;
+    const cookieMatch = cookieHeader?.match(/better-auth\.session_token=([^;]+)/);
+    const rawCookieToken = cookieMatch && cookieMatch[1]
+      ? decodeURIComponent(cookieMatch[1]).split(".")[0]
+      : null;
+
+    const tokenToVerify = bearerToken || rawCookieToken;
+    if (tokenToVerify) {
+      const dbSession = await prisma.session.findUnique({
+        where: { token: tokenToVerify },
+        include: { user: true },
+      });
+
+      if (
+        dbSession &&
+        dbSession.expiresAt > new Date() &&
+        !dbSession.user.banned
+      ) {
+        (request as any).user = dbSession.user;
+        (request as any).session = dbSession;
+      }
+    }
+  } catch {
+    // optionalAuth does not block
   }
 }
+

@@ -12,6 +12,7 @@ function AdminLoginForm() {
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/admin";
   const reason = searchParams.get("reason");
+  const rawError = searchParams.get("error");
 
   const { data: session, isPending: sessionPending } = authClient.useSession();
   const [sessionAdminStatus, setSessionAdminStatus] = useState<boolean | null>(null);
@@ -21,11 +22,22 @@ function AdminLoginForm() {
   const [password, setPassword] = useState("");
   const [showPass, setShowPass] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(
-    reason === "insufficient_permissions"
-      ? "Access restricted: Administrator privileges required to enter this section."
-      : null
-  );
+  const [error, setError] = useState<string | null>(() => {
+    if (reason === "insufficient_permissions") {
+      return "Access restricted: Administrator privileges required to enter this section.";
+    }
+    if (rawError) {
+      const lower = rawError.toLowerCase();
+      if (lower.includes("not_found") || lower.includes("not found")) {
+        return "User not found: Your email is not registered. Only pre-registered users added by a Super Admin or Developer can sign in.";
+      }
+      if (lower.includes("forbidden") || lower.includes("domain")) {
+        return "Access restricted: Only official @nitp.ac.in Google accounts are authorized.";
+      }
+      return rawError;
+    }
+    return null;
+  });
 
   // If already logged in, check role
   useEffect(() => {
