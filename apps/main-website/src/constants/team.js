@@ -50,7 +50,7 @@ export const FACULTY_TEAM_DATA = {
     {
       id: 'fac-mentor-8',
       name: 'Dr. Meena Panchore',
-      post: 'Faculty Mentor',
+      post: 'Co PI Bihta',
       image: `${CLOUDINARY_BASE_URL}/v1782901328/meena_mam_s4ub8r.jpg`,
       email: 'meenap.ec@nitp.ac.in',
       about:
@@ -115,7 +115,7 @@ export const FACULTY_TEAM_DATA = {
     {
       id: 'fac-mentor-9',
       name: 'Dr. Richa Aggarwal',
-      post: 'Co PI Bihta',
+      post: 'Faculty Mentor',
       image: `${CLOUDINARY_BASE_URL}/v1782901329/richa_mam_iinww3.jpg`,
       email: 'richa.ec@nitp.ac.in',
       about:
@@ -328,16 +328,16 @@ export const OFFICE_BEARERS_DATA = [
     image: `${CLOUDINARY_BASE_URL}/v1793971280/Sairaj_Web_CoLead_i1evj2.png`,
   },
   {
-      name: 'Abhishek Keshri',
-      about:
-        'Merging logic with creativity, building digital foundations turning code into seamless user experiences.',
-      post: 'Lead',
-      team: 'Web',
-      department: 'EE',
-      linkedin: web_colead_linkedin,
-      github: `https://github.com/abhishekkesh`,
-      image: `${CLOUDINARY_BASE_URL}/v1782901445/abhishek_keshri_yuimey.jpg`,
-    },
+    name: 'Abhishek Keshri',
+    about:
+      'Merging logic with creativity, building digital foundations turning code into seamless user experiences.',
+    post: 'Lead',
+    team: 'Web',
+    department: 'EE',
+    linkedin: web_colead_linkedin,
+    github: `https://github.com/abhishekkesh`,
+    image: `${CLOUDINARY_BASE_URL}/v1782901445/abhishek_keshri_yuimey.jpg`,
+  },
   {
     name: 'Harsh Kapadiya',
     about: 'A Computer Science and Engineering undergraduate at NIT Patna with a strong interest in technology, UI/UX design, and software development. As Design Co-Lead, he contributes to creative initiatives, digital experiences, and innovation-driven activities.',
@@ -446,7 +446,7 @@ export const OFFICE_BEARERS_DATA = [
     email: 'sanyavns2727@gmail.com',
     image: `${CLOUDINARY_BASE_URL}/v1793971279/sanya_singh_media_colead_2026_rbtxea.jpg`,
   },
-   {
+  {
     name: 'Aashi Akanksha',
     about: 'A third-year architecture student who focuses on strategic planning and execution, ensuring every element comes together seamlessly to create meaningful, high-impact experiences.',
     post: 'Co-Lead',
@@ -470,8 +470,8 @@ export const OFFICE_BEARERS_DATA = [
     email: 'adityaj.ug24.me@nitp.ac.in',
     image: `${CLOUDINARY_BASE_URL}/v1793971278/aaditya_kumar_jha_event_colead_2026_byfcag.jpg`,
   },
-  
- 
+
+
   {
     name: 'Rishav',
     about: 'Bridging the gap between groundbreaking innovation and market visibility. Leading media and communications to connect startup founders with networks, resources, and public visibility.',
@@ -508,5 +508,5 @@ export const OFFICE_BEARERS_DATA = [
     email: 'ranik.ug23.ee@nitp.ac.in',
     image: `${CLOUDINARY_BASE_URL}/v1793971280/rani_kumari_design_lead_dchgvu.png`,
   },
-  
+
 ];

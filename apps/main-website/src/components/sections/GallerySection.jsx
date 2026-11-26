@@ -1,12 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'motion/react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { EffectCoverflow, Autoplay, Pagination, Navigation } from 'swiper/modules';
 import SectionHeader from '@/components/ui/SectionHeader';
 import Button from '@/components/ui/Button';
+import LightboxModal from '@/components/ui/LightboxModal';
 import { GALLERY_IMAGES_DATA } from '@/constants/gallery';
 import { ArrowLeftIcon, ArrowRightIcon } from '@/components/icons';
 import { getOptimizedCloudinaryUrl } from '@/utils/cloudinary';
@@ -17,6 +18,8 @@ import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
 export default function GallerySection({ images = GALLERY_IMAGES_DATA }) {
+  const [lightboxIndex, setLightboxIndex] = useState(null);
+
   if (!images || images.length === 0) return null;
 
   return (
@@ -74,10 +77,11 @@ export default function GallerySection({ images = GALLERY_IMAGES_DATA }) {
           }}
           className="w-full py-2 sm:py-3 !overflow-visible [&_.swiper-slide-active]:scale-105 [&_.swiper-slide-active]:ring-2 [&_.swiper-slide-active]:ring-[#0ef]/50 [&_.swiper-slide-active]:shadow-[0_12px_48px_rgba(14,239,255,0.2)] [&_.swiper-slide]:box-border [&_.swiper-slide]:transition-all [&_.swiper-slide]:duration-500 [&_.swiper-wrapper]:items-center"
         >
-          {images.map((image) => (
+          {images.map((image, idx) => (
             <SwiperSlide
               key={image.id}
-              className="!h-[210px] !w-[260px] shrink-0 overflow-hidden rounded-2xl bg-black/60 shadow-2xl transition-transform duration-500 sm:!h-[260px] sm:!w-[340px] md:!h-[310px] md:!w-[410px]"
+              onClick={() => setLightboxIndex(idx)}
+              className="!h-[210px] !w-[260px] shrink-0 overflow-hidden rounded-2xl bg-black/60 shadow-2xl transition-transform duration-500 sm:!h-[260px] sm:!w-[340px] md:!h-[310px] md:!w-[410px] cursor-pointer"
             >
               <div className="group relative h-full w-full overflow-hidden rounded-2xl bg-neutral-900 border border-white/10">
                 <Image
@@ -113,6 +117,13 @@ export default function GallerySection({ images = GALLERY_IMAGES_DATA }) {
           Explore More →
         </Button>
       </motion.div>
+
+      <LightboxModal
+        images={images}
+        activeIndex={lightboxIndex}
+        onClose={() => setLightboxIndex(null)}
+        onIndexChange={setLightboxIndex}
+      />
     </section>
   );
 }
